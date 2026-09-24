@@ -297,6 +297,7 @@
   .viz-scatter{
     color-scheme: light;
     --scatter-point: var(--accent);
+    --scatter-point-2: var(--amber);
     --scatter-grid:  var(--border);
     --scatter-muted: var(--text-faint);
   }
@@ -351,6 +352,41 @@
   .cluster-legend-item{ display:flex; align-items:center; gap:6px; font-size:12px; color:var(--text-muted); }
   .cluster-swatch{ width:10px; height:10px; border-radius:2px; flex:none; }
 
+  /* sommaire */
+  .toc{ margin-top:28px; padding:18px 20px; background:var(--surface-raised); border:1px solid var(--border); border-radius:10px; }
+  .toc-title{ font-family:'IBM Plex Mono', monospace; font-size:11.5px; letter-spacing:0.08em; text-transform:uppercase; color:var(--text-faint); margin-bottom:10px; }
+  .toc ol{ margin:0; padding:0; list-style:none; display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:6px 24px; }
+  .toc li{ display:flex; gap:10px; font-size:14px; }
+  .toc li span{ font-family:'IBM Plex Mono', monospace; font-size:12px; color:var(--text-faint); padding-top:2px; }
+  .toc a{ color:var(--text); text-decoration:none; border-bottom:1px solid var(--border-strong); }
+  .toc a:hover, .toc a:focus-visible{ color:var(--accent); border-color:var(--accent); }
+  @media (max-width:560px){ .toc ol{ grid-template-columns:1fr; } }
+  .repo-link{ color:var(--accent); font-weight:500; }
+  a:focus-visible{ outline:2px solid var(--accent); outline-offset:2px; }
+  section{ scroll-margin-top:16px; }
+
+  /* code */
+  pre.code{
+    margin:14px 0 0; padding:14px 16px; overflow-x:auto;
+    background:var(--surface-raised); border:1px solid var(--border); border-radius:8px;
+    font-family:'IBM Plex Mono', monospace; font-size:12.5px; line-height:1.55; color:var(--text);
+  }
+  pre.code .c{ color:var(--text-faint); }
+
+  tr.hl td{ background:var(--accent-soft); color:var(--text); }
+  .legend-inline{ display:flex; gap:18px; justify-content:center; flex-wrap:wrap; font-size:12px; color:var(--text-muted); margin-top:6px; }
+  .legend-inline i{ display:inline-block; width:9px; height:9px; border-radius:50%; margin-right:6px; vertical-align:middle; }
+
+  /* problèmes */
+  .issues{ display:flex; flex-direction:column; margin-top:18px; border-top:1px solid var(--border); }
+  .issue{ display:grid; grid-template-columns:128px 1fr; gap:16px; padding:18px 0; border-bottom:1px solid var(--border); }
+  .issue-kind{ font-family:'IBM Plex Mono', monospace; font-size:11px; letter-spacing:0.04em; text-transform:uppercase; color:var(--text-faint); padding-top:3px; }
+  .issue-title{ font-weight:600; color:var(--text); margin-bottom:4px; }
+  .issue p{ margin:0; color:var(--text-muted); font-size:14px; }
+  .issue p + p{ margin-top:6px; }
+  .issue .fix{ color:var(--accent-strong); }
+  @media (max-width:560px){ .issue{ grid-template-columns:1fr; gap:4px; } }
+
   footer{
     margin-top:64px;
     padding-top:20px;
@@ -367,17 +403,30 @@
 
 <div class="page">
 
-  <div class="eyebrow">Projet ML-DMA — document de travail</div>
-  <h1>Rapport de préparation des données</h1>
-  <p class="subtitle">Déchets ménagers et assimilés (DMA) — sources SINOE (ADEME) et INSEE. Ce document couvre l'exploration des données, le nettoyage, et les premiers résultats du modèle de régression.</p>
+  <div class="eyebrow">Projet ML-DMA — apprentissage supervisé</div>
+  <h1>Prédire les déchets ménagers par habitant</h1>
+  <p class="subtitle">Déchets ménagers et assimilés (DMA) par département, sources SINOE (ADEME) et INSEE. De la récupération des données au choix du modèle : préparation, preprocessor, pipeline, évaluation et interprétation.</p>
   <div class="meta-row">
     <span><b>Domaine</b> Gestion des déchets, France, par département</span>
     <span><b>Producteur</b> ADEME (SINOE) / INSEE</span>
     <span><b>Licence</b> Ouverte 2.0</span>
-    <span><b>Statut</b> Préparation des données, régression et clustering — complet</span>
+    <span><b>Code</b> <a class="repo-link" href="https://github.com/Rxdy/ML-DMA" target="_blank" rel="noopener">github.com/Rxdy/ML-DMA</a></span>
   </div>
 
-  <section>
+  <nav class="toc" aria-label="Sommaire">
+    <div class="toc-title">Sommaire</div>
+    <ol>
+      <li><span>01</span><a href="#sources">Sources de données</a></li>
+      <li><span>02</span><a href="#exploration">Exploration</a></li>
+      <li><span>03</span><a href="#nettoyage">Nettoyage et transformations</a></li>
+      <li><span>04</span><a href="#pipeline">Preprocessor et pipeline</a></li>
+      <li><span>05</span><a href="#resultats">Résultats de la régression</a></li>
+      <li><span>06</span><a href="#problemes">Problèmes rencontrés</a></li>
+      <li><span>07</span><a href="#clustering">Clustering des profils</a></li>
+    </ol>
+  </nav>
+
+  <section id="sources">
     <div class="h2-row"><span class="h2-num">01</span><h2>Sources de données</h2></div>
     <p class="section-intro">Le jeu de données publié par l'ADEME sur data.gouv.fr ("destination des DMA collectés par type de traitement") a été complété par trois autres sources pour couvrir les besoins du projet : profil de traitement, population, et une année supplémentaire (2023).</p>
 
@@ -478,7 +527,7 @@
     </div>
   </section>
 
-  <section>
+  <section id="exploration">
     <div class="h2-row"><span class="h2-num">02</span><h2>Ce que l'exploration a montré</h2></div>
     <p class="section-intro">Premier tri des colonnes et vérification systématique des valeurs manquantes sur les quatre fichiers.</p>
 
@@ -520,7 +569,7 @@
     </div>
   </section>
 
-  <section>
+  <section id="nettoyage">
     <div class="h2-row"><span class="h2-num">03</span><h2>Nettoyage et transformations appliquées</h2></div>
     <p class="section-intro">Chaque étape est motivée par un constat de la section précédente — pas de transformation appliquée par défaut.</p>
 
@@ -601,8 +650,8 @@
       <div class="step">
         <div class="step-num">9</div>
         <div>
-          <div class="step-title">Mise à l'échelle Min-Max [0, 1]</div>
-          <code>MinMaxScaler</code> calibré (fit) uniquement sur le train, puis appliqué (transform) au train et au test.
+          <div class="step-title">Mise à l'échelle Min-Max [0, 1] et encodage du cluster</div>
+          <code>MinMaxScaler</code> sur les variables numériques, <code>OneHotEncoder</code> sur le cluster, calibrés (fit) uniquement sur le train puis appliqués (transform) au train et au test. Les deux sont regroupés dans le preprocessor (section 04).
           <div class="step-why"><b>Pourquoi</b>Calibrer sur l'ensemble des données ferait fuiter les statistiques du test (min/max) vers l'entraînement. Conséquence attendue : sur le test, certaines valeurs dépassent légèrement [0, 1] (ex. 1.03) car 2021/2023 atteignent des valeurs jamais vues sur 2011–2019.</div>
         </div>
       </div>
@@ -610,279 +659,368 @@
     </div>
   </section>
 
-  <section>
-    <div class="h2-row"><span class="h2-num">04</span><h2>Résultats de la régression</h2></div>
-    <p class="section-intro">Cible : <code>RATIO_DMA</code> (kg/habitant). Entraînement sur 2011–2019 (501 lignes), test sur 2021 et 2023 (198 lignes), jamais vus pendant l'entraînement. Trois approches comparées, y compris une <b>baseline naïve</b> qui ne fait aucun apprentissage — elle sert de repère minimal à battre.</p>
+  <section id="pipeline">
+    <div class="h2-row"><span class="h2-num">04</span><h2>Preprocessor et pipeline</h2></div>
+    <p class="section-intro">Les transformations de la section 03 et le modèle sont regroupés en deux objets scikit-learn (script <code>09_pipeline.py</code>) : le <b>preprocessor</b>, l'étape de transformation, et la <b>pipeline</b>, la chaîne complète.</p>
+
+    <div class="flow">
+      <div class="flow-row">
+        <div class="flow-node"><b>Données brutes</b><span class="n">population, ratio et tonnage précédents, cluster</span></div>
+        <span class="flow-arrow">→</span>
+        <div class="flow-node result"><b>Preprocessor</b><span class="n">MinMaxScaler + OneHotEncoder</span></div>
+        <span class="flow-arrow">→</span>
+        <div class="flow-node result"><b>Modèle</b><span class="n">linéaire, Random Forest…</span></div>
+        <span class="flow-arrow">→</span>
+        <div class="flow-node"><b>Prédiction</b><span class="n">kg/habitant</span></div>
+      </div>
+      <div class="flow-join">pipeline = preprocessor + modèle, un seul objet</div>
+    </div>
+
+<pre class="code">preprocessor = ColumnTransformer([
+    ("num", MinMaxScaler(),  ["VA_POPANNEE", "RATIO_DMA_lag1", "TONNAGE_DMA_lag1"]),
+    ("cat", OneHotEncoder(handle_unknown="ignore"), ["cluster"]),
+])
+pipeline = Pipeline([("preprocessor", preprocessor), ("modele", LinearRegression())])
+
+pipeline.fit(X_train, y_train)  <span class="c"># calibre le preprocessor PUIS entraîne, sur le train seul</span>
+pipeline.predict(X_test)        <span class="c"># mêmes transformations PUIS prédiction</span></pre>
+
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">A</div>
+        <div>
+          <div class="step-title">Variables numériques → <code>MinMaxScaler</code></div>
+          Chaque valeur est ramenée entre 0 et 1 : <code>x' = (x − min) / (max − min)</code>.
+          <div class="step-why"><b>Pourquoi</b>La population (centaines de milliers) écraserait le ratio (quelques centaines) dans les modèles sensibles aux échelles.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">B</div>
+        <div>
+          <div class="step-title">Cluster → <code>OneHotEncoder</code></div>
+          Le cluster (0 à 3) devient 4 colonnes 0/1 : <code>cluster_0</code> … <code>cluster_3</code>.
+          <div class="step-why"><b>Pourquoi</b>C'est une typologie, pas une quantité : « cluster 3 » n'est pas « trois fois cluster 1 ». Dans la première version (scripts 05/06), il était mis à l'échelle comme un nombre, ce qui lui donnait un faux ordre.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">C</div>
+        <div>
+          <div class="step-title">Pipeline : aucune fuite de données, par construction</div>
+          Le preprocessor est calibré à l'intérieur de <code>pipeline.fit</code>, donc uniquement sur les données d'entraînement, y compris dans chaque pli de la validation croisée.
+          <div class="step-why"><b>Pourquoi</b>Sans pipeline, « fit sur le train seulement » est une règle à respecter à la main. Avec la pipeline, c'est garanti, et tous les modèles reçoivent exactement le même traitement : on ne compare que les modèles.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="resultats">
+    <div class="h2-row"><span class="h2-num">05</span><h2>Résultats de la régression</h2></div>
+    <p class="section-intro">Cible : <code>RATIO_DMA</code> (kg/habitant). Deux baselines servent de repères : la <b>moyenne</b> (plancher absolu) et la <b>baseline naïve</b> « comme à l'enquête précédente », le vrai repère à battre. Deux évaluations : une validation croisée temporelle sur le train, puis le test final sur 2021 et 2023, jamais vus.</p>
 
     <div class="table-wrap">
       <table>
-        <caption>Métriques sur le jeu de test</caption>
-        <thead>
-          <tr><th>Modèle</th><th class="num">MAE</th><th class="num">RMSE</th><th class="num">R²</th></tr>
-        </thead>
+        <caption>Validation croisée temporelle — 4 plis : entraînement sur les enquêtes passées, validation sur la suivante (2013 → 2019)</caption>
+        <thead><tr><th>Modèle</th><th class="num">MAE</th><th class="num">R² moyen</th></tr></thead>
         <tbody>
-          <tr>
-            <td>Baseline naïve <span class="tag">= valeur de l'enquête précédente</span></td>
-            <td class="num">36.49</td><td class="num">44.58</td><td class="num">0.702</td>
-          </tr>
-          <tr>
-            <td class="strong">Régression linéaire</td>
-            <td class="num">35.89</td><td class="num">43.64</td><td class="num">0.715</td>
-          </tr>
-          <tr>
-            <td>Random Forest</td>
-            <td class="num">36.05</td><td class="num">44.21</td><td class="num">0.707</td>
-          </tr>
+          <tr><td>Baseline moyenne <span class="tag off">DummyRegressor</span></td><td class="num">62.23</td><td class="num">−0.013</td></tr>
+          <tr class="hl"><td class="strong">Baseline naïve <span class="tag">= enquête précédente</span></td><td class="num">18.68</td><td class="num">0.872</td></tr>
+          <tr><td>Régression linéaire</td><td class="num">19.55</td><td class="num">0.865</td></tr>
+          <tr><td>Random Forest</td><td class="num">20.88</td><td class="num">0.845</td></tr>
         </tbody>
       </table>
     </div>
 
     <div class="table-wrap" style="margin-top:16px">
       <table>
-        <caption>Importance des variables — Random Forest</caption>
-        <thead><tr><th>Variable</th><th class="num">Importance</th></tr></thead>
+        <caption>Test final — 2021 et 2023, 198 départements-années</caption>
+        <thead><tr><th>Modèle</th><th class="num">MAE</th><th class="num">RMSE</th><th class="num">R²</th></tr></thead>
         <tbody>
-          <tr><td class="strong">RATIO_DMA_lag1</td><td class="num">0.949</td></tr>
-          <tr><td>TONNAGE_DMA_lag1</td><td class="num">0.018</td></tr>
-          <tr><td>VA_POPANNEE</td><td class="num">0.017</td></tr>
-          <tr><td>cluster (typologie de traitement)</td><td class="num">0.015</td></tr>
+          <tr><td>Baseline moyenne <span class="tag off">DummyRegressor</span></td><td class="num">61.99</td><td class="num">82.14</td><td class="num">−0.010</td></tr>
+          <tr><td>Baseline naïve <span class="tag">= enquête précédente</span></td><td class="num">36.49</td><td class="num">44.58</td><td class="num">0.702</td></tr>
+          <tr class="hl"><td class="strong">Régression linéaire</td><td class="num">35.75</td><td class="num">43.53</td><td class="num">0.716</td></tr>
+          <tr><td>Random Forest</td><td class="num">36.08</td><td class="num">44.36</td><td class="num">0.705</td></tr>
         </tbody>
       </table>
     </div>
 
     <div class="callout" style="margin-top:20px">
-      <b>Lecture du résultat</b>
-      Les modèles battent à peine la baseline naïve — la régression linéaire gagne 0.6 point de R² (0.715 contre 0.702), le Random Forest reste dans le même ordre de grandeur. Le lag (<code>RATIO_DMA_lag1</code>) porte 94.9 % de l'importance du Random Forest : le ratio de déchets par habitant est très stable d'une enquête à l'autre, donc « prédire » revient surtout à recopier la valeur précédente. Ce n'est pas un échec de modélisation : c'est une conclusion sur les données — population et typologie de traitement, des caractéristiques stables du département, ajoutent peu face à l'inertie temporelle du ratio. Des variables qui varient réellement dans le temps (revenu, mise en place d'un nouveau tri sélectif, densité urbaine évolutive) seraient de meilleurs candidats pour dépasser cette baseline.
+      <b>Aucun modèle ne bat réellement la baseline naïve</b>
+      Les modèles écrasent la moyenne, mais face à « comme la dernière fois » : en validation croisée, la baseline naïve est la meilleure ; sur le test, la régression linéaire la devance de 0,74 kg/hab. Un bootstrap (5 000 rééchantillonnages) donne un intervalle de confiance à 95 % de 0,14 à 1,34 kg/hab : un gain réel au sens statistique, mais négligeable (2 % de l'erreur, sur un ratio moyen d'environ 520 kg/hab). La régression linéaire ne fait mieux que la baseline que sur 54 % des départements-années. Elle a d'ailleurs réappris la persistance : sur la seule variable du ratio précédent, elle donne <code>ratio ≈ 0,97 × ratio précédent + 17</code>.
     </div>
 
-    <p class="section-intro" style="margin-top:28px">Chaque point ci-dessous est une prédiction concrète : un département, une année de test (2021 ou 2023), la valeur que la régression linéaire est allée chercher. Plus un point est proche de la diagonale pointillée, plus la prédiction était juste.</p>
+    <div class="table-wrap" style="margin-top:16px">
+      <table>
+        <caption>Importance des variables — Random Forest (après preprocessor)</caption>
+        <thead><tr><th>Variable</th><th class="num">Importance</th></tr></thead>
+        <tbody>
+          <tr><td class="strong">RATIO_DMA_lag1</td><td class="num">0.949</td></tr>
+          <tr><td>TONNAGE_DMA_lag1</td><td class="num">0.019</td></tr>
+          <tr><td>VA_POPANNEE</td><td class="num">0.017</td></tr>
+          <tr><td>cluster (4 colonnes one-hot cumulées)</td><td class="num">0.016</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p class="section-intro" style="margin-top:28px">Pourquoi le score chute-t-il entre la validation croisée (0,865) et le test (0,716) ? Ce n'est pas du surapprentissage : la baseline naïve, qui n'apprend rien, chute de la même façon.</p>
+
+    <div class="table-wrap">
+      <table>
+        <caption>Baseline naïve, année par année</caption>
+        <thead><tr><th>Année</th><th class="num">R²</th><th class="num">MAE</th><th class="num">Ratio moyen</th></tr></thead>
+        <tbody>
+          <tr><td>2011</td><td class="num">0.885</td><td class="num">16.8</td><td class="num">538</td></tr>
+          <tr><td>2013</td><td class="num">0.815</td><td class="num">21.2</td><td class="num">525</td></tr>
+          <tr><td>2015</td><td class="num">0.850</td><td class="num">18.8</td><td class="num">525</td></tr>
+          <tr><td>2017</td><td class="num">0.895</td><td class="num">19.3</td><td class="num">537</td></tr>
+          <tr><td>2019</td><td class="num">0.927</td><td class="num">15.4</td><td class="num">540</td></tr>
+          <tr><td class="strong">2021 <span class="tag warn">test</span></td><td class="num">0.810</td><td class="num">28.1</td><td class="num">563</td></tr>
+          <tr class="hl"><td class="strong">2023 <span class="tag warn">test</span></td><td class="num">0.532</td><td class="num">44.9</td><td class="num">519</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout" style="margin-top:16px">
+      <b>Une rupture dans les données de la période de test</b>
+      Un pic en 2021 (563 kg/hab en moyenne), puis une baisse nette en 2023 (519). « Comme la dernière fois » devient une moins bonne hypothèse, et le modèle, qui repose surtout dessus, baisse avec elle. L'origine n'est pas identifiable avec nos données : la période Covid et l'extension des consignes de tri sont des hypothèses, non vérifiées.
+    </div>
+
+    <p class="section-intro" style="margin-top:28px">Chaque point est une prédiction de la pipeline (régression linéaire) : un département, une année de test. Sur la diagonale pointillée, la prédiction est exacte. En 2023, la plupart des points passent sous la diagonale : le modèle prévoit plus de déchets qu'il n'y en a eu.</p>
 
     <div class="viz-scatter">
       <div class="scatter-wrap">
-        <svg viewBox="0 0 574 550" role="img" aria-label="Nuage de points : ratio prédit par la régression linéaire en fonction du ratio réel, sur les 198 lignes du jeu de test (2021 et 2023)">
+        <svg viewBox="0 0 574 556" role="img" aria-label="Nuage de points : ratio prédit par la pipeline de régression linéaire en fonction du ratio réel, 198 lignes du jeu de test, 2021 et 2023">
 <line x1="54.0" y1="16" x2="54.0" y2="516.0" stroke="var(--scatter-grid)" stroke-width="1"/>
+<line x1="54" y1="516.0" x2="554" y2="516.0" stroke="var(--scatter-grid)" stroke-width="1"/>
 <text x="54.0" y="534.0" font-size="10" fill="var(--scatter-muted)" text-anchor="middle" font-family="IBM Plex Mono, monospace">300</text>
 <text x="46.0" y="519.0" font-size="10" fill="var(--scatter-muted)" text-anchor="end" font-family="IBM Plex Mono, monospace">300</text>
 <line x1="130.9" y1="16" x2="130.9" y2="516.0" stroke="var(--scatter-grid)" stroke-width="1"/>
+<line x1="54" y1="439.1" x2="554" y2="439.1" stroke="var(--scatter-grid)" stroke-width="1"/>
 <text x="130.9" y="534.0" font-size="10" fill="var(--scatter-muted)" text-anchor="middle" font-family="IBM Plex Mono, monospace">400</text>
 <text x="46.0" y="442.1" font-size="10" fill="var(--scatter-muted)" text-anchor="end" font-family="IBM Plex Mono, monospace">400</text>
 <line x1="207.8" y1="16" x2="207.8" y2="516.0" stroke="var(--scatter-grid)" stroke-width="1"/>
+<line x1="54" y1="362.2" x2="554" y2="362.2" stroke="var(--scatter-grid)" stroke-width="1"/>
 <text x="207.8" y="534.0" font-size="10" fill="var(--scatter-muted)" text-anchor="middle" font-family="IBM Plex Mono, monospace">500</text>
 <text x="46.0" y="365.2" font-size="10" fill="var(--scatter-muted)" text-anchor="end" font-family="IBM Plex Mono, monospace">500</text>
 <line x1="284.8" y1="16" x2="284.8" y2="516.0" stroke="var(--scatter-grid)" stroke-width="1"/>
+<line x1="54" y1="285.2" x2="554" y2="285.2" stroke="var(--scatter-grid)" stroke-width="1"/>
 <text x="284.8" y="534.0" font-size="10" fill="var(--scatter-muted)" text-anchor="middle" font-family="IBM Plex Mono, monospace">600</text>
 <text x="46.0" y="288.2" font-size="10" fill="var(--scatter-muted)" text-anchor="end" font-family="IBM Plex Mono, monospace">600</text>
 <line x1="361.7" y1="16" x2="361.7" y2="516.0" stroke="var(--scatter-grid)" stroke-width="1"/>
+<line x1="54" y1="208.3" x2="554" y2="208.3" stroke="var(--scatter-grid)" stroke-width="1"/>
 <text x="361.7" y="534.0" font-size="10" fill="var(--scatter-muted)" text-anchor="middle" font-family="IBM Plex Mono, monospace">700</text>
 <text x="46.0" y="211.3" font-size="10" fill="var(--scatter-muted)" text-anchor="end" font-family="IBM Plex Mono, monospace">700</text>
 <line x1="438.6" y1="16" x2="438.6" y2="516.0" stroke="var(--scatter-grid)" stroke-width="1"/>
+<line x1="54" y1="131.4" x2="554" y2="131.4" stroke="var(--scatter-grid)" stroke-width="1"/>
 <text x="438.6" y="534.0" font-size="10" fill="var(--scatter-muted)" text-anchor="middle" font-family="IBM Plex Mono, monospace">800</text>
 <text x="46.0" y="134.4" font-size="10" fill="var(--scatter-muted)" text-anchor="end" font-family="IBM Plex Mono, monospace">800</text>
 <line x1="515.5" y1="16" x2="515.5" y2="516.0" stroke="var(--scatter-grid)" stroke-width="1"/>
+<line x1="54" y1="54.5" x2="554" y2="54.5" stroke="var(--scatter-grid)" stroke-width="1"/>
 <text x="515.5" y="534.0" font-size="10" fill="var(--scatter-muted)" text-anchor="middle" font-family="IBM Plex Mono, monospace">900</text>
 <text x="46.0" y="57.5" font-size="10" fill="var(--scatter-muted)" text-anchor="end" font-family="IBM Plex Mono, monospace">900</text>
 <line x1="54.0" y1="516.0" x2="554.0" y2="16.0" stroke="var(--scatter-muted)" stroke-width="1.5" stroke-dasharray="4 4"/>
-<circle cx="210.7" cy="381.9" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Ain 2021 : réel 504 — prédit 474 kg/hab</title></circle>
-<circle cx="180.1" cy="358.1" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Ain 2023 : réel 464 — prédit 505 kg/hab</title></circle>
-<circle cx="252.9" cy="331.8" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Aisne 2021 : réel 559 — prédit 539 kg/hab</title></circle>
-<circle cx="208.1" cy="317.1" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Aisne 2023 : réel 500 — prédit 559 kg/hab</title></circle>
-<circle cx="259.9" cy="337.7" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Allier 2021 : réel 568 — prédit 532 kg/hab</title></circle>
-<circle cx="217.6" cy="309.5" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Allier 2023 : réel 513 — prédit 568 kg/hab</title></circle>
-<circle cx="350.9" cy="237.8" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Alpes-de-Haute-Provence 2021 : réel 686 — prédit 662 kg/hab</title></circle>
-<circle cx="345.3" cy="221.4" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Alpes-de-Haute-Provence 2023 : réel 679 — prédit 683 kg/hab</title></circle>
-<circle cx="298.7" cy="258.3" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Hautes-Alpes 2021 : réel 618 — prédit 635 kg/hab</title></circle>
-<circle cx="285.8" cy="271.4" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Hautes-Alpes 2023 : réel 601 — prédit 618 kg/hab</title></circle>
-<circle cx="351.6" cy="219.9" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Alpes-Maritimes 2021 : réel 687 — prédit 685 kg/hab</title></circle>
-<circle cx="320.9" cy="224.2" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Alpes-Maritimes 2023 : réel 647 — prédit 679 kg/hab</title></circle>
-<circle cx="260.5" cy="322.7" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Ardèche 2021 : réel 568 — prédit 551 kg/hab</title></circle>
-<circle cx="230.0" cy="308.9" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Ardèche 2023 : réel 529 — prédit 569 kg/hab</title></circle>
-<circle cx="249.9" cy="345.7" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Ardennes 2021 : réel 555 — prédit 521 kg/hab</title></circle>
-<circle cx="203.4" cy="318.7" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Ardennes 2023 : réel 494 — prédit 556 kg/hab</title></circle>
-<circle cx="326.7" cy="211.2" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Ariège 2021 : réel 654 — prédit 696 kg/hab</title></circle>
-<circle cx="304.5" cy="244.6" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Ariège 2023 : réel 626 — prédit 653 kg/hab</title></circle>
-<circle cx="217.5" cy="355.4" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Aube 2021 : réel 513 — prédit 509 kg/hab</title></circle>
-<circle cx="204.5" cy="350.0" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Aube 2023 : réel 496 — prédit 516 kg/hab</title></circle>
-<circle cx="312.2" cy="276.1" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Aude 2021 : réel 636 — prédit 612 kg/hab</title></circle>
-<circle cx="271.4" cy="259.4" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Aude 2023 : réel 583 — prédit 634 kg/hab</title></circle>
-<circle cx="243.6" cy="353.5" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Aveyron 2021 : réel 547 — prédit 511 kg/hab</title></circle>
-<circle cx="218.9" cy="324.8" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Aveyron 2023 : réel 514 — prédit 549 kg/hab</title></circle>
-<circle cx="254.2" cy="328.4" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Bouches-du-Rhône 2021 : réel 560 — prédit 544 kg/hab</title></circle>
-<circle cx="213.4" cy="323.9" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Bouches-du-Rhône 2023 : réel 507 — prédit 550 kg/hab</title></circle>
-<circle cx="334.2" cy="246.6" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Calvados 2021 : réel 664 — prédit 650 kg/hab</title></circle>
-<circle cx="295.4" cy="239.2" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Calvados 2023 : réel 614 — prédit 660 kg/hab</title></circle>
-<circle cx="251.7" cy="366.5" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Cantal 2021 : réel 557 — prédit 494 kg/hab</title></circle>
-<circle cx="222.2" cy="316.3" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Cantal 2023 : réel 519 — prédit 560 kg/hab</title></circle>
-<circle cx="239.1" cy="346.1" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Charente 2021 : réel 541 — prédit 521 kg/hab</title></circle>
-<circle cx="209.1" cy="327.8" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Charente 2023 : réel 502 — prédit 545 kg/hab</title></circle>
-<circle cx="339.3" cy="238.0" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Charente-Maritime 2021 : réel 671 — prédit 661 kg/hab</title></circle>
-<circle cx="304.7" cy="233.0" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Charente-Maritime 2023 : réel 626 — prédit 668 kg/hab</title></circle>
-<circle cx="230.7" cy="354.0" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Cher 2021 : réel 530 — prédit 511 kg/hab</title></circle>
-<circle cx="213.8" cy="337.3" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Cher 2023 : réel 508 — prédit 532 kg/hab</title></circle>
-<circle cx="265.8" cy="336.4" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Corrèze 2021 : réel 575 — prédit 533 kg/hab</title></circle>
-<circle cx="243.4" cy="302.8" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Corrèze 2023 : réel 546 — prédit 577 kg/hab</title></circle>
-<circle cx="223.1" cy="375.5" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Cote-d'Or 2021 : réel 520 — prédit 483 kg/hab</title></circle>
-<circle cx="168.9" cy="345.3" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Cote-d'Or 2023 : réel 449 — prédit 522 kg/hab</title></circle>
-<circle cx="391.5" cy="198.5" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Cotes-d'Armor 2021 : réel 739 — prédit 713 kg/hab</title></circle>
-<circle cx="350.9" cy="183.6" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Cotes-d'Armor 2023 : réel 686 — prédit 732 kg/hab</title></circle>
-<circle cx="227.6" cy="361.4" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Creuse 2021 : réel 526 — prédit 501 kg/hab</title></circle>
-<circle cx="199.5" cy="339.3" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Creuse 2023 : réel 489 — prédit 530 kg/hab</title></circle>
-<circle cx="267.3" cy="294.0" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Dordogne 2021 : réel 577 — prédit 589 kg/hab</title></circle>
-<circle cx="224.6" cy="302.8" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Dordogne 2023 : réel 522 — prédit 577 kg/hab</title></circle>
-<circle cx="183.4" cy="396.0" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Doubs 2021 : réel 468 — prédit 456 kg/hab</title></circle>
-<circle cx="137.7" cy="383.5" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Doubs 2023 : réel 409 — prédit 472 kg/hab</title></circle>
-<circle cx="257.1" cy="330.5" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Drôme 2021 : réel 564 — prédit 541 kg/hab</title></circle>
-<circle cx="222.1" cy="313.1" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Drôme 2023 : réel 519 — prédit 564 kg/hab</title></circle>
-<circle cx="327.6" cy="309.7" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Eure 2021 : réel 656 — prédit 568 kg/hab</title></circle>
-<circle cx="280.3" cy="245.0" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Eure 2023 : réel 594 — prédit 652 kg/hab</title></circle>
-<circle cx="291.8" cy="350.1" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Eure-et-Loir 2021 : réel 609 — prédit 516 kg/hab</title></circle>
-<circle cx="172.8" cy="278.7" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Eure-et-Loir 2023 : réel 454 — prédit 608 kg/hab</title></circle>
-<circle cx="365.5" cy="225.7" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Finistère 2021 : réel 705 — prédit 677 kg/hab</title></circle>
-<circle cx="325.3" cy="210.0" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Finistère 2023 : réel 653 — prédit 698 kg/hab</title></circle>
-<circle cx="415.9" cy="162.4" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Corse-du-Sud 2021 : réel 770 — prédit 760 kg/hab</title></circle>
-<circle cx="311.6" cy="159.2" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Corse-du-Sud 2023 : réel 635 — prédit 764 kg/hab</title></circle>
-<circle cx="346.0" cy="230.8" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Haute-Corse 2021 : réel 680 — prédit 671 kg/hab</title></circle>
-<circle cx="264.2" cy="226.2" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Haute-Corse 2023 : réel 573 — prédit 677 kg/hab</title></circle>
-<circle cx="290.6" cy="299.4" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Gard 2021 : réel 608 — prédit 582 kg/hab</title></circle>
-<circle cx="258.1" cy="281.5" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Gard 2023 : réel 565 — prédit 605 kg/hab</title></circle>
-<circle cx="187.8" cy="387.0" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Haute-Garonne 2021 : réel 474 — prédit 468 kg/hab</title></circle>
-<circle cx="157.3" cy="384.7" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Haute-Garonne 2023 : réel 434 — prédit 471 kg/hab</title></circle>
-<circle cx="225.9" cy="354.9" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Gers 2021 : réel 523 — prédit 509 kg/hab</title></circle>
-<circle cx="210.0" cy="341.4" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Gers 2023 : réel 503 — prédit 527 kg/hab</title></circle>
-<circle cx="247.4" cy="329.9" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Gironde 2021 : réel 551 — prédit 542 kg/hab</title></circle>
-<circle cx="222.8" cy="327.9" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Gironde 2023 : réel 519 — prédit 545 kg/hab</title></circle>
-<circle cx="277.1" cy="301.5" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Hérault 2021 : réel 590 — prédit 579 kg/hab</title></circle>
-<circle cx="248.4" cy="296.8" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Hérault 2023 : réel 553 — prédit 585 kg/hab</title></circle>
-<circle cx="196.4" cy="384.6" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Ille-et-Vilaine 2021 : réel 485 — prédit 471 kg/hab</title></circle>
-<circle cx="174.4" cy="374.4" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Ille-et-Vilaine 2023 : réel 457 — prédit 484 kg/hab</title></circle>
-<circle cx="229.1" cy="379.9" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Indre 2021 : réel 528 — prédit 477 kg/hab</title></circle>
-<circle cx="215.5" cy="338.4" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Indre 2023 : réel 510 — prédit 531 kg/hab</title></circle>
-<circle cx="224.4" cy="368.4" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Indre-et-Loire 2021 : réel 522 — prédit 492 kg/hab</title></circle>
-<circle cx="220.5" cy="345.1" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Indre-et-Loire 2023 : réel 516 — prédit 522 kg/hab</title></circle>
-<circle cx="220.4" cy="364.8" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Isère 2021 : réel 516 — prédit 497 kg/hab</title></circle>
-<circle cx="169.6" cy="352.1" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Isère 2023 : réel 450 — prédit 513 kg/hab</title></circle>
-<circle cx="222.9" cy="375.6" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Jura 2021 : réel 520 — prédit 482 kg/hab</title></circle>
-<circle cx="193.0" cy="343.9" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Jura 2023 : réel 481 — prédit 524 kg/hab</title></circle>
-<circle cx="509.1" cy="72.5" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Landes 2021 : réel 892 — prédit 877 kg/hab</title></circle>
-<circle cx="447.6" cy="68.8" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Landes 2023 : réel 812 — prédit 881 kg/hab</title></circle>
-<circle cx="266.4" cy="314.3" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Loir-et-Cher 2021 : réel 576 — prédit 562 kg/hab</title></circle>
-<circle cx="233.4" cy="302.7" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Loir-et-Cher 2023 : réel 533 — prédit 577 kg/hab</title></circle>
-<circle cx="215.4" cy="367.5" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Loire 2021 : réel 510 — prédit 493 kg/hab</title></circle>
-<circle cx="178.1" cy="354.6" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Loire 2023 : réel 461 — prédit 510 kg/hab</title></circle>
-<circle cx="217.9" cy="371.1" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Haute-Loire 2021 : réel 513 — prédit 488 kg/hab</title></circle>
-<circle cx="204.6" cy="349.2" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Haute-Loire 2023 : réel 496 — prédit 517 kg/hab</title></circle>
-<circle cx="224.3" cy="364.1" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Loire-Atlantique 2021 : réel 521 — prédit 498 kg/hab</title></circle>
-<circle cx="204.9" cy="349.4" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Loire-Atlantique 2023 : réel 496 — prédit 517 kg/hab</title></circle>
-<circle cx="241.3" cy="336.1" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Loiret 2021 : réel 543 — prédit 534 kg/hab</title></circle>
-<circle cx="191.7" cy="328.6" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Loiret 2023 : réel 479 — prédit 544 kg/hab</title></circle>
-<circle cx="295.5" cy="292.0" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Lot 2021 : réel 614 — prédit 591 kg/hab</title></circle>
-<circle cx="257.7" cy="274.6" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Lot 2023 : réel 565 — prédit 614 kg/hab</title></circle>
-<circle cx="285.2" cy="300.7" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Lot-et-Garonne 2021 : réel 601 — prédit 580 kg/hab</title></circle>
-<circle cx="245.3" cy="285.1" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Lot-et-Garonne 2023 : réel 549 — prédit 600 kg/hab</title></circle>
-<circle cx="269.6" cy="339.5" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Lozère 2021 : réel 580 — prédit 529 kg/hab</title></circle>
-<circle cx="235.9" cy="297.8" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Lozère 2023 : réel 536 — prédit 584 kg/hab</title></circle>
-<circle cx="172.2" cy="423.2" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Maine-et-Loire 2021 : réel 454 — prédit 421 kg/hab</title></circle>
-<circle cx="143.9" cy="396.0" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Maine-et-Loire 2023 : réel 417 — prédit 456 kg/hab</title></circle>
-<circle cx="349.4" cy="259.6" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Manche 2021 : réel 684 — prédit 633 kg/hab</title></circle>
-<circle cx="299.3" cy="224.2" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Manche 2023 : réel 619 — prédit 679 kg/hab</title></circle>
-<circle cx="203.4" cy="367.5" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Marne 2021 : réel 494 — prédit 493 kg/hab</title></circle>
-<circle cx="182.4" cy="364.4" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Marne 2023 : réel 467 — prédit 497 kg/hab</title></circle>
-<circle cx="221.7" cy="362.1" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Haute-Marne 2021 : réel 518 — prédit 500 kg/hab</title></circle>
-<circle cx="187.9" cy="344.6" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Haute-Marne 2023 : réel 474 — prédit 523 kg/hab</title></circle>
-<circle cx="258.6" cy="293.0" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Mayenne 2021 : réel 566 — prédit 590 kg/hab</title></circle>
-<circle cx="236.8" cy="310.0" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Mayenne 2023 : réel 538 — prédit 568 kg/hab</title></circle>
-<circle cx="209.4" cy="380.0" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Meurthe-et-Moselle 2021 : réel 502 — prédit 477 kg/hab</title></circle>
-<circle cx="142.2" cy="359.5" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Meurthe-et-Moselle 2023 : réel 415 — prédit 503 kg/hab</title></circle>
-<circle cx="184.4" cy="386.8" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Meuse 2021 : réel 469 — prédit 468 kg/hab</title></circle>
-<circle cx="165.6" cy="381.1" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Meuse 2023 : réel 445 — prédit 475 kg/hab</title></circle>
-<circle cx="298.1" cy="279.6" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Morbihan 2021 : réel 617 — prédit 607 kg/hab</title></circle>
-<circle cx="264.4" cy="273.2" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Morbihan 2023 : réel 573 — prédit 616 kg/hab</title></circle>
-<circle cx="231.0" cy="358.6" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Moselle 2021 : réel 530 — prédit 505 kg/hab</title></circle>
-<circle cx="204.6" cy="341.0" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Moselle 2023 : réel 496 — prédit 527 kg/hab</title></circle>
-<circle cx="239.9" cy="352.9" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Nièvre 2021 : réel 542 — prédit 512 kg/hab</title></circle>
-<circle cx="213.5" cy="327.3" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Nièvre 2023 : réel 507 — prédit 545 kg/hab</title></circle>
-<circle cx="264.8" cy="363.7" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Nord 2021 : réel 574 — prédit 498 kg/hab</title></circle>
-<circle cx="227.0" cy="315.5" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Nord 2023 : réel 525 — prédit 561 kg/hab</title></circle>
-<circle cx="290.2" cy="317.5" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Oise 2021 : réel 607 — prédit 558 kg/hab</title></circle>
-<circle cx="201.8" cy="282.1" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Oise 2023 : réel 492 — prédit 604 kg/hab</title></circle>
-<circle cx="279.0" cy="318.5" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Orne 2021 : réel 593 — prédit 557 kg/hab</title></circle>
-<circle cx="261.7" cy="290.8" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Orne 2023 : réel 570 — prédit 593 kg/hab</title></circle>
-<circle cx="324.9" cy="325.7" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Pas-de-Calais 2021 : réel 652 — prédit 547 kg/hab</title></circle>
-<circle cx="282.9" cy="251.3" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Pas-de-Calais 2023 : réel 598 — prédit 644 kg/hab</title></circle>
-<circle cx="188.9" cy="392.5" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Puy-de-Dôme 2021 : réel 475 — prédit 461 kg/hab</title></circle>
-<circle cx="166.4" cy="379.5" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Puy-de-Dôme 2023 : réel 446 — prédit 477 kg/hab</title></circle>
-<circle cx="255.7" cy="324.8" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Pyrénées-Atlantiques 2021 : réel 562 — prédit 549 kg/hab</title></circle>
-<circle cx="226.6" cy="314.8" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Pyrénées-Atlantiques 2023 : réel 524 — prédit 562 kg/hab</title></circle>
-<circle cx="251.5" cy="311.6" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Hautes-Pyrénées 2021 : réel 557 — prédit 566 kg/hab</title></circle>
-<circle cx="239.0" cy="317.0" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Hautes-Pyrénées 2023 : réel 541 — prédit 559 kg/hab</title></circle>
-<circle cx="340.2" cy="256.0" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Pyrénées-Orientales 2021 : réel 672 — prédit 638 kg/hab</title></circle>
-<circle cx="304.9" cy="232.5" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Pyrénées-Orientales 2023 : réel 626 — prédit 669 kg/hab</title></circle>
-<circle cx="171.6" cy="404.9" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Bas-Rhin 2021 : réel 453 — prédit 444 kg/hab</title></circle>
-<circle cx="135.8" cy="398.5" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Bas-Rhin 2023 : réel 406 — prédit 453 kg/hab</title></circle>
-<circle cx="200.9" cy="340.7" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Haut-Rhin 2021 : réel 491 — prédit 528 kg/hab</title></circle>
-<circle cx="181.0" cy="368.0" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Haut-Rhin 2023 : réel 465 — prédit 492 kg/hab</title></circle>
-<circle cx="139.0" cy="452.8" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Rhône 2021 : réel 410 — prédit 382 kg/hab</title></circle>
-<circle cx="108.2" cy="434.7" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Rhône 2023 : réel 370 — prédit 406 kg/hab</title></circle>
-<circle cx="240.1" cy="361.3" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Haute-Saône 2021 : réel 542 — prédit 501 kg/hab</title></circle>
-<circle cx="236.8" cy="327.3" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Haute-Saône 2023 : réel 538 — prédit 545 kg/hab</title></circle>
-<circle cx="239.1" cy="363.7" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Saône-et-Loire 2021 : réel 541 — prédit 498 kg/hab</title></circle>
-<circle cx="209.3" cy="330.6" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Saône-et-Loire 2023 : réel 502 — prédit 541 kg/hab</title></circle>
-<circle cx="217.4" cy="376.3" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Sarthe 2021 : réel 512 — prédit 482 kg/hab</title></circle>
-<circle cx="193.5" cy="350.9" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Sarthe 2023 : réel 481 — prédit 515 kg/hab</title></circle>
-<circle cx="269.4" cy="260.5" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Savoie 2021 : réel 580 — prédit 632 kg/hab</title></circle>
-<circle cx="279.1" cy="299.1" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Savoie 2023 : réel 593 — prédit 582 kg/hab</title></circle>
-<circle cx="266.4" cy="306.2" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Haute-Savoie 2021 : réel 576 — prédit 573 kg/hab</title></circle>
-<circle cx="254.7" cy="305.3" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Haute-Savoie 2023 : réel 561 — prédit 574 kg/hab</title></circle>
-<circle cx="153.7" cy="388.6" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Paris 2021 : réel 430 — prédit 466 kg/hab</title></circle>
-<circle cx="147.1" cy="421.4" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Paris 2023 : réel 421 — prédit 423 kg/hab</title></circle>
-<circle cx="292.1" cy="298.5" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Seine-Maritime 2021 : réel 609 — prédit 583 kg/hab</title></circle>
-<circle cx="267.4" cy="282.4" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Seine-Maritime 2023 : réel 577 — prédit 604 kg/hab</title></circle>
-<circle cx="218.1" cy="384.2" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Seine-et-Marne 2021 : réel 513 — prédit 471 kg/hab</title></circle>
-<circle cx="170.6" cy="355.3" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Seine-et-Marne 2023 : réel 452 — prédit 509 kg/hab</title></circle>
-<circle cx="182.6" cy="397.7" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Yvelines 2021 : réel 467 — prédit 454 kg/hab</title></circle>
-<circle cx="131.8" cy="389.7" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Yvelines 2023 : réel 401 — prédit 464 kg/hab</title></circle>
-<circle cx="238.1" cy="360.4" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Deux-Sèvres 2021 : réel 539 — prédit 502 kg/hab</title></circle>
-<circle cx="204.0" cy="330.6" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Deux-Sèvres 2023 : réel 495 — prédit 541 kg/hab</title></circle>
-<circle cx="308.1" cy="308.0" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Somme 2021 : réel 630 — prédit 570 kg/hab</title></circle>
-<circle cx="235.8" cy="264.3" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Somme 2023 : réel 536 — prédit 627 kg/hab</title></circle>
-<circle cx="244.5" cy="330.5" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Tarn 2021 : réel 548 — prédit 541 kg/hab</title></circle>
-<circle cx="196.2" cy="324.6" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Tarn 2023 : réel 485 — prédit 549 kg/hab</title></circle>
-<circle cx="258.5" cy="337.5" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Tarn-et-Garonne 2021 : réel 566 — prédit 532 kg/hab</title></circle>
-<circle cx="216.5" cy="310.5" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Tarn-et-Garonne 2023 : réel 511 — prédit 567 kg/hab</title></circle>
-<circle cx="391.8" cy="192.2" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Var 2021 : réel 739 — prédit 721 kg/hab</title></circle>
-<circle cx="338.0" cy="185.3" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Var 2023 : réel 669 — prédit 730 kg/hab</title></circle>
-<circle cx="302.6" cy="280.4" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Vaucluse 2021 : réel 623 — prédit 606 kg/hab</title></circle>
-<circle cx="277.2" cy="269.0" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Vaucluse 2023 : réel 590 — prédit 621 kg/hab</title></circle>
-<circle cx="272.5" cy="309.5" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Vendée 2021 : réel 584 — prédit 568 kg/hab</title></circle>
-<circle cx="249.0" cy="299.2" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Vendée 2023 : réel 553 — prédit 582 kg/hab</title></circle>
-<circle cx="214.1" cy="359.4" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Vienne 2021 : réel 508 — prédit 504 kg/hab</title></circle>
-<circle cx="192.5" cy="353.9" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Vienne 2023 : réel 480 — prédit 511 kg/hab</title></circle>
-<circle cx="200.2" cy="366.7" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Haute-Vienne 2021 : réel 490 — prédit 494 kg/hab</title></circle>
-<circle cx="165.0" cy="366.4" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Haute-Vienne 2023 : réel 444 — prédit 494 kg/hab</title></circle>
-<circle cx="248.3" cy="352.5" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Vosges 2021 : réel 553 — prédit 513 kg/hab</title></circle>
-<circle cx="233.4" cy="320.1" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Vosges 2023 : réel 533 — prédit 555 kg/hab</title></circle>
-<circle cx="270.9" cy="346.4" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Yonne 2021 : réel 582 — prédit 520 kg/hab</title></circle>
-<circle cx="232.1" cy="298.8" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Yonne 2023 : réel 532 — prédit 582 kg/hab</title></circle>
-<circle cx="287.3" cy="356.0" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Territoire-de-Belfort 2021 : réel 603 — prédit 508 kg/hab</title></circle>
-<circle cx="191.5" cy="281.7" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Territoire-de-Belfort 2023 : réel 479 — prédit 605 kg/hab</title></circle>
-<circle cx="216.2" cy="374.4" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Essonne 2021 : réel 511 — prédit 484 kg/hab</title></circle>
-<circle cx="155.2" cy="356.3" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Essonne 2023 : réel 432 — prédit 508 kg/hab</title></circle>
-<circle cx="125.0" cy="449.9" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Hauts-de-seine 2021 : réel 392 — prédit 386 kg/hab</title></circle>
-<circle cx="92.3" cy="446.7" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Hauts-de-seine 2023 : réel 350 — prédit 390 kg/hab</title></circle>
-<circle cx="159.7" cy="416.8" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Seine-Saint-Denis 2021 : réel 437 — prédit 429 kg/hab</title></circle>
-<circle cx="143.5" cy="413.3" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Seine-Saint-Denis 2023 : réel 416 — prédit 434 kg/hab</title></circle>
-<circle cx="121.9" cy="448.3" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Val-de-Marne 2021 : réel 388 — prédit 388 kg/hab</title></circle>
-<circle cx="107.5" cy="448.2" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Val-de-Marne 2023 : réel 370 — prédit 388 kg/hab</title></circle>
-<circle cx="215.1" cy="391.2" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Val-d'Oise 2021 : réel 509 — prédit 462 kg/hab</title></circle>
-<circle cx="162.0" cy="357.1" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Val-d'Oise 2023 : réel 440 — prédit 507 kg/hab</title></circle>
-<circle cx="294.4" cy="256.9" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Guadeloupe 2021 : réel 613 — prédit 637 kg/hab</title></circle>
-<circle cx="302.3" cy="276.5" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Guadeloupe 2023 : réel 623 — prédit 611 kg/hab</title></circle>
-<circle cx="193.5" cy="331.0" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Martinique 2021 : réel 481 — prédit 541 kg/hab</title></circle>
-<circle cx="217.0" cy="372.7" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Martinique 2023 : réel 512 — prédit 486 kg/hab</title></circle>
-<circle cx="281.0" cy="312.7" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>La Réunion 2021 : réel 595 — prédit 564 kg/hab</title></circle>
-<circle cx="256.5" cy="292.0" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>La Réunion 2023 : réel 563 — prédit 591 kg/hab</title></circle>
+<circle cx="210.7" cy="382.4" r="4" fill="var(--scatter-point)" fill-opacity="0.6"><title>Ain 2021 : réel 504 — prédit 474 kg/hab</title></circle>
+<circle cx="180.1" cy="358.7" r="4" fill="var(--scatter-point-2)" fill-opacity="0.6"><title>Ain 2023 : réel 464 — prédit 505 kg/hab</title></circle>
+<circle cx="252.9" cy="331.1" r="4" fill="var(--scatter-point)" fill-opacity="0.6"><title>Aisne 2021 : réel 559 — prédit 540 kg/hab</title></circle>
+<circle cx="208.1" cy="316.6" r="4" fill="var(--scatter-point-2)" fill-opacity="0.6"><title>Aisne 2023 : réel 500 — prédit 559 kg/hab</title></circle>
+<circle cx="259.9" cy="337.1" r="4" fill="var(--scatter-point)" fill-opacity="0.6"><title>Allier 2021 : réel 568 — prédit 533 kg/hab</title></circle>
+<circle cx="217.6" cy="309.2" r="4" fill="var(--scatter-point-2)" fill-opacity="0.6"><title>Allier 2023 : réel 513 — prédit 569 kg/hab</title></circle>
+<circle cx="350.9" cy="238.4" r="4" fill="var(--scatter-point)" fill-opacity="0.6"><title>Alpes-de-Haute-Provence 2021 : réel 686 — prédit 661 kg/hab</title></circle>
+<circle cx="345.3" cy="222.2" r="4" fill="var(--scatter-point-2)" fill-opacity="0.6"><title>Alpes-de-Haute-Provence 2023 : réel 679 — prédit 682 kg/hab</title></circle>
+<circle cx="298.7" cy="258.7" r="4" fill="var(--scatter-point)" fill-opacity="0.6"><title>Hautes-Alpes 2021 : réel 618 — prédit 634 kg/hab</title></circle>
+<circle cx="285.8" cy="271.6" r="4" fill="var(--scatter-point-2)" fill-opacity="0.6"><title>Hautes-Alpes 2023 : réel 601 — prédit 618 kg/hab</title></circle>
+<circle cx="351.6" cy="220.8" r="4" fill="var(--scatter-point)" fill-opacity="0.6"><title>Alpes-Maritimes 2021 : réel 687 — prédit 684 kg/hab</title></circle>
+<circle cx="320.9" cy="225.2" r="4" fill="var(--scatter-point-2)" fill-opacity="0.6"><title>Alpes-Maritimes 2023 : réel 647 — prédit 678 kg/hab</title></circle>
+<circle cx="260.5" cy="322.3" r="4" fill="var(--scatter-point)" fill-opacity="0.6"><title>Ardèche 2021 : réel 568 — prédit 552 kg/hab</title></circle>
+<circle cx="230.0" cy="308.7" r="4" fill="var(--scatter-point-2)" fill-opacity="0.6"><title>Ardèche 2023 : réel 529 — prédit 570 kg/hab</title></circle>
+<circle cx="249.9" cy="345.1" r="4" fill="var(--scatter-point)" fill-opacity="0.6"><title>Ardennes 2021 : réel 555 — prédit 522 kg/hab</title></circle>
+<circle cx="203.4" cy="318.4" r="4" fill="var(--scatter-point-2)" fill-opacity="0.6"><title>Ardennes 2023 : réel 494 — prédit 557 kg/hab</title></circle>
+<circle cx="326.7" cy="212.2" r="4" fill="var(--scatter-point)" fill-opacity="0.6"><title>Ariège 2021 : réel 654 — prédit 695 kg/hab</title></circle>
+<circle cx="304.5" cy="245.2" r="4" fill="var(--scatter-point-2)" fill-opacity="0.6"><title>Ariège 2023 : réel 626 — prédit 652 kg/hab</title></circle>
+<circle cx="217.5" cy="354.7" r="4" fill="var(--scatter-point)" fill-opacity="0.6"><title>Aube 2021 : réel 513 — prédit 510 kg/hab</title></circle>
+<circle cx="204.5" cy="349.3" r="4" fill="var(--scatter-point-2)" fill-opacity="0.6"><title>Aube 2023 : réel 496 — prédit 517 kg/hab</title></circle>
+<circle cx="312.2" cy="276.1" r="4" fill="var(--scatter-point)" fill-opacity="0.6"><title>Aude 2021 : réel 636 — prédit 612 kg/hab</title></circle>
+<circle cx="271.4" cy="259.6" r="4" fill="var(--scatter-point-2)" fill-opacity="0.6"><title>Aude 2023 : réel 583 — prédit 633 kg/hab</title></circle>
+<circle cx="243.6" cy="352.8" r="4" fill="var(--scatter-point)" fill-opacity="0.6"><title>Aveyron 2021 : réel 547 — prédit 512 kg/hab</title></circle>
+<circle cx="218.9" cy="324.4" r="4" fill="var(--scatter-point-2)" fill-opacity="0.6"><title>Aveyron 2023 : réel 514 — prédit 549 kg/hab</title></circle>
+<circle cx="254.2" cy="326.9" r="4" fill="var(--scatter-point)" fill-opacity="0.6"><title>Bouches-du-Rhône 2021 : réel 560 — prédit 546 kg/hab</title></circle>
+<circle cx="213.4" cy="322.4" r="4" fill="var(--scatter-point-2)" fill-opacity="0.6"><title>Bouches-du-Rhône 2023 : réel 507 — prédit 552 kg/hab</title></circle>
+<circle cx="334.2" cy="248.0" r="4" fill="var(--scatter-point)" fill-opacity="0.6"><title>Calvados 2021 : réel 664 — prédit 648 kg/hab</title></circle>
+<circle cx="295.4" cy="240.6" r="4" fill="var(--scatter-point-2)" fill-opacity="0.6"><title>Calvados 2023 : réel 614 — prédit 658 kg/hab</title></circle>
+<circle cx="251.7" cy="365.7" r="4" fill="var(--scatter-point)" fill-opacity="0.6"><title>Cantal 2021 : réel 557 — prédit 495 kg/hab</title></circle>
+<circle cx="222.2" cy="316.1" r="4" fill="var(--scatter-point-2)" fill-opacity="0.6"><title>Cantal 2023 : réel 519 — prédit 560 kg/hab</title></circle>
+<circle cx="239.1" cy="342.0" r="4" fill="var(--scatter-point)" fill-opacity="0.6"><title>Charente 2021 : réel 541 — prédit 526 kg/hab</title></circle>
+<circle cx="209.1" cy="323.8" r="4" fill="var(--scatter-point-2)" fill-opacity="0.6"><title>Charente 2023 : réel 502 — prédit 550 kg/hab</title></circle>
+<circle cx="339.3" cy="234.5" r="4" fill="var(--scatter-point)" fill-opacity="0.6"><title>Charente-Maritime 2021 : réel 671 — prédit 666 kg/hab</title></circle>
+<circle cx="304.7" cy="229.6" r="4" fill="var(--scatter-point-2)" fill-opacity="0.6"><title>Charente-Maritime 2023 : réel 626 — prédit 672 kg/hab</title></circle>
+<circle cx="230.7" cy="353.3" r="4" fill="var(--scatter-point)" fill-opacity="0.6"><title>Cher 2021 : réel 530 — prédit 512 kg/hab</title></circle>
+<circle cx="213.8" cy="336.7" r="4" fill="var(--scatter-point-2)" fill-opacity="0.6"><title>Cher 2023 : réel 508 — prédit 533 kg/hab</title></circle>
+<circle cx="265.8" cy="337.4" r="4" fill="var(--scatter-point)" fill-opacity="0.6"><title>Corrèze 2021 : réel 575 — prédit 532 kg/hab</title></circle>
+<circle cx="243.4" cy="304.1" r="4" fill="var(--scatter-point-2)" fill-opacity="0.6"><title>Corrèze 2023 : réel 546 — prédit 576 kg/hab</title></circle>
+<circle cx="223.1" cy="376.0" r="4" fill="var(--scatter-point)" fill-opacity="0.6"><title>Cote-d&#x27;Or 2021 : réel 520 — prédit 482 kg/hab</title></circle>
+<circle cx="168.9" cy="346.0" r="4" fill="var(--scatter-point-2)" fill-opacity="0.6"><title>Cote-d&#x27;Or 2023 : réel 449 — prédit 521 kg/hab</title></circle>
+<circle cx="391.5" cy="200.4" r="4" fill="var(--scatter-point)" fill-opacity="0.6"><title>Cotes-d&#x27;Armor 2021 : réel 739 — prédit 710 kg/hab</title></circle>
+<circle cx="350.9" cy="185.6" r="4" fill="var(--scatter-point-2)" fill-opacity="0.6"><title>Cotes-d&#x27;Armor 2023 : réel 686 — prédit 730 kg/hab</title></circle>
+<circle cx="227.6" cy="360.7" r="4" fill="var(--scatter-point)" fill-opacity="0.6"><title>Creuse 2021 : réel 526 — prédit 502 kg/hab</title></circle>
+<circle cx="199.5" cy="338.8" r="4" fill="var(--scatter-point-2)" fill-opacity="0.6"><title>Creuse 2023 : réel 489 — prédit 530 kg/hab</title></circle>
+<circle cx="267.3" cy="293.8" r="4" fill="var(--scatter-point)" fill-opacity="0.6"><title>Dordogne 2021 : réel 577 — prédit 589 kg/hab</title></circle>
+<circle cx="224.6" cy="302.5" r="4" fill="var(--scatter-point-2)" fill-opacity="0.6"><title>Dordogne 2023 : réel 522 — prédit 578 kg/hab</title></circle>
+<circle cx="183.4" cy="396.3" r="4" fill="var(--scatter-point)" fill-opacity="0.6"><title>Doubs 2021 : réel 468 — prédit 456 kg/hab</title></circle>
+<circle cx="137.7" cy="383.9" r="4" fill="var(--scatter-point-2)" fill-opacity="0.6"><title>Doubs 2023 : réel 409 — prédit 472 kg/hab</title></circle>
+<circle cx="257.1" cy="329.9" r="4" fill="var(--scatter-point)" fill-opacity="0.6"><title>Drôme 2021 : réel 564 — prédit 542 kg/hab</title></circle>
+<circle cx="222.1" cy="312.6" r="4" fill="var(--scatter-point-2)" fill-opacity="0.6"><title>Drôme 2023 : réel 519 — prédit 564 kg/hab</title></circle>
+<circle cx="327.6" cy="310.7" r="4" fill="var(--scatter-point)" fill-opacity="0.6"><title>Eure 2021 : réel 656 — prédit 567 kg/hab</title></circle>
+<circle cx="280.3" cy="246.5" r="4" fill="var(--scatter-point-2)" fill-opacity="0.6"><title>Eure 2023 : réel 594 — prédit 650 kg/hab</title></circle>
+<circle cx="291.8" cy="350.8" r="4" fill="var(--scatter-point)" fill-opacity="0.6"><title>Eure-et-Loir 2021 : réel 609 — prédit 515 kg/hab</title></circle>
+<circle cx="172.8" cy="280.1" r="4" fill="var(--scatter-point-2)" fill-opacity="0.6"><title>Eure-et-Loir 2023 : réel 454 — prédit 607 kg/hab</title></circle>
+<circle cx="365.5" cy="226.9" r="4" fill="var(--scatter-point)" fill-opacity="0.6"><title>Finistère 2021 : réel 705 — prédit 676 kg/hab</title></circle>
+<circle cx="325.3" cy="211.2" r="4" fill="var(--scatter-point-2)" fill-opacity="0.6"><title>Finistère 2023 : réel 653 — prédit 696 kg/hab</title></circle>
+<circle cx="415.9" cy="163.8" r="4" fill="var(--scatter-point)" fill-opacity="0.6"><title>Corse-du-Sud 2021 : réel 770 — prédit 758 kg/hab</title></circle>
+<circle cx="311.6" cy="160.7" r="4" fill="var(--scatter-point-2)" fill-opacity="0.6"><title>Corse-du-Sud 2023 : réel 635 — prédit 762 kg/hab</title></circle>
+<circle cx="346.0" cy="231.5" r="4" fill="var(--scatter-point)" fill-opacity="0.6"><title>Haute-Corse 2021 : réel 680 — prédit 670 kg/hab</title></circle>
+<circle cx="264.2" cy="226.9" r="4" fill="var(--scatter-point-2)" fill-opacity="0.6"><title>Haute-Corse 2023 : réel 573 — prédit 676 kg/hab</title></circle>
+<circle cx="290.6" cy="300.3" r="4" fill="var(--scatter-point)" fill-opacity="0.6"><title>Gard 2021 : réel 608 — prédit 580 kg/hab</title></circle>
+<circle cx="258.1" cy="282.6" r="4" fill="var(--scatter-point-2)" fill-opacity="0.6"><title>Gard 2023 : réel 565 — prédit 603 kg/hab</title></circle>
+<circle cx="187.8" cy="387.3" r="4" fill="var(--scatter-point)" fill-opacity="0.6"><title>Haute-Garonne 2021 : réel 474 — prédit 467 kg/hab</title></circle>
+<circle cx="157.3" cy="384.9" r="4" fill="var(--scatter-point-2)" fill-opacity="0.6"><title>Haute-Garonne 2023 : réel 434 — prédit 470 kg/hab</title></circle>
+<circle cx="225.9" cy="354.2" r="4" fill="var(--scatter-point)" fill-opacity="0.6"><title>Gers 2021 : réel 523 — prédit 510 kg/hab</title></circle>
+<circle cx="210.0" cy="340.8" r="4" fill="var(--scatter-point-2)" fill-opacity="0.6"><title>Gers 2023 : réel 503 — prédit 528 kg/hab</title></circle>
+<circle cx="247.4" cy="330.1" r="4" fill="var(--scatter-point)" fill-opacity="0.6"><title>Gironde 2021 : réel 551 — prédit 542 kg/hab</title></circle>
+<circle cx="222.8" cy="328.1" r="4" fill="var(--scatter-point-2)" fill-opacity="0.6"><title>Gironde 2023 : réel 519 — prédit 544 kg/hab</title></circle>
+<circle cx="277.1" cy="302.1" r="4" fill="var(--scatter-point)" fill-opacity="0.6"><title>Hérault 2021 : réel 590 — prédit 578 kg/hab</title></circle>
+<circle cx="248.4" cy="297.4" r="4" fill="var(--scatter-point-2)" fill-opacity="0.6"><title>Hérault 2023 : réel 553 — prédit 584 kg/hab</title></circle>
+<circle cx="196.4" cy="384.9" r="4" fill="var(--scatter-point)" fill-opacity="0.6"><title>Ille-et-Vilaine 2021 : réel 485 — prédit 470 kg/hab</title></circle>
+<circle cx="174.4" cy="374.7" r="4" fill="var(--scatter-point-2)" fill-opacity="0.6"><title>Ille-et-Vilaine 2023 : réel 457 — prédit 484 kg/hab</title></circle>
+<circle cx="229.1" cy="378.9" r="4" fill="var(--scatter-point)" fill-opacity="0.6"><title>Indre 2021 : réel 528 — prédit 478 kg/hab</title></circle>
+<circle cx="215.5" cy="337.9" r="4" fill="var(--scatter-point-2)" fill-opacity="0.6"><title>Indre 2023 : réel 510 — prédit 532 kg/hab</title></circle>
+<circle cx="224.4" cy="367.4" r="4" fill="var(--scatter-point)" fill-opacity="0.6"><title>Indre-et-Loire 2021 : réel 522 — prédit 493 kg/hab</title></circle>
+<circle cx="220.5" cy="344.3" r="4" fill="var(--scatter-point-2)" fill-opacity="0.6"><title>Indre-et-Loire 2023 : réel 516 — prédit 523 kg/hab</title></circle>
+<circle cx="220.4" cy="365.1" r="4" fill="var(--scatter-point)" fill-opacity="0.6"><title>Isère 2021 : réel 516 — prédit 496 kg/hab</title></circle>
+<circle cx="169.6" cy="352.4" r="4" fill="var(--scatter-point-2)" fill-opacity="0.6"><title>Isère 2023 : réel 450 — prédit 513 kg/hab</title></circle>
+<circle cx="222.9" cy="376.2" r="4" fill="var(--scatter-point)" fill-opacity="0.6"><title>Jura 2021 : réel 520 — prédit 482 kg/hab</title></circle>
+<circle cx="193.0" cy="344.8" r="4" fill="var(--scatter-point-2)" fill-opacity="0.6"><title>Jura 2023 : réel 481 — prédit 523 kg/hab</title></circle>
+<circle cx="509.1" cy="70.9" r="4" fill="var(--scatter-point)" fill-opacity="0.6"><title>Landes 2021 : réel 892 — prédit 879 kg/hab</title></circle>
+<circle cx="447.6" cy="67.2" r="4" fill="var(--scatter-point-2)" fill-opacity="0.6"><title>Landes 2023 : réel 812 — prédit 883 kg/hab</title></circle>
+<circle cx="266.4" cy="315.4" r="4" fill="var(--scatter-point)" fill-opacity="0.6"><title>Loir-et-Cher 2021 : réel 576 — prédit 561 kg/hab</title></circle>
+<circle cx="233.4" cy="303.9" r="4" fill="var(--scatter-point-2)" fill-opacity="0.6"><title>Loir-et-Cher 2023 : réel 533 — prédit 576 kg/hab</title></circle>
+<circle cx="215.4" cy="366.5" r="4" fill="var(--scatter-point)" fill-opacity="0.6"><title>Loire 2021 : réel 510 — prédit 494 kg/hab</title></circle>
+<circle cx="178.1" cy="353.7" r="4" fill="var(--scatter-point-2)" fill-opacity="0.6"><title>Loire 2023 : réel 461 — prédit 511 kg/hab</title></circle>
+<circle cx="217.9" cy="370.2" r="4" fill="var(--scatter-point)" fill-opacity="0.6"><title>Haute-Loire 2021 : réel 513 — prédit 490 kg/hab</title></circle>
+<circle cx="204.6" cy="348.6" r="4" fill="var(--scatter-point-2)" fill-opacity="0.6"><title>Haute-Loire 2023 : réel 496 — prédit 518 kg/hab</title></circle>
+<circle cx="224.3" cy="364.4" r="4" fill="var(--scatter-point)" fill-opacity="0.6"><title>Loire-Atlantique 2021 : réel 521 — prédit 497 kg/hab</title></circle>
+<circle cx="204.9" cy="349.7" r="4" fill="var(--scatter-point-2)" fill-opacity="0.6"><title>Loire-Atlantique 2023 : réel 496 — prédit 516 kg/hab</title></circle>
+<circle cx="241.3" cy="336.9" r="4" fill="var(--scatter-point)" fill-opacity="0.6"><title>Loiret 2021 : réel 543 — prédit 533 kg/hab</title></circle>
+<circle cx="191.7" cy="329.4" r="4" fill="var(--scatter-point-2)" fill-opacity="0.6"><title>Loiret 2023 : réel 479 — prédit 543 kg/hab</title></circle>
+<circle cx="295.5" cy="292.0" r="4" fill="var(--scatter-point)" fill-opacity="0.6"><title>Lot 2021 : réel 614 — prédit 591 kg/hab</title></circle>
+<circle cx="257.7" cy="274.8" r="4" fill="var(--scatter-point-2)" fill-opacity="0.6"><title>Lot 2023 : réel 565 — prédit 614 kg/hab</title></circle>
+<circle cx="285.2" cy="300.5" r="4" fill="var(--scatter-point)" fill-opacity="0.6"><title>Lot-et-Garonne 2021 : réel 601 — prédit 580 kg/hab</title></circle>
+<circle cx="245.3" cy="285.1" r="4" fill="var(--scatter-point-2)" fill-opacity="0.6"><title>Lot-et-Garonne 2023 : réel 549 — prédit 600 kg/hab</title></circle>
+<circle cx="269.6" cy="348.6" r="4" fill="var(--scatter-point)" fill-opacity="0.6"><title>Lozère 2021 : réel 580 — prédit 518 kg/hab</title></circle>
+<circle cx="235.9" cy="307.4" r="4" fill="var(--scatter-point-2)" fill-opacity="0.6"><title>Lozère 2023 : réel 536 — prédit 571 kg/hab</title></circle>
+<circle cx="172.2" cy="423.3" r="4" fill="var(--scatter-point)" fill-opacity="0.6"><title>Maine-et-Loire 2021 : réel 454 — prédit 421 kg/hab</title></circle>
+<circle cx="143.9" cy="396.3" r="4" fill="var(--scatter-point-2)" fill-opacity="0.6"><title>Maine-et-Loire 2023 : réel 417 — prédit 456 kg/hab</title></circle>
+<circle cx="349.4" cy="259.7" r="4" fill="var(--scatter-point)" fill-opacity="0.6"><title>Manche 2021 : réel 684 — prédit 633 kg/hab</title></circle>
+<circle cx="299.3" cy="224.5" r="4" fill="var(--scatter-point-2)" fill-opacity="0.6"><title>Manche 2023 : réel 619 — prédit 679 kg/hab</title></circle>
+<circle cx="203.4" cy="368.0" r="4" fill="var(--scatter-point)" fill-opacity="0.6"><title>Marne 2021 : réel 494 — prédit 492 kg/hab</title></circle>
+<circle cx="182.4" cy="364.9" r="4" fill="var(--scatter-point-2)" fill-opacity="0.6"><title>Marne 2023 : réel 467 — prédit 496 kg/hab</title></circle>
+<circle cx="221.7" cy="362.8" r="4" fill="var(--scatter-point)" fill-opacity="0.6"><title>Haute-Marne 2021 : réel 518 — prédit 499 kg/hab</title></circle>
+<circle cx="187.9" cy="345.5" r="4" fill="var(--scatter-point-2)" fill-opacity="0.6"><title>Haute-Marne 2023 : réel 474 — prédit 522 kg/hab</title></circle>
+<circle cx="258.6" cy="294.4" r="4" fill="var(--scatter-point)" fill-opacity="0.6"><title>Mayenne 2021 : réel 566 — prédit 588 kg/hab</title></circle>
+<circle cx="236.8" cy="311.1" r="4" fill="var(--scatter-point-2)" fill-opacity="0.6"><title>Mayenne 2023 : réel 538 — prédit 566 kg/hab</title></circle>
+<circle cx="209.4" cy="380.4" r="4" fill="var(--scatter-point)" fill-opacity="0.6"><title>Meurthe-et-Moselle 2021 : réel 502 — prédit 476 kg/hab</title></circle>
+<circle cx="142.2" cy="360.1" r="4" fill="var(--scatter-point-2)" fill-opacity="0.6"><title>Meurthe-et-Moselle 2023 : réel 415 — prédit 503 kg/hab</title></circle>
+<circle cx="184.4" cy="385.7" r="4" fill="var(--scatter-point)" fill-opacity="0.6"><title>Meuse 2021 : réel 469 — prédit 469 kg/hab</title></circle>
+<circle cx="165.6" cy="380.1" r="4" fill="var(--scatter-point-2)" fill-opacity="0.6"><title>Meuse 2023 : réel 445 — prédit 477 kg/hab</title></circle>
+<circle cx="298.1" cy="275.7" r="4" fill="var(--scatter-point)" fill-opacity="0.6"><title>Morbihan 2021 : réel 617 — prédit 612 kg/hab</title></circle>
+<circle cx="264.4" cy="269.3" r="4" fill="var(--scatter-point-2)" fill-opacity="0.6"><title>Morbihan 2023 : réel 573 — prédit 621 kg/hab</title></circle>
+<circle cx="231.0" cy="357.5" r="4" fill="var(--scatter-point)" fill-opacity="0.6"><title>Moselle 2021 : réel 530 — prédit 506 kg/hab</title></circle>
+<circle cx="204.6" cy="340.0" r="4" fill="var(--scatter-point-2)" fill-opacity="0.6"><title>Moselle 2023 : réel 496 — prédit 529 kg/hab</title></circle>
+<circle cx="239.9" cy="353.7" r="4" fill="var(--scatter-point)" fill-opacity="0.6"><title>Nièvre 2021 : réel 542 — prédit 511 kg/hab</title></circle>
+<circle cx="213.5" cy="328.4" r="4" fill="var(--scatter-point-2)" fill-opacity="0.6"><title>Nièvre 2023 : réel 507 — prédit 544 kg/hab</title></circle>
+<circle cx="264.8" cy="363.4" r="4" fill="var(--scatter-point)" fill-opacity="0.6"><title>Nord 2021 : réel 574 — prédit 498 kg/hab</title></circle>
+<circle cx="227.0" cy="314.8" r="4" fill="var(--scatter-point-2)" fill-opacity="0.6"><title>Nord 2023 : réel 525 — prédit 562 kg/hab</title></circle>
+<circle cx="290.2" cy="318.2" r="4" fill="var(--scatter-point)" fill-opacity="0.6"><title>Oise 2021 : réel 607 — prédit 557 kg/hab</title></circle>
+<circle cx="201.8" cy="283.1" r="4" fill="var(--scatter-point-2)" fill-opacity="0.6"><title>Oise 2023 : réel 492 — prédit 603 kg/hab</title></circle>
+<circle cx="279.0" cy="318.1" r="4" fill="var(--scatter-point)" fill-opacity="0.6"><title>Orne 2021 : réel 593 — prédit 557 kg/hab</title></circle>
+<circle cx="261.7" cy="290.7" r="4" fill="var(--scatter-point-2)" fill-opacity="0.6"><title>Orne 2023 : réel 570 — prédit 593 kg/hab</title></circle>
+<circle cx="324.9" cy="325.9" r="4" fill="var(--scatter-point)" fill-opacity="0.6"><title>Pas-de-Calais 2021 : réel 652 — prédit 547 kg/hab</title></circle>
+<circle cx="282.9" cy="251.7" r="4" fill="var(--scatter-point-2)" fill-opacity="0.6"><title>Pas-de-Calais 2023 : réel 598 — prédit 644 kg/hab</title></circle>
+<circle cx="188.9" cy="391.4" r="4" fill="var(--scatter-point)" fill-opacity="0.6"><title>Puy-de-Dôme 2021 : réel 475 — prédit 462 kg/hab</title></circle>
+<circle cx="166.4" cy="378.5" r="4" fill="var(--scatter-point-2)" fill-opacity="0.6"><title>Puy-de-Dôme 2023 : réel 446 — prédit 479 kg/hab</title></circle>
+<circle cx="255.7" cy="325.6" r="4" fill="var(--scatter-point)" fill-opacity="0.6"><title>Pyrénées-Atlantiques 2021 : réel 562 — prédit 548 kg/hab</title></circle>
+<circle cx="226.6" cy="315.7" r="4" fill="var(--scatter-point-2)" fill-opacity="0.6"><title>Pyrénées-Atlantiques 2023 : réel 524 — prédit 560 kg/hab</title></circle>
+<circle cx="251.5" cy="311.3" r="4" fill="var(--scatter-point)" fill-opacity="0.6"><title>Hautes-Pyrénées 2021 : réel 557 — prédit 566 kg/hab</title></circle>
+<circle cx="239.0" cy="316.7" r="4" fill="var(--scatter-point-2)" fill-opacity="0.6"><title>Hautes-Pyrénées 2023 : réel 541 — prédit 559 kg/hab</title></circle>
+<circle cx="340.2" cy="257.6" r="4" fill="var(--scatter-point)" fill-opacity="0.6"><title>Pyrénées-Orientales 2021 : réel 672 — prédit 636 kg/hab</title></circle>
+<circle cx="304.9" cy="234.3" r="4" fill="var(--scatter-point-2)" fill-opacity="0.6"><title>Pyrénées-Orientales 2023 : réel 626 — prédit 666 kg/hab</title></circle>
+<circle cx="171.6" cy="405.1" r="4" fill="var(--scatter-point)" fill-opacity="0.6"><title>Bas-Rhin 2021 : réel 453 — prédit 444 kg/hab</title></circle>
+<circle cx="135.8" cy="398.7" r="4" fill="var(--scatter-point-2)" fill-opacity="0.6"><title>Bas-Rhin 2023 : réel 406 — prédit 452 kg/hab</title></circle>
+<circle cx="200.9" cy="341.3" r="4" fill="var(--scatter-point)" fill-opacity="0.6"><title>Haut-Rhin 2021 : réel 491 — prédit 527 kg/hab</title></circle>
+<circle cx="181.0" cy="368.4" r="4" fill="var(--scatter-point-2)" fill-opacity="0.6"><title>Haut-Rhin 2023 : réel 465 — prédit 492 kg/hab</title></circle>
+<circle cx="139.0" cy="453.0" r="4" fill="var(--scatter-point)" fill-opacity="0.6"><title>Rhône 2021 : réel 410 — prédit 382 kg/hab</title></circle>
+<circle cx="108.2" cy="434.9" r="4" fill="var(--scatter-point-2)" fill-opacity="0.6"><title>Rhône 2023 : réel 370 — prédit 405 kg/hab</title></circle>
+<circle cx="240.1" cy="362.0" r="4" fill="var(--scatter-point)" fill-opacity="0.6"><title>Haute-Saône 2021 : réel 542 — prédit 500 kg/hab</title></circle>
+<circle cx="236.8" cy="328.4" r="4" fill="var(--scatter-point-2)" fill-opacity="0.6"><title>Haute-Saône 2023 : réel 538 — prédit 544 kg/hab</title></circle>
+<circle cx="239.1" cy="362.8" r="4" fill="var(--scatter-point)" fill-opacity="0.6"><title>Saône-et-Loire 2021 : réel 541 — prédit 499 kg/hab</title></circle>
+<circle cx="209.3" cy="329.9" r="4" fill="var(--scatter-point-2)" fill-opacity="0.6"><title>Saône-et-Loire 2023 : réel 502 — prédit 542 kg/hab</title></circle>
+<circle cx="217.4" cy="376.7" r="4" fill="var(--scatter-point)" fill-opacity="0.6"><title>Sarthe 2021 : réel 512 — prédit 481 kg/hab</title></circle>
+<circle cx="193.5" cy="351.6" r="4" fill="var(--scatter-point-2)" fill-opacity="0.6"><title>Sarthe 2023 : réel 481 — prédit 514 kg/hab</title></circle>
+<circle cx="269.4" cy="257.0" r="4" fill="var(--scatter-point)" fill-opacity="0.6"><title>Savoie 2021 : réel 580 — prédit 637 kg/hab</title></circle>
+<circle cx="279.1" cy="295.4" r="4" fill="var(--scatter-point-2)" fill-opacity="0.6"><title>Savoie 2023 : réel 593 — prédit 587 kg/hab</title></circle>
+<circle cx="266.4" cy="307.1" r="4" fill="var(--scatter-point)" fill-opacity="0.6"><title>Haute-Savoie 2021 : réel 576 — prédit 572 kg/hab</title></circle>
+<circle cx="254.7" cy="306.1" r="4" fill="var(--scatter-point-2)" fill-opacity="0.6"><title>Haute-Savoie 2023 : réel 561 — prédit 573 kg/hab</title></circle>
+<circle cx="153.7" cy="388.6" r="4" fill="var(--scatter-point)" fill-opacity="0.6"><title>Paris 2021 : réel 430 — prédit 466 kg/hab</title></circle>
+<circle cx="147.1" cy="421.4" r="4" fill="var(--scatter-point-2)" fill-opacity="0.6"><title>Paris 2023 : réel 421 — prédit 423 kg/hab</title></circle>
+<circle cx="292.1" cy="299.0" r="4" fill="var(--scatter-point)" fill-opacity="0.6"><title>Seine-Maritime 2021 : réel 609 — prédit 582 kg/hab</title></circle>
+<circle cx="267.4" cy="282.9" r="4" fill="var(--scatter-point-2)" fill-opacity="0.6"><title>Seine-Maritime 2023 : réel 577 — prédit 603 kg/hab</title></circle>
+<circle cx="218.1" cy="384.4" r="4" fill="var(--scatter-point)" fill-opacity="0.6"><title>Seine-et-Marne 2021 : réel 513 — prédit 471 kg/hab</title></circle>
+<circle cx="170.6" cy="355.6" r="4" fill="var(--scatter-point-2)" fill-opacity="0.6"><title>Seine-et-Marne 2023 : réel 452 — prédit 509 kg/hab</title></circle>
+<circle cx="182.6" cy="397.9" r="4" fill="var(--scatter-point)" fill-opacity="0.6"><title>Yvelines 2021 : réel 467 — prédit 454 kg/hab</title></circle>
+<circle cx="131.8" cy="390.0" r="4" fill="var(--scatter-point-2)" fill-opacity="0.6"><title>Yvelines 2023 : réel 401 — prédit 464 kg/hab</title></circle>
+<circle cx="238.1" cy="359.6" r="4" fill="var(--scatter-point)" fill-opacity="0.6"><title>Deux-Sèvres 2021 : réel 539 — prédit 503 kg/hab</title></circle>
+<circle cx="204.0" cy="330.1" r="4" fill="var(--scatter-point-2)" fill-opacity="0.6"><title>Deux-Sèvres 2023 : réel 495 — prédit 542 kg/hab</title></circle>
+<circle cx="308.1" cy="307.5" r="4" fill="var(--scatter-point)" fill-opacity="0.6"><title>Somme 2021 : réel 630 — prédit 571 kg/hab</title></circle>
+<circle cx="235.8" cy="264.2" r="4" fill="var(--scatter-point-2)" fill-opacity="0.6"><title>Somme 2023 : réel 536 — prédit 627 kg/hab</title></circle>
+<circle cx="244.5" cy="330.0" r="4" fill="var(--scatter-point)" fill-opacity="0.6"><title>Tarn 2021 : réel 548 — prédit 542 kg/hab</title></circle>
+<circle cx="196.2" cy="324.1" r="4" fill="var(--scatter-point-2)" fill-opacity="0.6"><title>Tarn 2023 : réel 485 — prédit 549 kg/hab</title></circle>
+<circle cx="258.5" cy="337.0" r="4" fill="var(--scatter-point)" fill-opacity="0.6"><title>Tarn-et-Garonne 2021 : réel 566 — prédit 533 kg/hab</title></circle>
+<circle cx="216.5" cy="310.2" r="4" fill="var(--scatter-point-2)" fill-opacity="0.6"><title>Tarn-et-Garonne 2023 : réel 511 — prédit 568 kg/hab</title></circle>
+<circle cx="391.8" cy="193.3" r="4" fill="var(--scatter-point)" fill-opacity="0.6"><title>Var 2021 : réel 739 — prédit 720 kg/hab</title></circle>
+<circle cx="338.0" cy="186.5" r="4" fill="var(--scatter-point-2)" fill-opacity="0.6"><title>Var 2023 : réel 669 — prédit 728 kg/hab</title></circle>
+<circle cx="302.6" cy="281.6" r="4" fill="var(--scatter-point)" fill-opacity="0.6"><title>Vaucluse 2021 : réel 623 — prédit 605 kg/hab</title></circle>
+<circle cx="277.2" cy="270.4" r="4" fill="var(--scatter-point-2)" fill-opacity="0.6"><title>Vaucluse 2023 : réel 590 — prédit 619 kg/hab</title></circle>
+<circle cx="272.5" cy="309.0" r="4" fill="var(--scatter-point)" fill-opacity="0.6"><title>Vendée 2021 : réel 584 — prédit 569 kg/hab</title></circle>
+<circle cx="249.0" cy="298.8" r="4" fill="var(--scatter-point-2)" fill-opacity="0.6"><title>Vendée 2023 : réel 553 — prédit 582 kg/hab</title></circle>
+<circle cx="214.1" cy="358.6" r="4" fill="var(--scatter-point)" fill-opacity="0.6"><title>Vienne 2021 : réel 508 — prédit 505 kg/hab</title></circle>
+<circle cx="192.5" cy="353.2" r="4" fill="var(--scatter-point-2)" fill-opacity="0.6"><title>Vienne 2023 : réel 480 — prédit 512 kg/hab</title></circle>
+<circle cx="200.2" cy="367.3" r="4" fill="var(--scatter-point)" fill-opacity="0.6"><title>Haute-Vienne 2021 : réel 490 — prédit 493 kg/hab</title></circle>
+<circle cx="165.0" cy="367.0" r="4" fill="var(--scatter-point-2)" fill-opacity="0.6"><title>Haute-Vienne 2023 : réel 444 — prédit 494 kg/hab</title></circle>
+<circle cx="248.3" cy="353.2" r="4" fill="var(--scatter-point)" fill-opacity="0.6"><title>Vosges 2021 : réel 553 — prédit 512 kg/hab</title></circle>
+<circle cx="233.4" cy="321.2" r="4" fill="var(--scatter-point-2)" fill-opacity="0.6"><title>Vosges 2023 : réel 533 — prédit 553 kg/hab</title></circle>
+<circle cx="270.9" cy="345.8" r="4" fill="var(--scatter-point)" fill-opacity="0.6"><title>Yonne 2021 : réel 582 — prédit 521 kg/hab</title></circle>
+<circle cx="232.1" cy="298.7" r="4" fill="var(--scatter-point-2)" fill-opacity="0.6"><title>Yonne 2023 : réel 532 — prédit 583 kg/hab</title></circle>
+<circle cx="287.3" cy="356.8" r="4" fill="var(--scatter-point)" fill-opacity="0.6"><title>Territoire-de-Belfort 2021 : réel 603 — prédit 507 kg/hab</title></circle>
+<circle cx="191.5" cy="283.3" r="4" fill="var(--scatter-point-2)" fill-opacity="0.6"><title>Territoire-de-Belfort 2023 : réel 479 — prédit 603 kg/hab</title></circle>
+<circle cx="216.2" cy="374.7" r="4" fill="var(--scatter-point)" fill-opacity="0.6"><title>Essonne 2021 : réel 511 — prédit 484 kg/hab</title></circle>
+<circle cx="155.2" cy="356.7" r="4" fill="var(--scatter-point-2)" fill-opacity="0.6"><title>Essonne 2023 : réel 432 — prédit 507 kg/hab</title></circle>
+<circle cx="125.0" cy="450.1" r="4" fill="var(--scatter-point)" fill-opacity="0.6"><title>Hauts-de-seine 2021 : réel 392 — prédit 386 kg/hab</title></circle>
+<circle cx="92.3" cy="446.8" r="4" fill="var(--scatter-point-2)" fill-opacity="0.6"><title>Hauts-de-seine 2023 : réel 350 — prédit 390 kg/hab</title></circle>
+<circle cx="159.7" cy="416.9" r="4" fill="var(--scatter-point)" fill-opacity="0.6"><title>Seine-Saint-Denis 2021 : réel 437 — prédit 429 kg/hab</title></circle>
+<circle cx="143.5" cy="413.5" r="4" fill="var(--scatter-point-2)" fill-opacity="0.6"><title>Seine-Saint-Denis 2023 : réel 416 — prédit 433 kg/hab</title></circle>
+<circle cx="121.9" cy="448.5" r="4" fill="var(--scatter-point)" fill-opacity="0.6"><title>Val-de-Marne 2021 : réel 388 — prédit 388 kg/hab</title></circle>
+<circle cx="107.5" cy="448.3" r="4" fill="var(--scatter-point-2)" fill-opacity="0.6"><title>Val-de-Marne 2023 : réel 370 — prédit 388 kg/hab</title></circle>
+<circle cx="215.1" cy="391.4" r="4" fill="var(--scatter-point)" fill-opacity="0.6"><title>Val-d&#x27;Oise 2021 : réel 509 — prédit 462 kg/hab</title></circle>
+<circle cx="162.0" cy="357.5" r="4" fill="var(--scatter-point-2)" fill-opacity="0.6"><title>Val-d&#x27;Oise 2023 : réel 440 — prédit 506 kg/hab</title></circle>
+<circle cx="294.4" cy="257.0" r="4" fill="var(--scatter-point)" fill-opacity="0.6"><title>Guadeloupe 2021 : réel 613 — prédit 637 kg/hab</title></circle>
+<circle cx="302.3" cy="276.5" r="4" fill="var(--scatter-point-2)" fill-opacity="0.6"><title>Guadeloupe 2023 : réel 623 — prédit 611 kg/hab</title></circle>
+<circle cx="193.5" cy="331.9" r="4" fill="var(--scatter-point)" fill-opacity="0.6"><title>Martinique 2021 : réel 481 — prédit 539 kg/hab</title></circle>
+<circle cx="217.0" cy="373.3" r="4" fill="var(--scatter-point-2)" fill-opacity="0.6"><title>Martinique 2023 : réel 512 — prédit 486 kg/hab</title></circle>
+<circle cx="281.0" cy="312.0" r="4" fill="var(--scatter-point)" fill-opacity="0.6"><title>La Réunion 2021 : réel 595 — prédit 565 kg/hab</title></circle>
+<circle cx="256.5" cy="291.4" r="4" fill="var(--scatter-point-2)" fill-opacity="0.6"><title>La Réunion 2023 : réel 563 — prédit 592 kg/hab</title></circle>
+<text x="304" y="548" font-size="11" fill="var(--scatter-muted)" text-anchor="middle">ratio réel (kg/hab)</text>
         </svg>
       </div>
-      <p class="scatter-caption">Régression linéaire, jeu de test (198 points, 2021 + 2023) — axe horizontal : ratio réel (kg/hab), axe vertical : ratio prédit (kg/hab). Survolez un point pour le détail.</p>
+      <div class="legend-inline"><span><i style="background:var(--scatter-point)"></i>2021</span><span><i style="background:var(--scatter-point-2)"></i>2023</span></div>
+      <p class="scatter-caption">Pipeline régression linéaire, jeu de test (198 points). Axe horizontal : ratio réel, axe vertical : ratio prédit (kg/hab). Survolez un point pour le détail.</p>
     </div>
 
     <p class="section-intro" style="margin-top:32px">Est-ce que plus de lignes d'entraînement améliorerait le score ? Le modèle a été réentraîné sur des portions croissantes du train (10 % à 100 %, mêmes 4 variables), en mesurant à chaque fois le R² sur le même jeu de test.</p>
@@ -926,8 +1064,72 @@
     </div>
   </section>
 
-  <section>
-    <div class="h2-row"><span class="h2-num">05</span><h2>Clustering des profils de traitement</h2></div>
+  <section id="problemes">
+    <div class="h2-row"><span class="h2-num">06</span><h2>Problèmes rencontrés et corrections</h2></div>
+    <p class="section-intro">Ce que le projet a buté, et ce qui a été fait. Le raisonnement complet est dans le journal de bord du dépôt.</p>
+
+    <div class="issues">
+      <div class="issue">
+        <div class="issue-kind">Données</div>
+        <div>
+          <div class="issue-title">Même nom de colonne, périmètre différent</div>
+          <p><code>TONNAGE_DMA</code> diffère de 10,5 % en moyenne entre les deux fichiers ADEME : l'un inclut les gravats, l'autre non.</p>
+          <p class="fix">La régression lit la cible directement dans le fichier hors gravats, sans jamais la recalculer depuis l'autre.</p>
+        </div>
+      </div>
+      <div class="issue">
+        <div class="issue-kind">Données</div>
+        <div>
+          <div class="issue-title">Une seule enquête tous les deux ans</div>
+          <p>8 points dans le temps (2009 à 2023, années impaires) : pas de vérité terrain pour les années paires, et peu d'historique.</p>
+          <p class="fix">Assumé comme structurel, pas imputé. Le temps est représenté par le ratio de l'enquête précédente, pas par l'année.</p>
+        </div>
+      </div>
+      <div class="issue">
+        <div class="issue-kind">Fuite</div>
+        <div>
+          <div class="issue-title">Prédire le tonnage = réapprendre la population</div>
+          <p>Corrélation de 0,97 entre tonnage et population : un modèle sur le tonnage brut aurait l'air excellent sans rien apprendre.</p>
+          <p class="fix">Cible ramenée par habitant (<code>RATIO_DMA</code>).</p>
+        </div>
+      </div>
+      <div class="issue">
+        <div class="issue-kind">Doublons</div>
+        <div>
+          <div class="issue-title">Une clé en double casserait le lag</div>
+          <p>Un simple <code>duplicated()</code> ne voit pas une clé déclarée deux fois avec des valeurs différentes. Une jointure la multiplierait en silence, et « l'enquête précédente » serait la ligne elle-même.</p>
+          <p class="fix">Unicité des clés vérifiée sur chaque fichier (0 doublon), jointures avec <code>validate</code>, nombre de lignes contrôlé avant et après.</p>
+        </div>
+      </div>
+      <div class="issue">
+        <div class="issue-kind">Encodage</div>
+        <div>
+          <div class="issue-title">Cluster traité comme un nombre</div>
+          <p>Dans la première version, le cluster (0 à 3) était mis à l'échelle comme une quantité, avec un faux ordre.</p>
+          <p class="fix">Encodé en one-hot dans le preprocessor. Effet sur le score quasi nul (R² 0,715 → 0,716), cohérent avec son poids très faible.</p>
+        </div>
+      </div>
+      <div class="issue">
+        <div class="issue-kind">Évaluation</div>
+        <div>
+          <div class="issue-title">Comparer au bon repère</div>
+          <p>Face à la moyenne, tous les modèles paraissent excellents. Une première version de la validation croisée ne contenait pas la baseline naïve et laissait croire que la régression linéaire gagnait partout.</p>
+          <p class="fix">Baseline naïve ajoutée à la validation croisée, gain testé par bootstrap : aucun modèle ne la bat de façon utile.</p>
+        </div>
+      </div>
+      <div class="issue">
+        <div class="issue-kind">Modèle</div>
+        <div>
+          <div class="issue-title">Plus de données n'aiderait pas</div>
+          <p>Courbe d'apprentissage plate dès 50 lignes, et le revenu médian INSEE testé comme variable supplémentaire n'améliore rien (R² 0,885 avec, 0,887 sans).</p>
+          <p class="fix">Le levier serait des variables qui changent dans le temps (tarification incitative, consignes de tri), pas plus de lignes.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="clustering">
+    <div class="h2-row"><span class="h2-num">07</span><h2>Clustering des profils de traitement</h2></div>
     <p class="section-intro">Pour chaque département, le tonnage de <code>sinoe_dma.csv</code> (2009–2021, gravats compris) est réparti en % entre les 7 types de traitement, puis regroupé par k-means. Le nombre de clusters (k=4) a été choisi par score de silhouette (0,276, meilleur score testé entre k=2 et k=7).</p>
 
     <div class="viz-cluster">
@@ -1026,8 +1228,8 @@
   </section>
 
   <footer>
-    <span>ML-DMA — document vivant, mis à jour au fil du projet</span>
-    <span>Prochaine étape : à définir</span>
+    <span>ML-DMA — code et données : <a class="repo-link" href="https://github.com/Rxdy/ML-DMA" target="_blank" rel="noopener">github.com/Rxdy/ML-DMA</a></span>
+    <span>Prochaine étape : apprentissage non supervisé</span>
   </footer>
 
 </div>
