@@ -423,3 +423,76 @@ Rapport mis à jour (v9).
 **Réalisé** : carte qui s'ouvre au clic sur un point (pas juste au survol) — nom de la commune, effectif total, puis la répartition des 29 professions présentes dans cette commune, triée par effectif décroissant, avec une mini-barre proportionnelle par ligne. Bouton de fermeture. Utilise les données déjà embarquées (toutes les catégories par commune étaient déjà là pour le filtre), aucune nouvelle donnée à charger.
 
 Rapport mis à jour (v10).
+
+---
+
+## 2026-09-24 — Consignes du rendu (1ère note du module)
+
+**Consignes du professeur** : reprendre les notebooks des ateliers 1 et 2 (versions mises à jour sur Teams) et finaliser un travail d'**apprentissage supervisé complet**, qui constitue la première note du module. Il faut savoir justifier chaque choix : préparation des données, modèle utilisé, métriques d'évaluation, interprétation des résultats.
+
+Les notebooks mis à jour ajoutent : un prétraitement découpé plus finement, une comparaison de modèles (de la baseline aux modèles plus élaborés), une évaluation plus détaillée, et une première introduction à la classification.
+
+L'après-midi, on passe à l'apprentissage non supervisé.
+
+---
+
+## 2026-09-24 — Doublons : contrôle à deux niveaux
+
+**Demande** : réfléchir aux doublons potentiels et montrer dans le rendu qu'ils ont été pris en compte.
+
+**Constat** : jusqu'ici, seul `sinoe_dma.csv` était contrôlé, et seulement sur les lignes strictement identiques (`df.duplicated()`). Ça ne détecte pas le cas le plus dangereux : une **clé répétée** avec des valeurs différentes (double saisie corrigée).
+
+**Vérifié** (0 doublon partout) :
+- `sinoe_dma.csv` : clé année × département × type de déchet × type de traitement (14 660 lignes).
+- Chiffres-clés hors/avec gravats : clé département × année (800 / 701 lignes).
+- Revenu INSEE : clé département × année (491 lignes).
+- Clusters : 1 ligne par département (101).
+- Train/test : 0 couple département × année commun aux deux jeux.
+
+**Ajouté au code** (le contrôle est prouvé à chaque exécution, pas seulement affirmé) :
+- `01_explore.py` : doublons de clé sur les 3 fichiers SINOE.
+- `03_regression_prep.py` : `assert` sur l'unicité département × année (sinon le lag `shift(1)` lirait la ligne dupliquée comme « enquête précédente », soit une fuite de la cible), jointure `validate="many_to_one"`, nombre de lignes contrôlé avant et après.
+- `05_split_scale.py` : `assert` qu'aucun couple département × année n'est à la fois en train et en test.
+- `08_income_experiment.py` : jointure `validate="one_to_one"`.
+
+Pipeline rejoué en entier : résultats identiques (R² 0,715 en régression linéaire).
+
+**Précision pour le rendu** : un même département apparaît une fois par enquête. Ce n'est pas un doublon mais une donnée de panel, qui permet justement de calculer le lag.
+
+**Rapport** : encart ajouté en section 02, nouvelle étape 3 « Contrôle des doublons aux jointures » en section 03 (les étapes passent de 8 à 9).
+
+---
+
+## 2026-09-24 — Preprocessor, pipeline et compte rendu
+
+**Demande du professeur** : structurer la préparation en un **preprocessor** (l'étape de transformation) et une **pipeline** (la chaîne complète preprocessor → modèle).
+
+**Script** : `dechets/scripts/09_pipeline.py`.
+- Preprocessor = `ColumnTransformer` : `MinMaxScaler` sur les variables numériques, `OneHotEncoder` sur `cluster`.
+- Pipeline = preprocessor + modèle. Trois modèles comparés à preprocessor identique : `DummyRegressor` (moyenne), régression linéaire, Random Forest, plus la baseline naïve hors pipeline.
+- Validation croisée temporelle sur le train (fenêtre croissante, 4 plis : valide 2013 → 2019), en plus du test final.
+
+**Défaut corrigé au passage** : dans les scripts 05/06, `cluster` (0-3) était mis à l'échelle comme un nombre, ce qui lui donnait un faux ordre. C'est une catégorie : il est désormais encodé en one-hot. Effet sur les scores quasi nul (R² test 0,715 → 0,716), ce qui est cohérent avec le poids très faible du cluster.
+
+**Résultats** : validation croisée R² 0,865 (linéaire) / 0,845 (RF) ; test R² 0,716 (linéaire) / 0,705 (RF) / 0,702 (baseline naïve) / −0,010 (moyenne).
+
+**Question : pourquoi le score chute-t-il entre la validation croisée et le test ?** Vérifié année par année : la baseline naïve chute aussi (R² 0,82-0,93 sur 2011-2019, 0,81 en 2021, 0,53 en 2023 ; ratio moyen 563 en 2021 puis 519 en 2023). C'est une rupture dans les données de la période de test, pas du surapprentissage.
+
+**Livrable** : `dechets/COMPTE_RENDU.md` (objectif, sommaire, découpage en scripts, démarche complète, lien vers le dépôt GitHub) et un `README.md` à la racine du dépôt.
+
+---
+
+## 2026-09-24 — Correction : aucun modèle ne bat réellement la baseline naïve
+
+**Question posée** : « avant, le modèle était au niveau de la baseline ; maintenant, il y a une différence notable ? Et le meilleur modèle, c'est le ML ? »
+
+**Erreur repérée** : la validation croisée ajoutée au script 09 ne comparait pas les modèles à la baseline naïve. Le compte rendu concluait donc à tort que la régression linéaire était « la meilleure en validation croisée comme sur le test ».
+
+**Vérifié** :
+- Validation croisée : baseline naïve R² 0,872 / MAE 18,68, **meilleure** que la régression linéaire (0,865 / 19,55) et la Random Forest (0,845 / 20,88).
+- Test : régression linéaire MAE 35,75 contre 36,49 pour la baseline naïve. Gain de 0,74 kg/hab, IC 95 % par bootstrap de 0,14 à 1,34 : réel statistiquement, négligeable en pratique (2 % de l'erreur). Meilleure sur seulement 54 % des départements-années.
+- La régression linéaire a réappris la persistance : `ratio ≈ 0,97 × ratio précédent + 17`.
+
+**Réponse** : rien n'a changé sur le fond. La « différence notable » n'existe que face à la nouvelle baseline moyenne (`DummyRegressor`, R² ≈ 0), qui est un plancher, pas le vrai repère. Face à la baseline naïve, le constat du 16/09 tient toujours.
+
+**Corrigé** : script 09 (baseline naïve dans la validation croisée + bootstrap du gain), sections 9 et 10 du compte rendu. Ajout de `requirements.txt` (versions exactes) ; pipeline complet rejoué depuis une copie propre du dépôt.

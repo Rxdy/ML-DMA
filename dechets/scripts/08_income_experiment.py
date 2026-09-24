@@ -21,7 +21,7 @@ from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 base = pd.read_csv("data/processed/processed_regression_dataset.csv")
 revenu = pd.read_csv("../menages/data/raw/insee_revenu_median_dep_2013_2021.csv")
 
-df = base.merge(revenu, on=["C_DEPT", "ANNEE"], how="inner")
+df = base.merge(revenu, on=["C_DEPT", "ANNEE"], how="inner", validate="one_to_one")
 print(f"Lignes après jointure avec le revenu (années 2013-2021 seulement) : {df.shape[0]}")
 
 df = df.sort_values(["C_DEPT", "ANNEE"])

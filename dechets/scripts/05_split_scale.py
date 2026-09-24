@@ -21,6 +21,12 @@ test = df[df["ANNEE"] > 2019].copy()
 print(f"Train (<=2019) : {train.shape[0]} lignes, années {sorted(train['ANNEE'].unique())}")
 print(f"Test  (>2019)  : {test.shape[0]} lignes, années {sorted(test['ANNEE'].unique())}")
 
+# Aucun couple (département, année) ne doit se retrouver à la fois en train et en
+# test : sinon le modèle serait évalué sur des exemples déjà vus.
+commun = train.merge(test, on=["C_DEPT", "ANNEE"])
+print(f"Couples département × année présents dans les deux jeux : {len(commun)}")
+assert commun.empty
+
 feature_cols = ["VA_POPANNEE", "cluster", "RATIO_DMA_lag1", "TONNAGE_DMA_lag1"]
 target_col = "RATIO_DMA"
 

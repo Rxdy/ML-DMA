@@ -484,7 +484,7 @@
 
     <div class="stats">
       <div class="stat"><span class="stat-value">0</span><span class="stat-label">valeur manquante — sur les 4 fichiers</span></div>
-      <div class="stat"><span class="stat-value">0</span><span class="stat-label">ligne dupliquée</span></div>
+      <div class="stat"><span class="stat-value">0</span><span class="stat-label">doublon — lignes identiques et clés répétées</span></div>
       <div class="stat"><span class="stat-value">101</span><span class="stat-label">départements couverts</span></div>
       <div class="stat"><span class="stat-value">2009–23</span><span class="stat-label">période cumulée des sources</span></div>
     </div>
@@ -493,6 +493,11 @@
     <div class="callout">
       <b>Années impaires uniquement</b>
       L'enquête SINOE est biennale par construction — le fichier principal ne comporte aucune année paire ; ce n'est pas une valeur manquante à imputer.
+    </div>
+    <div class="callout" style="margin-top:12px">
+      <b>Doublons : recherchés à deux niveaux, aucun trouvé</b>
+      Une ligne strictement identique n'est que le cas le plus visible. Le cas plus dangereux est une <b>clé répétée</b> : la même combinaison déclarée deux fois avec un tonnage différent (par exemple une double saisie corrigée). Un simple <code>duplicated()</code> ne la détecte pas, et elle fausserait silencieusement les agrégats. On a donc vérifié l'unicité de la clé de chaque fichier : année × département × type de déchet × type de traitement pour <code>sinoe_dma.csv</code> (14 660 lignes), département × année pour les deux fichiers « chiffres-clés » (800 et 701 lignes) et pour le revenu INSEE (491 lignes). Résultat : 0 doublon partout.
+      <br><br>Un même département apparaît bien plusieurs fois, une fois par enquête (2009, 2011…). Ce n'est pas un doublon : ce sont des observations distinctes du même territoire dans le temps (données de panel), et c'est justement ce qui permet de calculer l'historique (lag).
     </div>
     <div class="callout" style="margin-top:12px">
       <b>54 lignes à tonnage = 0</b>
@@ -542,6 +547,15 @@
       <div class="step">
         <div class="step-num">3</div>
         <div>
+          <div class="step-title">Contrôle des doublons aux jointures</div>
+          Unicité de la clé département × année vérifiée avant chaque jointure. Les jointures sont déclarées avec <code>validate="many_to_one"</code> (dataset ↔ cluster) ou <code>validate="one_to_one"</code> (dataset ↔ revenu), et le nombre de lignes est contrôlé avant et après. Le script s'arrête en erreur si une de ces conditions échoue.
+          <div class="step-why"><b>Pourquoi</b>Une jointure sur une clé dupliquée multiplie les lignes sans message d'erreur : un département compté deux fois pèserait double dans l'entraînement. Une clé en double casserait aussi le lag : l'« enquête précédente » serait la ligne dupliquée elle-même, soit une fuite directe de la cible. Ce risque n'est pas théorique : sur le volet santé du projet, une jointure avec un fichier de communes a effectivement gonflé les effectifs (une commune y apparaît une fois par code postal) avant d'être corrigée.</div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">4</div>
+        <div>
           <div class="step-title">Profil de traitement en pourcentage</div>
           Pivot du tonnage par département × type de traitement, puis normalisation en % (chaque ligne somme à 100).
           <div class="step-why"><b>Pourquoi</b>Le tonnage brut dépend fortement de la taille du département ; ramener en pourcentage permet de comparer des départements de tailles très différentes pour le clustering.</div>
@@ -549,7 +563,7 @@
       </div>
 
       <div class="step">
-        <div class="step-num">4</div>
+        <div class="step-num">5</div>
         <div>
           <div class="step-title">Cible retenue : ratio par habitant, pas le tonnage brut</div>
           Variable à prédire fixée à <code>RATIO_DMA</code> (kg/habitant), <code>TONNAGE_DMA</code> écarté comme cible.
@@ -558,7 +572,7 @@
       </div>
 
       <div class="step">
-        <div class="step-num">5</div>
+        <div class="step-num">6</div>
         <div>
           <div class="step-title">Ajout de variables de décalage (lag)</div>
           <code>RATIO_DMA_lag1</code> et <code>TONNAGE_DMA_lag1</code> : valeurs de l'enquête précédente, par département.
@@ -567,7 +581,7 @@
       </div>
 
       <div class="step">
-        <div class="step-num">6</div>
+        <div class="step-num">7</div>
         <div>
           <div class="step-title">Suppression des lignes 2009</div>
           101 lignes retirées (première année de chaque département, pas d'enquête antérieure disponible).
@@ -576,16 +590,16 @@
       </div>
 
       <div class="step">
-        <div class="step-num">7</div>
+        <div class="step-num">8</div>
         <div>
           <div class="step-title">Split train / test temporel</div>
-          Entraînement sur 2011–2019 (501 lignes), test sur 2021 et 2023 (198 lignes) — pas de tirage aléatoire.
+          Entraînement sur 2011–2019 (501 lignes), test sur 2021 et 2023 (198 lignes) — pas de tirage aléatoire. Contrôle : 0 couple département × année présent à la fois dans le train et dans le test.
           <div class="step-why"><b>Pourquoi</b>Un split aléatoire mélangerait futur et passé dans l'entraînement ; le split temporel simule une vraie prédiction du futur plutôt qu'une interpolation.</div>
         </div>
       </div>
 
       <div class="step">
-        <div class="step-num">8</div>
+        <div class="step-num">9</div>
         <div>
           <div class="step-title">Mise à l'échelle Min-Max [0, 1]</div>
           <code>MinMaxScaler</code> calibré (fit) uniquement sur le train, puis appliqué (transform) au train et au test.

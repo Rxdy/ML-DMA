@@ -20,7 +20,13 @@ clusters = pd.read_csv("data/processed/processed_clusters_traitement.csv")[["C_D
 clusters["C_DEPT"] = clusters["C_DEPT"].astype(str).str.zfill(2)
 cc["C_DEPT"] = cc["C_DEPT"].astype(str).str.zfill(2)
 
-df = cc.merge(clusters, on="C_DEPT", how="left")
+# Une ligne par (département, année) attendue : un doublon ici fausserait le lag
+# (shift(1) prendrait la ligne dupliquée comme "enquête précédente").
+assert not cc.duplicated(subset=["C_DEPT", "ANNEE"]).any(), "doublon département × année"
+# validate : chaque département n'a qu'un seul cluster, sinon la jointure
+# multiplierait les lignes sans le signaler.
+df = cc.merge(clusters, on="C_DEPT", how="left", validate="many_to_one")
+assert len(df) == len(cc), "la jointure a changé le nombre de lignes"
 
 print("=== Shape avant traitement ===", df.shape)
 print("\n=== Valeurs manquantes ===")
