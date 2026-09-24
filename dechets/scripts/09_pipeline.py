@@ -30,6 +30,7 @@ from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 from sklearn.model_selection import cross_validate
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import MinMaxScaler, OneHotEncoder
+from sklearn.tree import DecisionTreeRegressor
 
 df = pd.read_csv("data/processed/processed_regression_dataset.csv", dtype={"C_DEPT": str})
 df = df.dropna(subset=["RATIO_DMA_lag1"]).reset_index(drop=True)  # 2009 : pas de lag
@@ -55,6 +56,8 @@ preprocessor = ColumnTransformer([
 modeles = {
     "Baseline moyenne (DummyRegressor)": DummyRegressor(strategy="mean"),
     "Régression linéaire": LinearRegression(),
+    # profondeur 4 : meilleure validation croisée entre 2 et illimitée (voir script 10)
+    "Arbre de décision": DecisionTreeRegressor(max_depth=4, random_state=42),
     "Random Forest": RandomForestRegressor(n_estimators=300, max_depth=6, random_state=42),
 }
 pipelines = {nom: Pipeline([("preprocessor", clone(preprocessor)), ("modele", m)]) for nom, m in modeles.items()}

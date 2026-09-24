@@ -175,6 +175,7 @@ Des plus simples aux plus élaborés :
 | **Baseline moyenne** (`DummyRegressor`) | Prédit toujours la moyenne du train. Plancher absolu : un modèle qui fait moins bien n'a rien appris. |
 | **Baseline naïve** | Prédit « comme à l'enquête précédente » (= `RATIO_DMA_lag1`), sans aucun modèle. C'est le vrai repère à battre, parce que la corrélation avec l'enquête précédente est de 0,91. |
 | **Régression linéaire** | Modèle simple et interprétable : une combinaison pondérée des variables. |
+| **Arbre de décision** | Suite de questions à seuil (« la variable dépasse-t-elle tel seuil ? »). Profondeur 4, choisie par validation croisée : sans limite, l'arbre surapprend (R² de 1,000 sur l'entraînement, 0,573 sur le test). |
 | **Random Forest** | Ensemble de 300 arbres de décision (profondeur max 6). Capte les relations non linéaires et fournit l'importance de chaque variable. |
 
 ## 9. Métriques et résultats
@@ -191,6 +192,7 @@ Des plus simples aux plus élaborés :
 | Baseline moyenne | 62,23 | −0,013 (± 0,009) |
 | **Baseline naïve (enquête précédente)** | **18,68** | **0,872 (± 0,043)** |
 | Régression linéaire | 19,55 | 0,865 (± 0,039) |
+| Arbre de décision | 21,85 | 0,840 (± 0,049) |
 | Random Forest | 20,88 | 0,845 (± 0,045) |
 
 **Évaluation finale sur le test** (2021 + 2023, jamais vus) :
@@ -200,6 +202,7 @@ Des plus simples aux plus élaborés :
 | Baseline moyenne | 61,99 | 82,14 | −0,010 |
 | Baseline naïve (enquête précédente) | 36,49 | 44,58 | 0,702 |
 | **Régression linéaire** | **35,75** | **43,53** | **0,716** |
+| Arbre de décision | 37,04 | 45,58 | 0,689 |
 | Random Forest | 36,08 | 44,36 | 0,705 |
 
 **Importance des variables** (Random Forest) : `RATIO_DMA_lag1` = 94,9 %. Tout le reste (population, tonnage précédent, clusters) se partage environ 5 %.

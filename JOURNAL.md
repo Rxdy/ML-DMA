@@ -370,3 +370,11 @@ Pipeline rejoué en entier : résultats identiques (R² 0,715 en régression lin
 - **Makefile** : la commande `tout` devient `all`.
 - **Rapport** : membres par ordre alphabétique, logo iRUP sur la page de garde (`dechets/rapport/images/logo_irup.png`), légende des symboles et abréviations sous les formules (SS, SS_res, SS_tot, ŷ, ȳ…), glossaire, tableau des problèmes resserré sur 4 points, conclusion réécrite.
 - **Correctif** : les polices Noto n'ont pas les caractères « − », « √ », « ≈ » et « → » ; ils ne s'affichaient pas dans les versions précédentes du PDF (le signe moins de −0,013 était invisible). Ils sont désormais rendus avec DejaVu Sans.
+
+---
+
+## 2026-09-24 — Arbre de décision (chapitre 4 du cours) et variables à impact
+
+**Arbre de décision** : ajouté à la pipeline (script 09) pour couvrir les trois modèles du chapitre 4 du cours (régression linéaire, arbre de décision, Random Forest). La profondeur est choisie par validation croisée (script 10) : R² de 0,840 à la profondeur 4, meilleur score. Sans limite de profondeur, l'arbre surapprend : R² de 1,000 sur l'entraînement mais 0,755 en validation croisée et 0,573 sur le test. Sur le test, l'arbre (0,689) fait moins bien que la Random Forest (0,705), qui moyenne 300 arbres, et que la régression linéaire (0,716) : la relation dominante, « ratio ≈ ratio précédent », est une droite.
+
+**Rapport** : chapitre 10 enrichi (principe, points forts et limites des trois modèles, illustration d'un arbre de profondeur 2) ; chapitre 12 : tableaux calculés à partir des résultats, section « choisir la profondeur » (surapprentissage) ; chapitre 14 : « Quel type de variable aurait un impact ? » (pourquoi le revenu échoue, les quatre conditions, variables à construire) ; glossaire complété.
