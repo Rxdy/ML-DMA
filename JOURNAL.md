@@ -341,7 +341,7 @@ Pipeline rejoué en entier : résultats identiques (R² 0,715 en régression lin
 
 **Demande** : un rapport PDF structuré dans l'ordre chronologique du projet, avec une page de garde (membres du groupe, nom du projet, établissement, module, date, lien GitHub) et un sommaire.
 
-**Réalisé** : `dechets/rapport/rapport_ML_dechets.pdf` (20 pages), généré par `dechets/rapport/generer_rapport_pdf.py` (reportlab). Les figures sont recalculées à partir des données et de la pipeline, pour rester cohérentes avec le code.
+**Réalisé** : `dechets/rapport/rapport_ML_dechets.pdf` (20 pages), généré par un outil local (reportlab), tenu hors du dépôt : seul le PDF est versionné. Les figures sont recalculées à partir des données et de la pipeline, pour rester cohérentes avec le code.
 
 **Plan** : introduction et chronologie → 1. choix du thème → 2. source principale SINOE → 3. consolidation → 4. choix de la cible → 5. nettoyage → 6. suppression des données inutiles → 7. mise en forme → 8. baseline → 9. premiers modèles → 10. preprocessor et pipeline → 11. évaluation → 12. problèmes rencontrés et conclusion → annexes (clustering, dépôt).
 

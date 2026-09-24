@@ -33,6 +33,5 @@ make supervise      # volet supervisé complet : pipeline, détail des calculs, 
 | `make details` | 10 | Détail des calculs de MAE, RMSE et R² |
 | `make erreurs` | 11 | Analyse des erreurs |
 | `make all` | 01 à 11 | Rejoue tout le projet |
-| `make rapport-pdf` | — | Régénère le rapport PDF |
 
 Les résultats sont affichés dans la console et enregistrés en CSV dans `dechets/data/processed/`.
