@@ -10,15 +10,23 @@ Projet d'apprentissage supervisé, iRUP Alternance — ALVES Rudy, ANTHONY Josse
 
 ## Lancer le projet
 
-Prérequis : Python 3, `make`, `git`. Les données sont incluses, rien à télécharger.
+### Option 1 : Google Colab (rien à installer)
+
+[![Ouvrir dans Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/Rxdy/ML-DMA/blob/main/dechets/notebooks/projet_dechets.ipynb)
+
+Ouvrir le lien, puis *Exécution > Tout exécuter*. Le notebook télécharge le dépôt et rejoue chaque étape avec ses explications. Il fonctionne aussi dans Jupyter en local : `dechets/notebooks/projet_dechets.ipynb`.
+
+### Option 2 : Linux (testé sur Ubuntu 22.04 et 24.04)
 
 ```bash
+sudo apt update && sudo apt install -y git make python3 python3-venv
 git clone https://github.com/Rxdy/ML-DMA.git
 cd ML-DMA
 make installer      # crée .venv et installe les dépendances
-make                # liste des commandes
-make supervise      # volet supervisé complet : pipeline, détail des calculs, analyse des erreurs
+make all            # rejoue tout le projet
 ```
+
+`make` seul affiche la liste des commandes. Python 3.10 ou plus récent est requis ; si le paquet `python3-venv` manque, `make installer` l'indique.
 
 | Commande | Script | Ce qu'elle fait |
 |---|---|---|

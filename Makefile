@@ -1,11 +1,12 @@
 # Lancer le projet déchets pas à pas.  `make` ou `make aide` affiche la liste des commandes.
 # Toutes les commandes s'exécutent dans le dossier dechets/ avec l'environnement .venv.
+# Testé sur Ubuntu 22.04 et 24.04. Prérequis :  sudo apt install git make python3 python3-venv
 
 PY := $(abspath .venv/bin/python)
 RUN := cd dechets && $(PY)
 
 .DEFAULT_GOAL := aide
-.PHONY: aide installer explorer clustering preparation correlation decoupage modeles revenu \
+.PHONY: aide installer verifier-env explorer clustering preparation correlation decoupage modeles revenu \
         pipeline details erreurs supervise all
 
 aide: ## Affiche cette aide
@@ -13,13 +14,22 @@ aide: ## Affiche cette aide
 	@grep -E '^[a-z-]+:.*## ' $(MAKEFILE_LIST) | awk 'BEGIN{FS=":.*## "}{printf "  make %-13s %s\n", $$1, $$2}'
 
 installer: ## Crée l'environnement .venv et installe les dépendances
+	@command -v python3 >/dev/null || { echo "Python 3 est introuvable. Sur Ubuntu : sudo apt install python3"; exit 1; }
+	@python3 -c 'import sys; sys.exit(sys.version_info < (3, 10))' || { echo "Python 3.10 ou plus récent est requis (version actuelle : $$(python3 --version))."; exit 1; }
+	@python3 -c 'import ensurepip, venv' 2>/dev/null || { echo "Le module venv de Python est absent. Sur Ubuntu : sudo apt install python3-venv"; exit 1; }
+	rm -rf .venv
 	python3 -m venv .venv
-	.venv/bin/pip install -r requirements.txt
+	.venv/bin/pip install --quiet --upgrade pip
+	.venv/bin/pip install --quiet -r requirements.txt
+	@echo "Installation terminée. Lancez maintenant : make all"
 
-explorer: ## 01 - Exploration : dimensions, valeurs manquantes, doublons
+verifier-env:
+	@test -x .venv/bin/python || { echo "Environnement absent : lancez d'abord  make installer"; exit 1; }
+
+explorer: verifier-env ## 01 - Exploration : dimensions, valeurs manquantes, doublons
 	$(RUN) scripts/01_explore.py
 
-clustering: ## 02 - Profil de traitement et k-means (4 groupes)
+clustering: verifier-env ## 02 - Profil de traitement et k-means (4 groupes)
 	$(RUN) scripts/02_clustering_profil_traitement.py
 
 preparation: clustering ## 03 - Jointure avec le cluster, variables d'historique

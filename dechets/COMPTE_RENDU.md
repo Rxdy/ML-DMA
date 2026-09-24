@@ -242,11 +242,16 @@ Les années de test marquent une rupture : un pic en 2021 puis une baisse nette 
 
 ## 12. Reproduire les résultats
 
+Sur Ubuntu (testé sur 22.04 et 24.04) :
+
 ```bash
+sudo apt update && sudo apt install -y git make python3 python3-venv
 git clone https://github.com/Rxdy/ML-DMA.git
 cd ML-DMA
 make installer
 make all
 ```
+
+Sans rien installer : le notebook [`notebooks/projet_dechets.ipynb`](notebooks/projet_dechets.ipynb) s'ouvre dans Google Colab (lien dans le [README](../README.md)).
 
 Les fichiers de `data/raw/` sont inclus dans le dépôt : aucun téléchargement n'est nécessaire. Le rapport PDF complet ([`rapport/rapport_ML_dechets.pdf`](rapport/rapport_ML_dechets.pdf)) détaille en plus X et y, les calculs des métriques, l'analyse des erreurs et les pistes d'amélioration.
