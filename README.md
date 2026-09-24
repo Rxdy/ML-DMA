@@ -42,8 +42,9 @@ make all            # rejoue tout le projet (supervisé et clustering)
 | `make erreurs` | 11 | Analyse des erreurs |
 | `make supervise` | 09 à 11 | Volet supervisé complet |
 | `make profils` | 12 | Clustering : variables, coude, silhouette, 4 groupes, carte |
-| `make analyses-profils` | 13 | Corrélations, ACP, silhouette par département, robustesse |
-| `make non-supervise` | 12 et 13 | Volet clustering complet |
-| `make all` | 01 à 13 | Rejoue tout le projet |
+| `make analyses-profils` | 13 | Corrélations, PCA (PC1, PC2, PC3), silhouette par département, robustesse |
+| `make autres-methodes` | 14 | Clustering hiérarchique (dendrogramme) et DBSCAN |
+| `make non-supervise` | 12 à 14 | Volet clustering complet |
+| `make all` | 01 à 14 | Rejoue tout le projet |
 
 Les résultats sont affichés dans la console et enregistrés en CSV dans `dechets/data/processed/`.

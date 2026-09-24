@@ -1,0 +1,101 @@
+C_DEPT,N_DEPT,groupe,groupe_hierarchique
+01,Ain,Profil intermédiaire,2
+02,Aisne,Profil intermédiaire,2
+03,Allier,Profil intermédiaire,2
+04,Alpes-de-Haute-Provence,Ordures ménagères élevées,4
+05,Hautes-Alpes,Profil intermédiaire,2
+06,Alpes-Maritimes,Ordures ménagères élevées,4
+07,Ardèche,Profil intermédiaire,2
+08,Ardennes,Profil intermédiaire,2
+09,Ariège,Déchets verts et déchèteries,3
+10,Aube,Profil intermédiaire,2
+11,Aude,Ordures ménagères élevées,4
+12,Aveyron,Profil intermédiaire,2
+13,Bouches-du-Rhône,Grandes agglomérations,1
+14,Calvados,Déchets verts et déchèteries,3
+15,Cantal,Profil intermédiaire,2
+16,Charente,Profil intermédiaire,2
+17,Charente-Maritime,Déchets verts et déchèteries,2
+18,Cher,Profil intermédiaire,2
+19,Corrèze,Profil intermédiaire,2
+21,Cote-d'Or,Profil intermédiaire,2
+22,Cotes-d'Armor,Déchets verts et déchèteries,3
+23,Creuse,Profil intermédiaire,2
+24,Dordogne,Profil intermédiaire,2
+25,Doubs,Profil intermédiaire,2
+26,Drôme,Profil intermédiaire,2
+27,Eure,Déchets verts et déchèteries,3
+28,Eure-et-Loir,Profil intermédiaire,2
+29,Finistère,Déchets verts et déchèteries,3
+2A,Corse-du-Sud,Ordures ménagères élevées,4
+2B,Haute-Corse,Ordures ménagères élevées,4
+30,Gard,Profil intermédiaire,4
+31,Haute-Garonne,Grandes agglomérations,1
+32,Gers,Profil intermédiaire,2
+33,Gironde,Profil intermédiaire,2
+34,Hérault,Profil intermédiaire,4
+35,Ille-et-Vilaine,Profil intermédiaire,2
+36,Indre,Profil intermédiaire,2
+37,Indre-et-Loire,Profil intermédiaire,2
+38,Isère,Profil intermédiaire,2
+39,Jura,Profil intermédiaire,2
+40,Landes,Déchets verts et déchèteries,3
+41,Loir-et-Cher,Déchets verts et déchèteries,3
+42,Loire,Profil intermédiaire,2
+43,Haute-Loire,Profil intermédiaire,2
+44,Loire-Atlantique,Profil intermédiaire,2
+45,Loiret,Déchets verts et déchèteries,3
+46,Lot,Profil intermédiaire,2
+47,Lot-et-Garonne,Profil intermédiaire,2
+48,Lozère,Profil intermédiaire,2
+49,Maine-et-Loire,Profil intermédiaire,2
+50,Manche,Déchets verts et déchèteries,3
+51,Marne,Profil intermédiaire,2
+52,Haute-Marne,Profil intermédiaire,2
+53,Mayenne,Déchets verts et déchèteries,3
+54,Meurthe-et-Moselle,Profil intermédiaire,2
+55,Meuse,Profil intermédiaire,2
+56,Morbihan,Déchets verts et déchèteries,2
+57,Moselle,Profil intermédiaire,2
+58,Nièvre,Profil intermédiaire,2
+59,Nord,Profil intermédiaire,2
+60,Oise,Déchets verts et déchèteries,3
+61,Orne,Déchets verts et déchèteries,3
+62,Pas-de-Calais,Profil intermédiaire,2
+63,Puy-de-Dôme,Profil intermédiaire,2
+64,Pyrénées-Atlantiques,Profil intermédiaire,2
+65,Hautes-Pyrénées,Profil intermédiaire,2
+66,Pyrénées-Orientales,Ordures ménagères élevées,4
+67,Bas-Rhin,Profil intermédiaire,2
+68,Haut-Rhin,Profil intermédiaire,2
+69,Rhône,Grandes agglomérations,1
+70,Haute-Saône,Profil intermédiaire,2
+71,Saône-et-Loire,Profil intermédiaire,2
+72,Sarthe,Profil intermédiaire,2
+73,Savoie,Profil intermédiaire,2
+74,Haute-Savoie,Profil intermédiaire,2
+75,Paris,Grandes agglomérations,1
+76,Seine-Maritime,Déchets verts et déchèteries,3
+77,Seine-et-Marne,Grandes agglomérations,1
+78,Yvelines,Grandes agglomérations,1
+79,Deux-Sèvres,Profil intermédiaire,2
+80,Somme,Déchets verts et déchèteries,3
+81,Tarn,Profil intermédiaire,2
+82,Tarn-et-Garonne,Profil intermédiaire,2
+83,Var,Ordures ménagères élevées,4
+84,Vaucluse,Ordures ménagères élevées,4
+85,Vendée,Déchets verts et déchèteries,2
+86,Vienne,Profil intermédiaire,2
+87,Haute-Vienne,Profil intermédiaire,2
+88,Vosges,Profil intermédiaire,2
+89,Yonne,Profil intermédiaire,2
+90,Territoire-de-Belfort,Déchets verts et déchèteries,2
+91,Essonne,Grandes agglomérations,1
+92,Hauts-de-seine,Grandes agglomérations,1
+93,Seine-Saint-Denis,Grandes agglomérations,1
+94,Val-de-Marne,Grandes agglomérations,1
+95,Val-d'Oise,Grandes agglomérations,1
+971,Guadeloupe,Ordures ménagères élevées,4
+972,Martinique,Grandes agglomérations,1
+973,Guyane,Grandes agglomérations,1
+974,La Réunion,Déchets verts et déchèteries,3

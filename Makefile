@@ -7,7 +7,7 @@ RUN := cd dechets && $(PY)
 
 .DEFAULT_GOAL := aide
 .PHONY: aide installer verifier-env explorer clustering preparation correlation decoupage modeles revenu \
-        pipeline details erreurs supervise profils analyses-profils non-supervise all
+        pipeline details erreurs supervise profils analyses-profils autres-methodes non-supervise all
 
 aide: ## Affiche cette aide
 	@echo "Commandes disponibles :"
@@ -61,9 +61,12 @@ supervise: pipeline details erreurs ## Le volet supervisé complet (09 à 11)
 profils: verifier-env ## 12 - Clustering : choix des variables, coude, silhouette, 4 groupes
 	$(RUN) scripts/12_clustering_production.py
 
-analyses-profils: profils ## 13 - Corrélations, ACP, silhouette par département, robustesse
+analyses-profils: profils ## 13 - Corrélations, PCA (PC1, PC2, PC3), silhouette, robustesse
 	$(RUN) scripts/13_clustering_analyses.py
 
-non-supervise: analyses-profils ## Le volet non supervisé complet (12 et 13)
+autres-methodes: profils ## 14 - Clustering hiérarchique (dendrogramme) et DBSCAN
+	$(RUN) scripts/14_clustering_hierarchique_dbscan.py
 
-all: explorer correlation modeles revenu supervise non-supervise ## Rejoue tout le projet, de 01 à 13
+non-supervise: analyses-profils autres-methodes ## Le volet non supervisé complet (12 à 14)
+
+all: explorer correlation modeles revenu supervise non-supervise ## Rejoue tout le projet, de 01 à 14

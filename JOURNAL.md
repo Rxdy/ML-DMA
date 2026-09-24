@@ -411,3 +411,14 @@ Pipeline rejoué en entier : résultats identiques (R² 0,715 en régression lin
 **Analyses** (script 13) : ACP, 2 axes = 71 % de l'information (axe 1 : tri et apports en déchèterie ; axe 2 : volume d'ordures ménagères et d'encombrants). Robustesse : ARI de 0,81 à 1 selon la graine, 0,83 avec la classification de Ward, 0,65 sans l'outre-mer (frontières déplacées, cœurs stables). ARI de 0,006 avec le clustering du traitement : production et traitement sont indépendants.
 
 **Livrables** : `CLUSTERING.md`, rapport PDF `rapport_ML_dechets_clustering.pdf` (même mise en page que le premier), partie 2 du notebook Colab, commandes `make profils`, `make analyses-profils`, `make non-supervise`.
+
+---
+
+## 2026-09-24 — Alignement sur le cours « Apprentissage non supervisé »
+
+**Comparaison avec le cours** (clustering et réduction de dimension) : les composantes principales étaient calculées mais nommées « axe 1 / axe 2 » au lieu de **PC1 / PC2** ; il manquait la règle des 80–90 % de variance, les valeurs et vecteurs propres, la matrice de covariance, les centroïdes sur la projection, le dendrogramme du clustering hiérarchique, DBSCAN, et les notions de distance (euclidienne, Manhattan) et d'inertie (WCSS).
+
+**Ajouté** :
+- Script 13 : PCA en 5 étapes (standardisation, matrice de covariance = matrice de corrélation sur données standardisées, valeurs et vecteurs propres, sélection, projection). Valeurs propres 2,27 / 1,33 / 0,67 / 0,47 / 0,32. Règle des 80–90 % : **3 composantes** (84 %). PC3 = déchets verts plutôt que tri. Centroïdes sur la projection, plan PC1-PC3.
+- Script 14 : clustering hiérarchique agglomératif (Ward) et son dendrogramme (grands sauts de hauteur jusqu'à 4 groupes, puis quasi nuls : confirme k = 4 ; ARI 0,83 avec le k-means) ; DBSCAN (MinPts = 10, ε = 2,53 au coude des k-distances) : un seul groupe dense et 2 points de bruit (Landes, Guadeloupe), quel que soit le réglage. Les départements forment un continuum.
+- Rapport de clustering restructuré (35 pages) : chapitre PCA, k-means (distance, inertie/WCSS, étapes, avantages et limites), clustering hiérarchique, DBSCAN, synthèse des méthodes ; glossaire complété. `CLUSTERING.md`, notebook Colab et `make autres-methodes` mis à jour.

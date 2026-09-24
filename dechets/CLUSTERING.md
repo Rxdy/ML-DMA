@@ -1,6 +1,6 @@
 # Clustering — Des profils de départements selon ce que leurs habitants jettent
 
-Apprentissage non supervisé sur les mêmes données que la partie supervisée (ADEME / SINOE, INSEE). Scripts : [`12_clustering_production.py`](scripts/12_clustering_production.py) et [`13_clustering_analyses.py`](scripts/13_clustering_analyses.py) (`make non-supervise`). Rapport détaillé, avec les corrélations, l’ACP et la robustesse : [`rapport/rapport_ML_dechets_clustering.pdf`](rapport/rapport_ML_dechets_clustering.pdf).
+Apprentissage non supervisé sur les mêmes données que la partie supervisée (ADEME / SINOE, INSEE). Scripts : [`12_clustering_production.py`](scripts/12_clustering_production.py), [`13_clustering_analyses.py`](scripts/13_clustering_analyses.py) et [`14_clustering_hierarchique_dbscan.py`](scripts/14_clustering_hierarchique_dbscan.py) (`make non-supervise`). Rapport détaillé, avec les corrélations, la PCA (PC1, PC2, PC3), le dendrogramme, DBSCAN et la robustesse : [`rapport/rapport_ML_dechets_clustering.pdf`](rapport/rapport_ML_dechets_clustering.pdf).
 
 ## Sommaire
 
@@ -8,8 +8,10 @@ Apprentissage non supervisé sur les mêmes données que la partie supervisée (
 2. [Étape 1 — Choisir les variables](#2-étape-1--choisir-les-variables)
 3. [Étape 2 — Choisir le nombre de groupes : coude et silhouette](#3-étape-2--choisir-le-nombre-de-groupes--coude-et-silhouette)
 4. [Étape 3 — Les 4 groupes](#4-étape-3--les-4-groupes)
-5. [Limites](#5-limites)
-6. [Conclusions](#6-conclusions)
+5. [Réduire la dimension : la PCA (PC1, PC2, PC3)](#5-réduire-la-dimension--la-pca-pc1-pc2-pc3)
+6. [Deux autres méthodes : clustering hiérarchique et DBSCAN](#6-deux-autres-méthodes--clustering-hiérarchique-et-dbscan)
+7. [Limites](#7-limites)
+8. [Conclusions](#8-conclusions)
 
 ---
 
@@ -144,7 +146,65 @@ La Martinique et la Guyane rejoignent ce groupe pour une autre raison : elles on
 
 **Le pourtour méditerranéen et la Corse.** Les ordures ménagères y sont **1,5 fois** plus élevées que la moyenne (361 kg/hab, 459 en Corse-du-Sud), et c'est le groupe qui produit **le plus de déchets au total** (674 kg/hab). C'est aussi celui qui stocke le plus (37 %, près du double des autres) et dont le revenu médian est le plus bas. Hypothèse : le **tourisme**. Le ratio est calculé avec la population résidente, alors que les touristes produisent des déchets sans être comptés. C'est la même piste que celle ouverte par l'analyse des erreurs du modèle supervisé, où la Corse était le département le plus mal prédit.
 
-## 5. Limites
+## 5. Réduire la dimension : la PCA (PC1, PC2, PC3)
+
+La PCA (analyse en composantes principales, ACP en français) transforme les 5 variables corrélées en composantes principales non corrélées, notées **PC1, PC2, PC3…**, triées par quantité d'information. Étapes suivies : standardisation → matrice de covariance (égale à la matrice de corrélation sur des données standardisées) → valeurs et vecteurs propres → sélection des composantes → projection.
+
+| Composante | Valeur propre | Part de la variance | Cumul |
+|---|---|---|---|
+| PC1 | 2,27 | 44,9 % | 44,9 % |
+| PC2 | 1,33 | 26,3 % | 71,3 % |
+| **PC3** | **0,67** | **13,2 %** | **84,4 %** |
+| PC4 | 0,47 | 9,2 % | 93,7 % |
+| PC5 | 0,32 | 6,3 % | 100 % |
+
+![Éboulis des valeurs propres](data/figures/clustering_acp_variance.png)
+
+**Choix du nombre de composantes :** l'éboulis fait un coude après PC3, et la règle des 80–90 % demande **3 composantes** (84 %). Le plan PC1-PC2 (71 %) sert aux dessins, complété par le plan PC1-PC3.
+
+**Sens des composantes (chargements = corrélation variable / composante) :**
+
+| Variable | PC1 | PC2 | PC3 |
+|---|---|---|---|
+| Ordures ménagères | −0,35 | **0,81** | −0,30 |
+| Recyclables | **0,79** | −0,33 | −0,28 |
+| Déchets verts | **0,75** | 0,16 | **0,55** |
+| Encombrants | 0,52 | **0,74** | 0,11 |
+| Déchets dangereux | **0,83** | 0,05 | −0,42 |
+
+- **PC1 (45 %) : le tri et les apports en déchèterie**, face à la poubelle ordinaire.
+- **PC2 (26 %) : le volume d'ordures ménagères et d'encombrants.**
+- **PC3 (13 %) : les déchets verts plutôt que le tri** des emballages et des déchets dangereux.
+
+![Projection PC1-PC2 avec les centroïdes](data/figures/clustering_acp_projection.png)
+
+Les croix sont les centroïdes des groupes. Chaque groupe occupe sa zone du plan : agglomérations à gauche (peu de tri), Ouest à droite, Méditerranée en haut. Le plan PC1-PC3 sépare en plus l'Ouest (haut) de la Méditerranée (bas).
+
+![Projection PC1-PC3](data/figures/clustering_acp_projection_pc3.png)
+
+## 6. Deux autres méthodes : clustering hiérarchique et DBSCAN
+
+### Clustering hiérarchique (agglomératif, liaison de Ward)
+
+Chaque département part seul ; à chaque étape, les deux groupes les plus proches fusionnent. Le dendrogramme montre ces fusions.
+
+![Dendrogramme](data/figures/clustering_dendrogramme.png)
+
+| Couper en | 2 | 3 | **4** | 5 | 6 |
+|---|---|---|---|---|---|
+| Saut de hauteur | 4,07 | 2,50 | **2,19** | 0,58 | 0,02 |
+
+Les sauts sont grands jusqu'à 4 groupes puis s'effondrent : **4 est la coupe la plus fine qui ait encore un sens**, ce qui confirme le k-means. Les deux méthodes s'accordent à 0,83 (ARI) : mêmes agglomérations, même Méditerranée.
+
+### DBSCAN (densité)
+
+Réglages : **MinPts = 10** (deux fois le nombre de variables), **ε = 2,53** choisi au coude de la courbe des k-distances.
+
+![DBSCAN](data/figures/clustering_dbscan.png)
+
+Résultat : **un seul groupe dense** (90 points de cœur, 8 de bordure) et **2 points de bruit : les Landes et la Guadeloupe**. Aucun réglage testé (ε de 1 à 2, MinPts 5 ou 10) ne donne plus d'un groupe. Les départements forment donc un **continuum**, pas des îlots séparés : les 4 profils sont des découpages utiles d'un même nuage. DBSCAN sert ici à la détection d'anomalies.
+
+## 7. Limites
 
 - **Une structure modérée.** Une silhouette de 0,315 indique des groupes réels mais qui se chevauchent : on n'a pas quatre catégories bien séparées, plutôt un nuage avec des tendances.
 - **Deux groupes fragiles.** « Déchets verts » (0,14) et « Ordures ménagères élevées » (0,16) ont une silhouette faible. Quatre départements ont une silhouette négative, c'est-à-dire qu'ils seraient presque aussi bien dans un autre groupe : **Aude, Loiret, Vendée, Territoire-de-Belfort**. Ce sont des cas frontières, à ne pas sur-interpréter.
@@ -153,7 +213,7 @@ La Martinique et la Guyane rejoignent ce groupe pour une autre raison : elles on
 - **Une photo, pas un film.** La moyenne 2019–2021 décrit une situation récente, sans son évolution.
 - **Les explications restent des hypothèses.** Habitat avec jardin, habitat collectif, tourisme : les données utilisées ne permettent pas de les vérifier. Il faudrait des variables INSEE sur le logement et le tourisme.
 
-## 6. Conclusions
+## 8. Conclusions
 
 1. **Les départements se répartissent en 4 profils de production de déchets**, choisis parce que la méthode du coude et le score de silhouette s'accordent sur k = 4, sans groupe réduit à un seul département.
 2. **Ces profils sont géographiques**, alors qu'aucune information géographique n'a été donnée au modèle : l'Ouest des déchets verts, les grandes agglomérations, la Méditerranée et la Corse, et une France intermédiaire. Le k-means a retrouvé une géographie à partir des seuls kilos de déchets.

@@ -1,0 +1,101 @@
+C_DEPT,N_DEPT,groupe,dbscan_groupe,dbscan_type
+01,Ain,Profil intermédiaire,0,cœur
+02,Aisne,Profil intermédiaire,0,cœur
+03,Allier,Profil intermédiaire,0,cœur
+04,Alpes-de-Haute-Provence,Ordures ménagères élevées,0,cœur
+05,Hautes-Alpes,Profil intermédiaire,0,cœur
+06,Alpes-Maritimes,Ordures ménagères élevées,0,cœur
+07,Ardèche,Profil intermédiaire,0,cœur
+08,Ardennes,Profil intermédiaire,0,cœur
+09,Ariège,Déchets verts et déchèteries,0,cœur
+10,Aube,Profil intermédiaire,0,cœur
+11,Aude,Ordures ménagères élevées,0,cœur
+12,Aveyron,Profil intermédiaire,0,cœur
+13,Bouches-du-Rhône,Grandes agglomérations,0,cœur
+14,Calvados,Déchets verts et déchèteries,0,cœur
+15,Cantal,Profil intermédiaire,0,cœur
+16,Charente,Profil intermédiaire,0,cœur
+17,Charente-Maritime,Déchets verts et déchèteries,0,cœur
+18,Cher,Profil intermédiaire,0,cœur
+19,Corrèze,Profil intermédiaire,0,cœur
+21,Cote-d'Or,Profil intermédiaire,0,cœur
+22,Cotes-d'Armor,Déchets verts et déchèteries,0,bordure
+23,Creuse,Profil intermédiaire,0,cœur
+24,Dordogne,Profil intermédiaire,0,cœur
+25,Doubs,Profil intermédiaire,0,cœur
+26,Drôme,Profil intermédiaire,0,cœur
+27,Eure,Déchets verts et déchèteries,0,cœur
+28,Eure-et-Loir,Profil intermédiaire,0,cœur
+29,Finistère,Déchets verts et déchèteries,0,bordure
+2A,Corse-du-Sud,Ordures ménagères élevées,0,bordure
+2B,Haute-Corse,Ordures ménagères élevées,0,cœur
+30,Gard,Profil intermédiaire,0,cœur
+31,Haute-Garonne,Grandes agglomérations,0,cœur
+32,Gers,Profil intermédiaire,0,cœur
+33,Gironde,Profil intermédiaire,0,cœur
+34,Hérault,Profil intermédiaire,0,cœur
+35,Ille-et-Vilaine,Profil intermédiaire,0,cœur
+36,Indre,Profil intermédiaire,0,cœur
+37,Indre-et-Loire,Profil intermédiaire,0,cœur
+38,Isère,Profil intermédiaire,0,cœur
+39,Jura,Profil intermédiaire,0,cœur
+40,Landes,Déchets verts et déchèteries,-1,bruit
+41,Loir-et-Cher,Déchets verts et déchèteries,0,cœur
+42,Loire,Profil intermédiaire,0,cœur
+43,Haute-Loire,Profil intermédiaire,0,cœur
+44,Loire-Atlantique,Profil intermédiaire,0,cœur
+45,Loiret,Déchets verts et déchèteries,0,cœur
+46,Lot,Profil intermédiaire,0,cœur
+47,Lot-et-Garonne,Profil intermédiaire,0,cœur
+48,Lozère,Profil intermédiaire,0,cœur
+49,Maine-et-Loire,Profil intermédiaire,0,cœur
+50,Manche,Déchets verts et déchèteries,0,cœur
+51,Marne,Profil intermédiaire,0,cœur
+52,Haute-Marne,Profil intermédiaire,0,cœur
+53,Mayenne,Déchets verts et déchèteries,0,cœur
+54,Meurthe-et-Moselle,Profil intermédiaire,0,cœur
+55,Meuse,Profil intermédiaire,0,cœur
+56,Morbihan,Déchets verts et déchèteries,0,cœur
+57,Moselle,Profil intermédiaire,0,cœur
+58,Nièvre,Profil intermédiaire,0,cœur
+59,Nord,Profil intermédiaire,0,cœur
+60,Oise,Déchets verts et déchèteries,0,cœur
+61,Orne,Déchets verts et déchèteries,0,cœur
+62,Pas-de-Calais,Profil intermédiaire,0,cœur
+63,Puy-de-Dôme,Profil intermédiaire,0,cœur
+64,Pyrénées-Atlantiques,Profil intermédiaire,0,cœur
+65,Hautes-Pyrénées,Profil intermédiaire,0,cœur
+66,Pyrénées-Orientales,Ordures ménagères élevées,0,cœur
+67,Bas-Rhin,Profil intermédiaire,0,cœur
+68,Haut-Rhin,Profil intermédiaire,0,cœur
+69,Rhône,Grandes agglomérations,0,cœur
+70,Haute-Saône,Profil intermédiaire,0,cœur
+71,Saône-et-Loire,Profil intermédiaire,0,cœur
+72,Sarthe,Profil intermédiaire,0,cœur
+73,Savoie,Profil intermédiaire,0,cœur
+74,Haute-Savoie,Profil intermédiaire,0,cœur
+75,Paris,Grandes agglomérations,0,bordure
+76,Seine-Maritime,Déchets verts et déchèteries,0,cœur
+77,Seine-et-Marne,Grandes agglomérations,0,cœur
+78,Yvelines,Grandes agglomérations,0,cœur
+79,Deux-Sèvres,Profil intermédiaire,0,cœur
+80,Somme,Déchets verts et déchèteries,0,cœur
+81,Tarn,Profil intermédiaire,0,cœur
+82,Tarn-et-Garonne,Profil intermédiaire,0,cœur
+83,Var,Ordures ménagères élevées,0,cœur
+84,Vaucluse,Ordures ménagères élevées,0,cœur
+85,Vendée,Déchets verts et déchèteries,0,cœur
+86,Vienne,Profil intermédiaire,0,cœur
+87,Haute-Vienne,Profil intermédiaire,0,cœur
+88,Vosges,Profil intermédiaire,0,cœur
+89,Yonne,Profil intermédiaire,0,cœur
+90,Territoire-de-Belfort,Déchets verts et déchèteries,0,cœur
+91,Essonne,Grandes agglomérations,0,cœur
+92,Hauts-de-seine,Grandes agglomérations,0,cœur
+93,Seine-Saint-Denis,Grandes agglomérations,0,bordure
+94,Val-de-Marne,Grandes agglomérations,0,bordure
+95,Val-d'Oise,Grandes agglomérations,0,cœur
+971,Guadeloupe,Ordures ménagères élevées,-1,bruit
+972,Martinique,Grandes agglomérations,0,bordure
+973,Guyane,Grandes agglomérations,0,bordure
+974,La Réunion,Déchets verts et déchèteries,0,cœur
