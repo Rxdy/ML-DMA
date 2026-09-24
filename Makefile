@@ -6,7 +6,7 @@ RUN := cd dechets && $(PY)
 
 .DEFAULT_GOAL := aide
 .PHONY: aide installer explorer clustering preparation correlation decoupage modeles revenu \
-        pipeline details erreurs prediction supervise tout rapport-pdf
+        pipeline details erreurs supervise all rapport-pdf
 
 aide: ## Affiche cette aide
 	@echo "Commandes disponibles :"
@@ -46,12 +46,9 @@ details: preparation ## 10 - Détail des calculs de MAE, RMSE et R²
 erreurs: preparation ## 11 - Analyse des erreurs du modèle
 	$(RUN) scripts/11_analyse_erreurs.py
 
-prediction: preparation ## 12 - Prédiction de l'enquête 2025
-	$(RUN) scripts/12_prediction_2025.py
+supervise: pipeline details erreurs ## Le volet supervisé complet (09 à 11)
 
-supervise: pipeline details erreurs prediction ## Le volet supervisé complet (09 à 12)
-
-tout: explorer correlation modeles revenu supervise ## Rejoue tout le projet, de 01 à 12
+all: explorer correlation modeles revenu supervise ## Rejoue tout le projet, de 01 à 11
 
 rapport-pdf: ## Régénère le rapport PDF (dechets/rapport/rapport_ML_dechets.pdf)
 	$(RUN) rapport/generer_rapport_pdf.py

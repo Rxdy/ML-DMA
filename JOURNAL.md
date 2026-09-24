@@ -361,3 +361,12 @@ Pipeline rejoué en entier : résultats identiques (R² 0,715 en régression lin
 **Makefile** à la racine : une commande par étape (`make supervise`, `make tout`…), guide dans le README et en annexe C du rapport.
 
 **Rapport PDF** : 31 pages. Ajouts : chapitre X et y, formules et calculs détaillés (annexe B), chapitre 13 (tester le modèle et prédire 2025), chapitre 14 (comment améliorer le modèle), guide d'utilisation (annexe C).
+
+---
+
+## 2026-09-24 — Retours sur le rapport : pas d'estimation 2025, glossaire, logo
+
+- **Pas d'estimation pour 2025** : le modèle utilise la population de l'année prédite (et la cible est un tonnage divisé par cette population). Sans la population 2025, l'estimation reposerait sur une approximation non mesurable, serait invérifiable et donnerait une fausse impression de précision. Script de prédiction retiré ; le rapport explique ce choix (chapitre 13).
+- **Makefile** : la commande `tout` devient `all`.
+- **Rapport** : membres par ordre alphabétique, logo iRUP sur la page de garde (`dechets/rapport/images/logo_irup.png`), légende des symboles et abréviations sous les formules (SS, SS_res, SS_tot, ŷ, ȳ…), glossaire, tableau des problèmes resserré sur 4 points, conclusion réécrite.
+- **Correctif** : les polices Noto n'ont pas les caractères « − », « √ », « ≈ » et « → » ; ils ne s'affichaient pas dans les versions précédentes du PDF (le signe moins de −0,013 était invisible). Ils sont désormais rendus avec DejaVu Sans.

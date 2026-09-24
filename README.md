@@ -2,7 +2,7 @@
 
 Prédire la production de déchets ménagers par habitant et par département, à partir des données publiques de l'ADEME (SINOE) et de l'INSEE.
 
-Projet d'apprentissage supervisé — ALVES Rudy, BENASSIE Noé, TAVERNIER Florian, ANTHONY Josselin.
+Projet d'apprentissage supervisé, iRUP Alternance — ALVES Rudy, ANTHONY Josselin, BENASSIE Noé, TAVERNIER Florian.
 
 - **Rapport complet (PDF)** : [`dechets/rapport/rapport_ML_dechets.pdf`](dechets/rapport/rapport_ML_dechets.pdf)
 - **Synthèse** : [`dechets/COMPTE_RENDU.md`](dechets/COMPTE_RENDU.md)
@@ -17,7 +17,7 @@ git clone https://github.com/Rxdy/ML-DMA.git
 cd ML-DMA
 make installer      # crée .venv et installe les dépendances
 make                # liste des commandes
-make supervise      # volet supervisé complet : pipeline, détail des calculs, erreurs, prédiction 2025
+make supervise      # volet supervisé complet : pipeline, détail des calculs, analyse des erreurs
 ```
 
 | Commande | Script | Ce qu'elle fait |
@@ -32,8 +32,7 @@ make supervise      # volet supervisé complet : pipeline, détail des calculs, 
 | `make pipeline` | 09 | Preprocessor, pipeline, validation croisée, test |
 | `make details` | 10 | Détail des calculs de MAE, RMSE et R² |
 | `make erreurs` | 11 | Analyse des erreurs |
-| `make prediction` | 12 | Prédiction de l'enquête 2025 |
-| `make tout` | 01 à 12 | Rejoue tout le projet |
+| `make all` | 01 à 11 | Rejoue tout le projet |
 | `make rapport-pdf` | — | Régénère le rapport PDF |
 
 Les résultats sont affichés dans la console et enregistrés en CSV dans `dechets/data/processed/`.

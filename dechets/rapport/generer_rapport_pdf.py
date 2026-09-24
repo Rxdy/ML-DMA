@@ -35,7 +35,8 @@ from sklearn.metrics import mean_absolute_error, r2_score
 ETABLISSEMENT = os.environ.get("ETABLISSEMENT", "")
 TITRE = "Machine learning : Déchets"
 SOUS_TITRE = "Prédire la production de déchets ménagers par habitant et par département"
-MEMBRES = ["ALVES Rudy", "BENASSIE Noé", "TAVERNIER Florian", "ANTHONY Josselin"]
+MEMBRES = sorted(["ALVES Rudy", "ANTHONY Josselin", "BENASSIE Noé", "TAVERNIER Florian"])  # ordre alphabétique
+LOGO = "rapport/images/logo_irup.png"
 MODULE = "DataScience & Machine Learning — apprentissage supervisé"
 DATE = "24 septembre 2026"
 DEPOT = "https://github.com/Rxdy/ML-DMA"
@@ -47,7 +48,8 @@ MONO = "/usr/share/fonts/truetype/jetbrains-mono-zorin-os/"
 for nom, fichier in [("Sans", NOTO + "NotoSans-Regular.ttf"), ("Sans-B", NOTO + "NotoSans-Bold.ttf"),
                      ("Sans-I", NOTO + "NotoSans-Italic.ttf"), ("Sans-SB", NOTO + "NotoSans-SemiBold.ttf"),
                      ("Serif", NOTO + "NotoSerif-Regular.ttf"), ("Serif-B", NOTO + "NotoSerif-Bold.ttf"),
-                     ("Serif-SB", NOTO + "NotoSerif-SemiBold.ttf"), ("Mono", MONO + "JetBrainsMono-Regular.ttf")]:
+                     ("Serif-SB", NOTO + "NotoSerif-SemiBold.ttf"), ("Mono", MONO + "JetBrainsMono-Regular.ttf"),
+                     ("Sym", "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf")]:
     pdfmetrics.registerFont(TTFont(nom, fichier))
 pdfmetrics.registerFontFamily("Sans", normal="Sans", bold="Sans-B", italic="Sans-I", boldItalic="Sans-B")
 for f in [NOTO + "NotoSans-Regular.ttf", NOTO + "NotoSans-SemiBold.ttf"]:
@@ -64,7 +66,8 @@ MPL = {"vert": "#2F5236", "ambre": "#B07A2E", "gris": "#8B958A", "grille": "#DDE
 plt.rcParams.update({"font.family": "Noto Sans", "font.size": 9, "axes.edgecolor": MPL["gris"],
                      "axes.labelcolor": MPL["encre"], "xtick.color": MPL["gris"], "ytick.color": MPL["gris"],
                      "axes.spines.top": False, "axes.spines.right": False, "axes.grid": True,
-                     "grid.color": MPL["grille"], "grid.linewidth": 0.6, "axes.axisbelow": True})
+                     "grid.color": MPL["grille"], "grid.linewidth": 0.6, "axes.axisbelow": True,
+                     "axes.unicode_minus": False})
 
 # ------------------------------------------------------------------ styles de texte
 S = {
@@ -85,12 +88,21 @@ S = {
 }
 
 
+SYMBOLES = "−√≈→"  # absents des polices Noto : affichés avec DejaVu Sans
+
+
+def sym(texte):
+    for ch in SYMBOLES:
+        texte = texte.replace(ch, f'<font name="Sym">{ch}</font>')
+    return texte
+
+
 def p(texte, style="corps"):
-    return Paragraph(texte, S[style])
+    return Paragraph(sym(texte), S[style])
 
 
 def puces(items):
-    return [Paragraph(t, S["puce"], bulletText="•") for t in items]
+    return [Paragraph(sym(t), S["puce"], bulletText="•") for t in items]
 
 
 def c(texte):
@@ -99,7 +111,7 @@ def c(texte):
 
 
 def tableau(lignes, largeurs, entete=True, surligne=()):
-    data = [[Paragraph(str(x), S["cellh" if (entete and i == 0) else "cell"]) for x in ligne]
+    data = [[Paragraph(sym(str(x)), S["cellh" if (entete and i == 0) else "cell"]) for x in ligne]
             for i, ligne in enumerate(lignes)]
     t = Table(data, colWidths=[w * cm for w in largeurs], repeatRows=1 if entete else 0)
     style = [("VALIGN", (0, 0), (-1, -1), "TOP"),
@@ -117,7 +129,7 @@ def tableau(lignes, largeurs, entete=True, surligne=()):
 def encadre(titre, texte, attention=False):
     fond, trait = (AMBRE_CLAIR, AMBRE) if attention else (VERT_CLAIR, VERT)
     contenu = [Paragraph(f'<font name="Sans-B" color="{trait.hexval()}">{titre}</font>', S["encadre"]),
-               Spacer(1, 2), Paragraph(texte, S["encadre"])]
+               Spacer(1, 2), Paragraph(sym(texte), S["encadre"])]
     t = Table([[contenu]], colWidths=[16.4 * cm])
     t.setStyle(TableStyle([("BACKGROUND", (0, 0), (-1, -1), fond), ("LINEBEFORE", (0, 0), (0, -1), 2.5, trait),
                            ("LEFTPADDING", (0, 0), (-1, -1), 10), ("RIGHTPADDING", (0, 0), (-1, -1), 10),
@@ -181,7 +193,7 @@ CV = pd.read_csv("data/processed/detail_cv_plis.csv")
 CALC = pd.read_csv("data/processed/detail_calcul_test.csv")
 PAR_ANNEE = pd.read_csv("data/processed/detail_test_par_annee.csv")
 COEFS = pd.read_csv("data/processed/detail_coefficients.csv")
-PRED25 = pd.read_csv("data/processed/predictions_2025.csv", dtype={"C_DEPT": str})
+
 
 
 def fig_baseline_par_annee():
@@ -273,30 +285,36 @@ class Rapport(BaseDocTemplate):
     def page_garde(self, cv, doc):
         l, h = A4
         cv.saveState()
+        # logo de l'établissement, sur fond blanc
+        hauteur_logo = 2.3 * cm
+        cv.drawImage(LOGO, 2.1 * cm, h - 1.5 * cm - hauteur_logo, height=hauteur_logo,
+                     width=hauteur_logo * 789 / 468, preserveAspectRatio=True, mask="auto")
+        # bandeau titre
+        haut, bas = h - 5.0 * cm, h - 13.4 * cm
         cv.setFillColor(VERT)
-        cv.rect(0, h - 9.2 * cm, l, 9.2 * cm, stroke=0, fill=1)
+        cv.rect(0, bas, l, haut - bas, stroke=0, fill=1)
         cv.setFillColor(colors.HexColor("#C9DBC4"))
         cv.setFont("Mono", 9)
-        y = h - 2.3 * cm
+        y = haut - 1.3 * cm
         if ETABLISSEMENT:
             cv.drawString(2.3 * cm, y, ETABLISSEMENT.upper()); y -= 0.55 * cm
         cv.drawString(2.3 * cm, y, MODULE.upper())
         cv.setFillColor(colors.white)
         cv.setFont("Serif-B", 32)
-        cv.drawString(2.3 * cm, h - 5.4 * cm, "Machine learning :")
-        cv.drawString(2.3 * cm, h - 6.75 * cm, "Déchets")
+        cv.drawString(2.3 * cm, haut - 3.4 * cm, "Machine learning :")
+        cv.drawString(2.3 * cm, haut - 4.75 * cm, "Déchets")
         cv.setFont("Sans", 12)
         cv.setFillColor(colors.HexColor("#E4ECDF"))
-        cv.drawString(2.3 * cm, h - 8.0 * cm, SOUS_TITRE)
+        cv.drawString(2.3 * cm, haut - 6.1 * cm, SOUS_TITRE)
 
         cv.setFillColor(GRIS); cv.setFont("Mono", 8.5)
-        cv.drawString(2.3 * cm, h - 11.6 * cm, "MEMBRES DU GROUPE")
-        cv.setFillColor(ENCRE); cv.setFont("Sans", 13)
+        cv.drawString(2.3 * cm, bas - 1.9 * cm, "MEMBRES DU GROUPE")
         for i, m in enumerate(MEMBRES):
             nom, prenom = m.split(" ", 1)
-            cv.setFont("Sans-SB", 13); cv.drawString(2.3 * cm, h - (12.6 + 0.8 * i) * cm, nom)
-            cv.setFont("Sans", 13); cv.drawString(2.3 * cm + pdfmetrics.stringWidth(nom + " ", "Sans-SB", 13),
-                                                  h - (12.6 + 0.8 * i) * cm, prenom)
+            yy = bas - (2.9 + 0.8 * i) * cm
+            cv.setFillColor(ENCRE)
+            cv.setFont("Sans-SB", 13); cv.drawString(2.3 * cm, yy, nom)
+            cv.setFont("Sans", 13); cv.drawString(2.3 * cm + pdfmetrics.stringWidth(nom + " ", "Sans-SB", 13), yy, prenom)
 
         cv.setStrokeColor(FILET); cv.setLineWidth(0.6)
         cv.line(2.3 * cm, 5.2 * cm, l - 2.3 * cm, 5.2 * cm)
@@ -376,7 +394,7 @@ H += [Chapitre("Introduction"),
                ["10", "Premiers modèles, courbe d'apprentissage, test du revenu", c("06") + ", " + c("08")],
                ["11", "Preprocessor et pipeline", c("09_pipeline.py")],
                ["12", "Évaluation détaillée et interprétation", c("09") + ", " + c("10")],
-               ["13", "Prédiction de l'enquête 2025", c("12_prediction_2025.py")],
+               ["13", "Vérification terrain, et pourquoi ne pas estimer 2025", c("09_pipeline.py")],
                ["14", "Comment améliorer le modèle : analyse des erreurs et pistes", c("11_analyse_erreurs.py")],
                ], [1.3, 10.6, 4.5]),
       PageBreak()]
@@ -650,7 +668,28 @@ H += [etape(9, "16 septembre 2026"), Chapitre("9. Établir la baseline"),
                 "négatif = pire que la moyenne."]],
               [2.0, 5.6, 8.8]),
       Spacer(1, 6),
-      p("Le calcul complet, pas à pas, pour chaque modèle, pli et année, est donné en annexe B."),
+      KeepTogether([p("Légende des symboles et abréviations", "h2"),
+      tableau([["Symbole", "Se lit", "Signification"],
+               ["n", "« n »", "Nombre de lignes évaluées (198 sur le test)"],
+               ["y", "« y »", "Valeur réelle (ce que l'ADEME a mesuré)"],
+               ["ŷ", "« y chapeau »", "Valeur prédite par le modèle"],
+               ["ȳ", "« y barre »", "Moyenne des valeurs réelles"],
+               ["y − ŷ", "", "Erreur (ou résidu) sur une ligne : positive si le modèle sous-estime"],
+               ["Σ", "« somme »", "Somme sur toutes les lignes"],
+               ["| … |", "« valeur absolue »", "La valeur sans son signe : |−40| = 40"],
+               ["√", "« racine carrée »", "Ramène une valeur au carré dans l'unité d'origine (kg/hab)"],
+               ["SS", "<i>Sum of Squares</i>", "Somme des carrés"],
+               ["SS<sub>res</sub>", "« somme des carrés des résidus »",
+                "Σ (y − ŷ)² : ce que le modèle n'explique pas"],
+               ["SS<sub>tot</sub>", "« somme des carrés totale »",
+                "Σ (y − ȳ)² : la variabilité totale des valeurs réelles autour de leur moyenne"],
+               ["MAE", "<i>Mean Absolute Error</i>", "Erreur absolue moyenne"],
+               ["RMSE", "<i>Root Mean Squared Error</i>", "Racine de l'erreur quadratique moyenne"],
+               ["R²", "« R deux »", "Coefficient de détermination"]],
+              [2.4, 5.0, 9.0])]),
+      Spacer(1, 6),
+      p("Le calcul complet, pas à pas, pour chaque modèle, pli et année, est donné en annexe B. Les autres termes "
+        "techniques sont définis dans le glossaire."),
       PageBreak()]
 
 # 9. Premiers modèles
@@ -771,12 +810,8 @@ H += [etape(12, "24 septembre 2026"), Chapitre("12. Évaluation et interprétati
              "En 2023, la plupart des points passent sous la diagonale : le modèle prévoit plus de déchets qu'il n'y en a eu."),
       PageBreak()]
 
-# 13. Prédire 2025
-_p = PRED25.copy()
-_ext = pd.concat([_p[_p.N_DEPT.isin(["Ain", "Paris", "Nord", "Gironde"])],
-                  _p.nlargest(2, "ratio_2025_predit"), _p.nsmallest(2, "ratio_2025_predit")])
-MARGE = float((_p.borne_haute - _p.ratio_2025_predit).iloc[0])
-H += [etape(13, "24 septembre 2026"), Chapitre("13. Tester le modèle et prédire 2025"),
+# 13. Vérification terrain
+H += [etape(13, "24 septembre 2026"), Chapitre("13. Tester le modèle sur le terrain"),
       p("Une vérification « terrain » a déjà eu lieu", "h2"),
       p("Nous ne pouvions pas aller mesurer nous-mêmes les déchets des départements. Mais le découpage par année "
         "joue exactement ce rôle : le modèle a été entraîné jusqu'en 2019, puis confronté aux <b>vraies</b> valeurs de "
@@ -788,23 +823,19 @@ H += [etape(13, "24 septembre 2026"), Chapitre("13. Tester le modèle et prédir
               "peuvent pas servir à <b>évaluer le modèle</b> : c'est nous qui fixerions les règles qui les produisent, "
               "et le modèle serait jugé sur sa capacité à retrouver nos propres hypothèses. Le score serait circulaire. "
               "Nous n'avons donc utilisé que des données réelles pour mesurer la performance.", attention=True),
-      p("Prédire l'enquête 2025", "h2"),
-      p("L'enquête 2025 n'est pas encore publiée : c'est une vraie prédiction (script " + c("12_prediction_2025.py") +
-        "). Le modèle retenu est réentraîné sur <b>toutes</b> les enquêtes de 2011 à 2023 (699 lignes), puis reçoit, "
-        "pour chaque département, les valeurs 2023 comme « enquête précédente ». La population 2025 n'étant pas "
-        "connue, celle de 2023 est utilisée (approximation)."),
-      p("L'intervalle vient des erreurs réellement observées sur le test : 80 % d'entre elles étaient inférieures "
-        "à <b>" + fr(MARGE) + " kg/hab</b>. Chaque prédiction est donc donnée à ± " + fr(MARGE) + " kg/hab."),
-      tableau([["Département", "Réel 2023", "Prédit 2025", "Intervalle (80 %)"]] +
-              [[r.N_DEPT, fr(r.ratio_2023_reel), "<b>" + fr(r.ratio_2025_predit) + "</b>",
-                fr(r.borne_basse) + " – " + fr(r.borne_haute)] for r in _ext.itertuples()],
-              [6.0, 3.0, 3.0, 4.4]),
-      Spacer(1, 6),
-      p("En moyenne, le modèle prévoit <b>" + fr(_p.ratio_2025_predit.mean()) + " kg/hab</b> en 2025, contre "
-        + fr(_p.ratio_2023_reel.mean()) + " en 2023 : il prolonge la situation actuelle. Toutes les prédictions sont "
-        "dans " + c("data/processed/predictions_2025.csv") + ". Elles pourront être vérifiées à la publication de "
-        "l'enquête 2025. Limite connue : si la France entière bouge à nouveau d'un bloc, comme entre 2021 et 2023, "
-        "le modèle ne pourra pas l'anticiper (chapitre 14)."),
+      p("Pourquoi nous ne donnons pas d'estimation pour 2025", "h2"),
+      p("La prochaine enquête (2025) n'est pas encore publiée. Il serait tentant de la « prédire », mais nous avons "
+        "choisi de ne pas le faire :"),
+      *puces(["<b>Une entrée manque</b> : le modèle utilise la population de l'année prédite, et la cible elle-même est "
+              "un tonnage divisé par cette population. Sans la population 2025, il faudrait la remplacer par une "
+              "approximation dont on ne peut pas mesurer l'effet.",
+              "<b>Le résultat serait invérifiable</b> : il n'apporterait rien à l'évaluation du modèle, qui repose "
+              "entièrement sur des années dont on connaît la vraie valeur.",
+              "<b>Le risque principal n'est pas couvert</b> : l'erreur vient surtout d'un mouvement national d'une "
+              "enquête à l'autre (chapitre 14), que le modèle ne sait pas anticiper. Une estimation 2025 donnerait "
+              "une fausse impression de précision."]),
+      p("Une estimation pour 2025 ne serait réaliste qu'une fois la population 2025 connue et, surtout, avec une "
+        "information sur l'évolution nationale."),
       PageBreak()]
 
 # 14. Améliorer le modèle
@@ -912,25 +943,73 @@ H += [Chapitre("15. Problèmes rencontrés et conclusion"),
       tableau([["Problème", "Ce que nous avons fait"],
                ["Même nom de colonne, périmètre différent (gravats)", "Cible toujours lue dans le fichier hors gravats"],
                ["Une enquête tous les deux ans, pas de 2022", "Assumé, non imputé ; le temps est porté par l'historique du département"],
-               ["Le tonnage copie la population (fuite)", "Cible ramenée par habitant"],
-               ["Doublons de clé invisibles à " + c("duplicated()"), "Unicité vérifiée, jointures validées, lignes comptées"],
-               ["Cluster traité comme un nombre", "Encodé en one-hot dans le preprocessor"],
-               ["Face à la moyenne, tout modèle paraît excellent", "Comparaison systématique à la baseline naïve, gain testé par bootstrap"],
                ["Le score stagne", "Courbe d'apprentissage : la limite vient des variables, pas du volume"],
-               ["Chute du score sur le test", "Analyse année par année : rupture dans les données en 2023"],
-               ["Pas de mesure « terrain » possible", "Test sur des années réelles jamais vues ; pas de données simulées pour évaluer"],
-               ["D'où vient l'erreur restante ?", "Surtout d'un mouvement national : piste prioritaire pour améliorer le modèle"]],
+               ["Pas de mesure « terrain » possible", "Test sur des années réelles jamais vues ; pas de données simulées pour évaluer"]],
               [7.2, 9.2]),
-      Spacer(1, 10), p("Conclusion", "h2"),
-      p("Le projet aboutit à une chaîne supervisée complète et vérifiée : sources consolidées et contrôlées, cible "
-        "choisie pour éviter la fuite, entrées X et sortie y clairement séparées, découpage temporel, preprocessor et "
-        "pipeline, comparaison à deux baselines, validation croisée, test sur des années réelles et prédiction de "
-        "l'enquête 2025. Son résultat principal est une conclusion sur les données : <b>la production de déchets par "
-        "habitant d'un département est avant tout une affaire d'inertie</b>. Les caractéristiques stables du "
-        "département (population, politique de traitement, revenu) n'apportent presque rien au-delà de son propre "
-        "historique. L'analyse des erreurs montre où chercher la suite : des informations qui évoluent dans le temps, "
-        "d'abord au niveau national."),
-      p("Suite du module : l'apprentissage non supervisé, dont le clustering de l'annexe A est une première application."),
+      Spacer(1, 12), p("Conclusion", "h2"),
+      p("Peut-on prédire la production de déchets par habitant d'un département ? <b>Oui, à environ 36 kg près</b>, "
+        "soit 7 % d'une valeur moyenne de 520 kg, sur des années que le modèle n'avait jamais vues. Mais cette "
+        "réussite n'est pas celle du machine learning : la simple règle « comme à l'enquête précédente » obtient le "
+        "même résultat. Nos modèles ne font que la retrouver."),
+      p("Ce constat dit quelque chose du sujet lui-même. Les écarts entre départements sont considérables, de "
+        "350 kg par habitant dans les Hauts-de-Seine à près de 890 dans les Landes, mais ils sont <b>durables</b> : ils "
+        "tiennent à des habitudes, à une organisation de la collecte et à un territoire qui changent lentement. Ce "
+        "qui bouge d'une enquête à l'autre est d'abord un mouvement d'ensemble : une hausse générale en 2021, une baisse "
+        "presque partout en 2023. Aucune caractéristique stable d'un département (population, politique de traitement, "
+        "revenu) ne peut anticiper un tel mouvement."),
+      p("Sur le plan de la méthode, le projet montre qu'un score ne veut rien dire sans le bon repère. Face à la "
+        "moyenne, un R² de 0,72 paraît excellent ; face à la baseline naïve, il n'apporte rien. De même, tester sur "
+        "des années futures réelles plutôt que sur un tirage au hasard a fait apparaître la rupture de 2023, qu'un "
+        "découpage aléatoire aurait masquée. Enfin, un résultat négatif, quand il est démontré (courbe d'apprentissage, "
+        "test du revenu, bootstrap), reste un résultat : il évite de complexifier un modèle pour rien et indique où "
+        "investir."),
+      p("C'est la suite logique du travail : collecter des informations qui <b>évoluent dans le temps</b>, d'abord au "
+        "niveau national, puis propres à chaque territoire, et les tester avec la même pipeline et le même protocole. "
+        "Le clustering des profils de traitement (annexe A) ouvre par ailleurs la partie non supervisée du module."),
+      PageBreak()]
+
+# Glossaire
+GLOSSAIRE = [
+    ("ADEME", "Agence de la transition écologique. Publie les données SINOE sur les déchets."),
+    ("Apprentissage supervisé", "Apprendre à prédire une valeur (y) à partir d'exemples dont on connaît déjà la réponse."),
+    ("Backtest", "Tester un modèle sur des années passées qu'il n'a pas vues pendant l'entraînement, comme s'il les prédisait."),
+    ("Baseline", "Règle simple servant de repère : un modèle n'est utile que s'il fait mieux qu'elle."),
+    ("Baseline naïve", "Ici : prédire que le ratio sera le même qu'à l'enquête précédente."),
+    ("Bootstrap", "Rééchantillonner les données au hasard, avec remise, des milliers de fois pour mesurer la stabilité d'un résultat."),
+    ("Cible (y)", "La valeur à prédire : ici, le ratio de déchets par habitant (" + c("RATIO_DMA") + ")."),
+    ("Clustering", "Regrouper des éléments qui se ressemblent, sans réponse connue à l'avance (apprentissage non supervisé)."),
+    ("Corrélation", "Mesure, de −1 à 1, de la force du lien linéaire entre deux variables."),
+    ("Données de panel", "Mêmes individus (ici, les départements) observés à plusieurs dates."),
+    ("DMA", "Déchets ménagers et assimilés : déchets collectés par le service public, ceux des ménages et des petites activités."),
+    ("EPCI", "Établissement public de coopération intercommunale : l'intercommunalité, qui organise souvent la collecte."),
+    ("Feature (X)", "Variable d'entrée du modèle : ce qu'il connaît au moment de prédire."),
+    ("Fuite de données", "Situation où le modèle reçoit, directement ou non, la réponse qu'il doit prédire. Rend les scores trompeurs."),
+    ("INSEE", "Institut national de la statistique et des études économiques. Source de la population et du revenu."),
+    ("Intervalle de confiance", "Plage de valeurs dans laquelle se trouve un résultat avec une probabilité donnée (ici 95 %)."),
+    ("Jeu d'entraînement (train)", "Données sur lesquelles le modèle apprend : enquêtes 2011 à 2019."),
+    ("Jeu de test", "Données gardées de côté pour évaluer le modèle : enquêtes 2021 et 2023."),
+    ("k-means", "Algorithme de clustering qui forme k groupes autour de k centres."),
+    ("Lag", "Variable d'historique : la valeur de l'enquête précédente pour le même département."),
+    ("MAE", "<i>Mean Absolute Error</i> : erreur absolue moyenne, en kg/habitant."),
+    ("MinMaxScaler", "Transformation qui ramène une variable entre 0 et 1."),
+    ("Mock", "Donnée fictive, générée pour tester un programme."),
+    ("OneHotEncoder", "Transformation d'une variable catégorielle en plusieurs colonnes 0/1, une par catégorie."),
+    ("Pipeline", "Enchaînement preprocessor → modèle en un seul objet, qui garantit le même traitement partout."),
+    ("Pli (fold)", "Une des découpes entraînement / validation de la validation croisée."),
+    ("Preprocessor", "L'étape de transformation des données avant le modèle (mise à l'échelle, encodage)."),
+    ("R²", "Coefficient de détermination : part des écarts expliquée par le modèle (1 = parfait, 0 = pas mieux que la moyenne)."),
+    ("Random Forest", "Modèle combinant de nombreux arbres de décision ; capte les relations non linéaires."),
+    ("Régression linéaire", "Modèle qui prédit une valeur comme une somme pondérée des variables d'entrée."),
+    ("RMSE", "<i>Root Mean Squared Error</i> : racine de l'erreur quadratique moyenne ; pénalise les grosses erreurs."),
+    ("Score de silhouette", "Mesure, de −1 à 1, de la qualité d'un clustering : chaque élément est-il plus proche de son groupe que des autres ?"),
+    ("SINOE", "Base de données de l'ADEME sur les déchets, source de nos données principales."),
+    ("SS", "<i>Sum of Squares</i> : somme des carrés (SS<sub>res</sub> pour les erreurs, SS<sub>tot</sub> pour la variabilité totale)."),
+    ("Surapprentissage", "Quand un modèle apprend les particularités de l'entraînement au point de mal prédire de nouvelles données."),
+    ("Validation croisée", "Répéter entraînement et validation sur plusieurs découpes des données pour une évaluation plus fiable."),
+]
+H += [Chapitre("Glossaire"),
+      tableau([["Terme", "Définition"]] + [[f"<b>{t}</b>", d] for t, d in sorted(GLOSSAIRE, key=lambda x: x[0].lower())],
+              [4.4, 12.0]),
       PageBreak()]
 
 # Annexe A
@@ -1029,15 +1108,13 @@ H += [Chapitre("Annexe C. Guide d'utilisation du projet"),
                [c("make pipeline"), "09", "Preprocessor, pipeline, validation croisée, test"],
                [c("make details"), "10", "Détail des calculs de MAE, RMSE et R²"],
                [c("make erreurs"), "11", "Analyse des erreurs"],
-               [c("make prediction"), "12", "Prédiction de l'enquête 2025"],
-               [c("make supervise"), "09 à 12", "Tout le volet supervisé"],
-               [c("make tout"), "01 à 12", "Rejoue tout le projet"],
+               [c("make supervise"), "09 à 11", "Tout le volet supervisé"],
+               [c("make all"), "01 à 11", "Rejoue tout le projet"],
                [c("make rapport-pdf"), "—", "Régénère ce rapport"]],
               [4.2, 2.0, 10.2]),
       Spacer(1, 6),
       p("Parcours conseillé pour tester le projet : " + c("make installer") + ", puis " + c("make supervise") + ". La "
-        "console affiche les scores de chaque modèle, le détail des calculs, les plus grosses erreurs et un extrait des "
-        "prédictions 2025. Les résultats sont aussi enregistrés en CSV dans " + c("dechets/data/processed/") + "."),
+        "console affiche les scores de chaque modèle, le détail des calculs et les plus grosses erreurs. Les résultats sont aussi enregistrés en CSV dans " + c("dechets/data/processed/") + "."),
       encadre("Bon à savoir",
               "Le script " + c("07_income_prep.py") + " n'a pas de commande : il assemble des fichiers INSEE téléchargés "
               "à la main, non conservés. Son résultat, " + c("insee_revenu_median_dep_2013_2021.csv") + ", est inclus "
@@ -1052,8 +1129,8 @@ H += [Chapitre("Annexe C. Guide d'utilisation du projet"),
            "    ├── data/raw/         données sources, jamais modifiées\n"
            "    ├── data/processed/   fichiers produits par les scripts\n"
            "    ├── data/figures/     graphiques\n"
-           "    ├── scripts/          01 à 12\n"
-           "    ├── rapport/          ce rapport (PDF et générateur), rapport HTML\n"
+           "    ├── scripts/          01 à 11\n"
+           "    ├── rapport/          ce rapport (PDF, générateur, logo), rapport HTML\n"
            "    └── COMPTE_RENDU.md   synthèse du volet supervisé")]
 
 doc = Rapport(SORTIE)
