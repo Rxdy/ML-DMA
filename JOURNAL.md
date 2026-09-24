@@ -395,3 +395,19 @@ Pipeline rejoué en entier : résultats identiques (R² 0,715 en régression lin
 **Vérifié** : installation et `make all` réussis sur Ubuntu 22.04 (Python 3.10, pandas 2.3) et 24.04 (Python 3.12, pandas 3.0), avec des résultats identiques au chiffre près.
 
 **Google Colab** : notebook `dechets/notebooks/projet_dechets.ipynb`, qui télécharge le dépôt et rejoue toutes les étapes avec leurs explications ; lien « Ouvrir dans Colab » dans le README. Fonctionne aussi dans Jupyter en local.
+
+---
+
+## 2026-09-24 — Clustering : profils de départements selon ce que leurs habitants jettent
+
+**Question** : existe-t-il des profils types de départements selon la façon dont leurs habitants jettent ?
+
+**Variables** (script 12) : 5 types de déchets en kg par habitant (ordures ménagères, recyclables, déchets verts, encombrants, dangereux), moyenne 2019–2021, standardisées ; 100 départements (Mayotte sans détail). Écartés : gravats, « autres », total (doublon). Traitement, population et revenu gardés comme variables illustratives, pour ne pas compter deux fois la même information (déchets verts ↔ compostage 0,71 ; recyclables ↔ recyclage 0,63).
+
+**Choix de k** : coude à 4 (−20 % puis −18 % d'inertie, ensuite −10 à −12 %) et pic local de silhouette à 4 (0,315) ; k = 2 a une meilleure silhouette (0,358) mais un découpage trop grossier ; à partir de k = 6, la Guadeloupe forme un groupe à elle seule.
+
+**Les 4 groupes** : profil intermédiaire (59), déchets verts et déchèteries (19, Grand Ouest), grandes agglomérations (13, toute l'Île-de-France, Lyon, Marseille, Toulouse, plus Martinique et Guyane), ordures ménagères élevées (9, Méditerranée et Corse, plus Guadeloupe). Hypothèses d'interprétation : type d'habitat et tourisme.
+
+**Analyses** (script 13) : ACP, 2 axes = 71 % de l'information (axe 1 : tri et apports en déchèterie ; axe 2 : volume d'ordures ménagères et d'encombrants). Robustesse : ARI de 0,81 à 1 selon la graine, 0,83 avec la classification de Ward, 0,65 sans l'outre-mer (frontières déplacées, cœurs stables). ARI de 0,006 avec le clustering du traitement : production et traitement sont indépendants.
+
+**Livrables** : `CLUSTERING.md`, rapport PDF `rapport_ML_dechets_clustering.pdf` (même mise en page que le premier), partie 2 du notebook Colab, commandes `make profils`, `make analyses-profils`, `make non-supervise`.

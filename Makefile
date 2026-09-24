@@ -7,11 +7,11 @@ RUN := cd dechets && $(PY)
 
 .DEFAULT_GOAL := aide
 .PHONY: aide installer verifier-env explorer clustering preparation correlation decoupage modeles revenu \
-        pipeline details erreurs supervise all
+        pipeline details erreurs supervise profils analyses-profils non-supervise all
 
 aide: ## Affiche cette aide
 	@echo "Commandes disponibles :"
-	@grep -E '^[a-z-]+:.*## ' $(MAKEFILE_LIST) | awk 'BEGIN{FS=":.*## "}{printf "  make %-13s %s\n", $$1, $$2}'
+	@grep -E '^[a-z-]+:.*## ' $(MAKEFILE_LIST) | awk 'BEGIN{FS=":.*## "}{printf "  make %-17s %s\n", $$1, $$2}'
 
 installer: ## Crée l'environnement .venv et installe les dépendances
 	@command -v python3 >/dev/null || { echo "Python 3 est introuvable. Sur Ubuntu : sudo apt install python3"; exit 1; }
@@ -58,4 +58,12 @@ erreurs: preparation ## 11 - Analyse des erreurs du modèle
 
 supervise: pipeline details erreurs ## Le volet supervisé complet (09 à 11)
 
-all: explorer correlation modeles revenu supervise ## Rejoue tout le projet, de 01 à 11
+profils: verifier-env ## 12 - Clustering : choix des variables, coude, silhouette, 4 groupes
+	$(RUN) scripts/12_clustering_production.py
+
+analyses-profils: profils ## 13 - Corrélations, ACP, silhouette par département, robustesse
+	$(RUN) scripts/13_clustering_analyses.py
+
+non-supervise: analyses-profils ## Le volet non supervisé complet (12 et 13)
+
+all: explorer correlation modeles revenu supervise non-supervise ## Rejoue tout le projet, de 01 à 13
