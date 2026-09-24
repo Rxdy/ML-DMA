@@ -1,0 +1,1019 @@
+<title>Rapport DMA SINOE</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,450;9..144,560;9..144,650&family=Public+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap');
+
+  :root{
+    --bg:#F1F4EF;
+    --surface:#FBFCFA;
+    --surface-raised:#FFFFFF;
+    --text:#1B221C;
+    --text-muted:#5B6559;
+    --text-faint:#8B958A;
+    --border:#D9E0D4;
+    --border-strong:#C1CBBB;
+    --accent:#33593B;
+    --accent-strong:#20391F;
+    --accent-soft:#E3EBDD;
+    --amber:#9C6B2A;
+    --amber-soft:#F1E4CC;
+    --shadow: 0 1px 2px rgba(27,34,28,0.06), 0 8px 24px rgba(27,34,28,0.05);
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#12160F;
+      --surface:#181D14;
+      --surface-raised:#1F2519;
+      --text:#E7ECE1;
+      --text-muted:#A3AE9B;
+      --text-faint:#78846F;
+      --border:#2B3324;
+      --border-strong:#3A4531;
+      --accent:#8FC397;
+      --accent-strong:#B3DCB8;
+      --accent-soft:#22301F;
+      --amber:#D9A857;
+      --amber-soft:#332913;
+      --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 8px 24px rgba(0,0,0,0.35);
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#12160F;
+    --surface:#181D14;
+    --surface-raised:#1F2519;
+    --text:#E7ECE1;
+    --text-muted:#A3AE9B;
+    --text-faint:#78846F;
+    --border:#2B3324;
+    --border-strong:#3A4531;
+    --accent:#8FC397;
+    --accent-strong:#B3DCB8;
+    --accent-soft:#22301F;
+    --amber:#D9A857;
+    --amber-soft:#332913;
+    --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 8px 24px rgba(0,0,0,0.35);
+  }
+
+  *{box-sizing:border-box;}
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:'Public Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    line-height:1.6;
+    padding:0 20px;
+  }
+  .page{
+    max-width:760px;
+    margin:0 auto;
+    padding-block:48px 80px;
+  }
+
+  .eyebrow{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:12.5px;
+    letter-spacing:0.09em;
+    text-transform:uppercase;
+    color:var(--accent);
+    display:flex;
+    align-items:center;
+    gap:10px;
+  }
+  .eyebrow::before{
+    content:"";
+    width:7px; height:7px;
+    background:var(--accent);
+    border-radius:1px;
+    display:inline-block;
+  }
+
+  h1{
+    font-family:'Fraunces', serif;
+    font-weight:650;
+    font-optical-sizing:auto;
+    font-size:clamp(28px, 5vw, 38px);
+    letter-spacing:-0.01em;
+    text-wrap:balance;
+    margin:14px 0 6px;
+    color:var(--accent-strong);
+  }
+  .subtitle{
+    font-size:16.5px;
+    color:var(--text-muted);
+    max-width:56ch;
+    text-wrap:balance;
+    margin:0 0 22px;
+  }
+
+  .meta-row{
+    display:flex;
+    flex-wrap:wrap;
+    gap:10px 22px;
+    padding-top:20px;
+    border-top:1px solid var(--border);
+    font-family:'IBM Plex Mono', monospace;
+    font-size:12.5px;
+    color:var(--text-faint);
+  }
+  .meta-row b{ color:var(--text-muted); font-weight:500; }
+
+  section{ margin-top:52px; }
+
+  .h2-row{
+    display:flex;
+    align-items:baseline;
+    gap:12px;
+    margin-bottom:6px;
+  }
+  .h2-num{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:13px;
+    color:var(--text-faint);
+  }
+  h2{
+    font-family:'Fraunces', serif;
+    font-weight:560;
+    font-size:23px;
+    color:var(--text);
+    margin:0;
+  }
+  .section-intro{
+    color:var(--text-muted);
+    max-width:64ch;
+    margin:10px 0 24px;
+  }
+
+  p{ max-width:64ch; }
+  code{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:0.92em;
+    background:var(--accent-soft);
+    color:var(--accent-strong);
+    padding:0.1em 0.4em;
+    border-radius:4px;
+  }
+
+  /* stat tiles */
+  .stats{
+    display:grid;
+    grid-template-columns:repeat(4, 1fr);
+    gap:1px;
+    background:var(--border);
+    border:1px solid var(--border);
+    border-radius:10px;
+    overflow:hidden;
+    margin-top:8px;
+  }
+  .stat{
+    background:var(--surface-raised);
+    padding:18px 16px;
+    display:flex;
+    flex-direction:column;
+    gap:4px;
+  }
+  .stat-value{
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    font-size:26px;
+    font-variant-numeric:tabular-nums;
+    color:var(--accent-strong);
+  }
+  .stat-label{
+    font-size:12px;
+    color:var(--text-faint);
+    line-height:1.35;
+  }
+  @media (max-width:560px){
+    .stats{ grid-template-columns:repeat(2,1fr); }
+  }
+
+  /* data tables */
+  .table-wrap{ overflow-x:auto; margin-top:18px; border:1px solid var(--border); border-radius:10px; }
+  table{
+    width:100%;
+    border-collapse:collapse;
+    font-size:14px;
+    background:var(--surface-raised);
+  }
+  caption{
+    text-align:left;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11.5px;
+    color:var(--text-faint);
+    padding:10px 14px 0;
+  }
+  th{
+    text-align:left;
+    font-size:11.5px;
+    letter-spacing:0.04em;
+    text-transform:uppercase;
+    color:var(--text-faint);
+    font-weight:600;
+    padding:12px 14px;
+    border-bottom:1px solid var(--border-strong);
+    white-space:nowrap;
+  }
+  td{
+    padding:12px 14px;
+    border-bottom:1px solid var(--border);
+    vertical-align:top;
+    color:var(--text-muted);
+  }
+  td.num, th.num{ font-family:'IBM Plex Mono', monospace; font-variant-numeric:tabular-nums; color:var(--text); white-space:nowrap; }
+  td.strong{ color:var(--text); font-weight:500; }
+  tr:last-child td{ border-bottom:none; }
+
+  .tag{
+    display:inline-block;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11px;
+    padding:2px 8px;
+    border-radius:20px;
+    background:var(--accent-soft);
+    color:var(--accent-strong);
+  }
+  .tag.warn{ background:var(--amber-soft); color:var(--amber); }
+  .tag.off{ background:transparent; border:1px solid var(--border-strong); color:var(--text-faint); }
+
+  /* flow diagram */
+  .flow{ display:flex; flex-direction:column; align-items:center; gap:12px; margin-top:24px; }
+  .flow-row{ display:flex; align-items:center; justify-content:center; gap:10px; flex-wrap:wrap; }
+  .flow-node{
+    border:1px solid var(--border-strong);
+    background:var(--surface-raised);
+    border-radius:9px;
+    padding:11px 15px;
+    font-size:13px;
+    text-align:center;
+    box-shadow:var(--shadow);
+  }
+  .flow-node .n{ display:block; font-family:'IBM Plex Mono', monospace; font-size:11px; color:var(--text-faint); margin-top:3px; }
+  .flow-node.result{ background:var(--accent-soft); border-color:var(--accent); color:var(--accent-strong); font-weight:600; }
+  .flow-node.unused{ border-style:dashed; color:var(--text-faint); background:transparent; box-shadow:none; }
+  .flow-arrow{ color:var(--text-faint); font-family:'IBM Plex Mono', monospace; font-size:12px; white-space:nowrap; }
+  .flow-join{ font-family:'IBM Plex Mono', monospace; font-size:11.5px; color:var(--accent); text-align:center; }
+  .flow-aside{ margin-top:6px; padding-top:16px; border-top:1px dashed var(--border); display:flex; gap:10px; flex-wrap:wrap; justify-content:center; }
+
+  /* cleaning steps */
+  .steps{ display:flex; flex-direction:column; gap:0; margin-top:18px; border-top:1px solid var(--border); }
+  .step{
+    display:grid;
+    grid-template-columns:34px 1fr;
+    gap:16px;
+    padding:20px 0;
+    border-bottom:1px solid var(--border);
+  }
+  .step-num{
+    font-family:'IBM Plex Mono', monospace;
+    color:var(--text-faint);
+    font-size:13px;
+    padding-top:2px;
+  }
+  .step-title{
+    font-weight:600;
+    font-size:15px;
+    color:var(--text);
+    margin-bottom:4px;
+  }
+  .step-why{
+    margin-top:8px;
+    padding:10px 12px;
+    background:var(--accent-soft);
+    border-radius:8px;
+    font-size:13.5px;
+    color:var(--accent-strong);
+  }
+  .step-why b{ font-family:'IBM Plex Mono', monospace; font-weight:600; font-size:11px; letter-spacing:0.04em; text-transform:uppercase; display:block; margin-bottom:3px; opacity:0.85;}
+
+  .callout{
+    margin-top:20px;
+    border-left:3px solid var(--amber);
+    background:var(--amber-soft);
+    padding:14px 16px;
+    border-radius:0 8px 8px 0;
+    font-size:14px;
+    color:var(--text);
+  }
+  .callout b{ color:var(--amber); font-family:'IBM Plex Mono', monospace; font-size:11px; letter-spacing:0.04em; text-transform:uppercase; display:block; margin-bottom:4px;}
+
+  .viz-scatter{
+    color-scheme: light;
+    --scatter-point: var(--accent);
+    --scatter-grid:  var(--border);
+    --scatter-muted: var(--text-faint);
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]) .viz-scatter{ color-scheme: dark; }
+  }
+  :root[data-theme="dark"] .viz-scatter{ color-scheme: dark; }
+  .scatter-wrap{ display:flex; justify-content:center; margin-top:20px; }
+  .scatter-wrap svg{ width:100%; max-width:460px; height:auto; }
+  .scatter-caption{ text-align:center; font-size:12px; color:var(--text-faint); margin-top:4px; }
+
+
+  /* --- cluster chart (dataviz skill: validated categorical palette, local scope) --- */
+  .viz-cluster{
+    color-scheme: light;
+    --surface-1:      var(--surface-raised);
+    --text-primary:   var(--text);
+    --text-secondary: var(--text-muted);
+    --text-muted-v:   var(--text-faint);
+    --series-1: #2a78d6; --series-2: #eb6834; --series-3: #1baf7a; --series-4: #eda100;
+    --series-5: #e87ba4; --series-6: #008300; --series-7: #4a3aa7;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]) .viz-cluster{
+      color-scheme: dark;
+      --series-1: #3987e5; --series-2: #d95926; --series-3: #199e70; --series-4: #c98500;
+      --series-5: #d55181; --series-6: #008300; --series-7: #9085e9;
+    }
+  }
+  :root[data-theme="dark"] .viz-cluster{
+    color-scheme: dark;
+    --series-1: #3987e5; --series-2: #d95926; --series-3: #199e70; --series-4: #c98500;
+    --series-5: #d55181; --series-6: #008300; --series-7: #9085e9;
+  }
+  .cluster-row{ display:flex; align-items:center; gap:14px; margin-top:14px; }
+  .cluster-row:first-child{ margin-top:22px; }
+  .cluster-tag{ width:128px; flex:none; font-size:12.5px; }
+  .cluster-tag b{ display:block; color:var(--text-primary); font-size:13px; }
+  .cluster-tag span{ color:var(--text-muted-v); font-family:'IBM Plex Mono', monospace; font-size:11px; }
+  .cluster-track{
+    flex:1; display:flex; height:22px; border-radius:0 5px 5px 0; overflow:hidden;
+    background:var(--border);
+  }
+  .cluster-seg{
+    display:flex; align-items:center; justify-content:center;
+    font-family:'IBM Plex Mono', monospace; font-size:10.5px; font-weight:500; color:#fff;
+    margin-right:2px; white-space:nowrap; overflow:hidden;
+  }
+  .cluster-seg:last-child{ margin-right:0; border-radius:0 4px 4px 0; }
+  .cluster-seg.ink{ color:var(--text-primary); }
+  .cluster-legend{ display:flex; flex-wrap:wrap; gap:8px 18px; margin-top:22px; padding-top:16px; border-top:1px solid var(--border); }
+  .cluster-legend-item{ display:flex; align-items:center; gap:6px; font-size:12px; color:var(--text-muted); }
+  .cluster-swatch{ width:10px; height:10px; border-radius:2px; flex:none; }
+
+  footer{
+    margin-top:64px;
+    padding-top:20px;
+    border-top:1px solid var(--border);
+    display:flex;
+    justify-content:space-between;
+    flex-wrap:wrap;
+    gap:8px;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11.5px;
+    color:var(--text-faint);
+  }
+</style>
+
+<div class="page">
+
+  <div class="eyebrow">Projet ML-DMA — document de travail</div>
+  <h1>Rapport de préparation des données</h1>
+  <p class="subtitle">Déchets ménagers et assimilés (DMA) — sources SINOE (ADEME) et INSEE. Ce document couvre l'exploration des données, le nettoyage, et les premiers résultats du modèle de régression.</p>
+  <div class="meta-row">
+    <span><b>Domaine</b> Gestion des déchets, France, par département</span>
+    <span><b>Producteur</b> ADEME (SINOE) / INSEE</span>
+    <span><b>Licence</b> Ouverte 2.0</span>
+    <span><b>Statut</b> Préparation des données, régression et clustering — complet</span>
+  </div>
+
+  <section>
+    <div class="h2-row"><span class="h2-num">01</span><h2>Sources de données</h2></div>
+    <p class="section-intro">Le jeu de données publié par l'ADEME sur data.gouv.fr ("destination des DMA collectés par type de traitement") a été complété par trois autres sources pour couvrir les besoins du projet : profil de traitement, population, et une année supplémentaire (2023).</p>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Fichier</th><th class="num">Lignes</th><th>Période</th><th>Apport</th><th>Statut</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="strong">sinoe_dma.csv</td>
+            <td class="num">14 660</td>
+            <td class="num">2009–2021</td>
+            <td>Tonnage par département × type de déchet × type de traitement (7 catégories chacun)</td>
+            <td><span class="tag">utilisé — clustering</span></td>
+          </tr>
+          <tr>
+            <td class="strong">chiffres_cles_hors_gravats.csv</td>
+            <td class="num">800</td>
+            <td class="num">2009–2023</td>
+            <td>Tonnage, population (<code>VA_POPANNEE</code>) et ratio kg/habitant déjà calculés — seule source couvrant 2023</td>
+            <td><span class="tag">utilisé — base régression</span></td>
+          </tr>
+          <tr>
+            <td class="strong">chiffres_cles_avec_gravats.csv</td>
+            <td class="num">701</td>
+            <td class="num">2009–2021</td>
+            <td>Contrôle croisé — mêmes populations que le fichier hors-gravats (0 écart constaté)</td>
+            <td><span class="tag warn">vérification ponctuelle</span></td>
+          </tr>
+          <tr>
+            <td class="strong">insee_population_dep_sexe_gca.xls</td>
+            <td class="num">101 dép.</td>
+            <td class="num">1975–2023</td>
+            <td>Population par âge/sexe — téléchargée en réserve, non retenue (redondante avec <code>VA_POPANNEE</code>)</td>
+            <td><span class="tag off">non utilisé</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout">
+      <b>Pourquoi « avec / hors gravats » et pas pour les autres catégories ?</b>
+      D'après la documentation méthodologique des indicateurs DMA (ORDEEC), les déblais et gravats sont mis à part pour deux raisons : ils viennent surtout d'activités économiques (chantiers, BTP) plutôt que du comportement des ménages, et leur volume varie fortement d'un territoire à l'autre selon les chantiers en cours — ce qui rend la comparaison « par habitant » peu fiable. Les autres catégories (OMR, recyclables, déchets verts, encombrants, déchets dangereux) sont produites plus régulièrement par les ménages eux-mêmes, proportionnellement à la population, d'où l'absence de variante « avec/sans » pour elles. Vérifié sur nos données : écart-type du ratio par habitant = 100,6 kg <span class="tag warn">avec gravats</span> contre 80,3 kg <span class="tag">hors gravats</span> — les gravats ajoutent bien de la variabilité non liée à la population, ce qui confirme le choix de <code>chiffres_cles_hors_gravats.csv</code> comme base de la régression.
+    </div>
+
+    <p class="section-intro" style="margin-top:24px">Un seul point de jonction entre fichiers dans tout le pipeline : le <code>cluster</code> issu de <code>sinoe_dma.csv</code> est ajouté au dataset de régression par une jointure sur le code département (<code>C_DEPT</code>). Les fichiers 3 et 4 restent hors de ce flux.</p>
+
+    <div class="flow">
+      <div class="flow-row">
+        <div class="flow-node"><b>sinoe_dma.csv</b><span class="n">14 660 lignes</span></div>
+        <span class="flow-arrow">→ pivot % par traitement →</span>
+        <div class="flow-node result"><b>cluster</b><span class="n">101 départements</span></div>
+      </div>
+      <div class="flow-row">
+        <div class="flow-node"><b>chiffres_cles_hors_gravats.csv</b><span class="n">800 lignes</span></div>
+        <span class="flow-arrow">→ base régression →</span>
+      </div>
+      <div class="flow-join">⇊&nbsp; jointure sur <code>C_DEPT</code> (clé commune)</div>
+      <div class="flow-row">
+        <div class="flow-node result"><b>Dataset régression final</b><span class="n">800 → 699 lignes exploitables (2009 sans lag exclue)</span></div>
+      </div>
+      <div class="flow-aside">
+        <div class="flow-node unused">chiffres_cles_avec_gravats.csv<span class="n">comparé une fois, puis écarté</span></div>
+        <div class="flow-node unused">insee_population…xls<span class="n">jamais chargé dans un script</span></div>
+      </div>
+    </div>
+
+    <p class="section-intro" style="margin-top:32px">Les deux fichiers utilisés partagent plusieurs noms de colonnes (<code>C_DEPT</code>, <code>N_DEPT</code>, <code>C_REGION</code>, <code>L_REGION</code>, <code>ANNEE</code>, <code>TONNAGE_DMA</code>) — encore fallait-il vérifier qu'ils désignent bien la même chose.</p>
+
+    <div class="table-wrap">
+      <table>
+        <caption>Cohérence des colonnes communes entre sinoe_dma.csv et chiffres_cles_hors_gravats.csv</caption>
+        <thead><tr><th>Colonne</th><th>Constat</th><th>Verdict</th></tr></thead>
+        <tbody>
+          <tr>
+            <td class="strong"><code>C_DEPT</code> / <code>N_DEPT</code></td>
+            <td>101 / 101 départements présents dans les deux fichiers, aucun nom différent pour un même code</td>
+            <td><span class="tag">identique</span></td>
+          </tr>
+          <tr>
+            <td class="strong"><code>C_REGION</code> / <code>L_REGION</code></td>
+            <td>Même référentiel de régions dans les deux fichiers</td>
+            <td><span class="tag">identique</span></td>
+          </tr>
+          <tr>
+            <td class="strong"><code>TONNAGE_DMA</code></td>
+            <td>Même nom, périmètre différent : en sommant le détail de <code>sinoe_dma.csv</code> par département/année, écart moyen de <b>10,5 %</b> avec le total de <code>chiffres_cles_hors_gravats.csv</code> (jusqu'à 28 % pour les Landes) — <code>sinoe_dma.csv</code> inclut la catégorie « Déblais et gravats », que le fichier hors-gravats exclut par définition. En retirant cette catégorie du calcul, l'écart tombe à <b>0,03 %</b>.</td>
+            <td><span class="tag warn">même nom, périmètre différent</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout" style="margin-top:16px">
+      <b>Conséquence pour le pipeline</b>
+      Le dataset de régression utilise <code>TONNAGE_DMA</code>/<code>RATIO_DMA</code> directement depuis <code>chiffres_cles_hors_gravats.csv</code>, jamais une somme recalculée depuis <code>sinoe_dma.csv</code> — pas de risque de mélanger les deux périmètres par erreur. Point de vigilance conservé pour la suite : le clustering, lui, est basé sur <code>sinoe_dma.csv</code> et inclut donc les gravats, contrairement à la cible de régression qui les exclut — les deux jeux ne partagent pas exactement le même périmètre de déchets.
+    </div>
+  </section>
+
+  <section>
+    <div class="h2-row"><span class="h2-num">02</span><h2>Ce que l'exploration a montré</h2></div>
+    <p class="section-intro">Premier tri des colonnes et vérification systématique des valeurs manquantes sur les quatre fichiers.</p>
+
+    <div class="stats">
+      <div class="stat"><span class="stat-value">0</span><span class="stat-label">valeur manquante — sur les 4 fichiers</span></div>
+      <div class="stat"><span class="stat-value">0</span><span class="stat-label">ligne dupliquée</span></div>
+      <div class="stat"><span class="stat-value">101</span><span class="stat-label">départements couverts</span></div>
+      <div class="stat"><span class="stat-value">2009–23</span><span class="stat-label">période cumulée des sources</span></div>
+    </div>
+
+    <p style="margin-top:22px">Deux points structurels, pas des anomalies de collecte :</p>
+    <div class="callout">
+      <b>Années impaires uniquement</b>
+      L'enquête SINOE est biennale par construction — le fichier principal ne comporte aucune année paire ; ce n'est pas une valeur manquante à imputer.
+    </div>
+    <div class="callout" style="margin-top:12px">
+      <b>54 lignes à tonnage = 0</b>
+      Dans <code>sinoe_dma.csv</code>, aucune valeur négative — cohérent avec une absence réelle de tonnage pour une combinaison département / type de déchet / type de traitement donnée, pas une erreur de saisie.
+    </div>
+
+    <p style="margin-top:22px">Corrélations mesurées sur le jeu de régression assemblé (variable cible : <code>RATIO_DMA</code>, kg/habitant) :</p>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Paire de variables</th><th class="num">Corrélation</th><th>Lecture</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Tonnage brut ↔ Population</td><td class="num">0.966</td><td><span class="tag warn">quasi-tautologique</span> le tonnage est presque entièrement expliqué par la taille du département</td></tr>
+          <tr><td>Ratio/habitant ↔ Ratio (enquête précédente)</td><td class="num">0.913</td><td><span class="tag">signal fort</span> le comportement d'un département change peu d'une enquête à l'autre (2 ans)</td></tr>
+          <tr><td>Ratio/habitant ↔ Année brute</td><td class="num">0.020</td><td><span class="tag warn">signal quasi nul</span> l'année seule n'explique presque rien</td></tr>
+          <tr><td>Ratio/habitant ↔ Population</td><td class="num">−0.168</td><td><span class="tag">signal faible</span> léger effet taille/densité</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <div class="h2-row"><span class="h2-num">03</span><h2>Nettoyage et transformations appliquées</h2></div>
+    <p class="section-intro">Chaque étape est motivée par un constat de la section précédente — pas de transformation appliquée par défaut.</p>
+
+    <div class="steps">
+
+      <div class="step">
+        <div class="step-num">1</div>
+        <div>
+          <div class="step-title">Harmonisation des formats CSV</div>
+          Séparateur <code>;</code> → <code>,</code>, décimale <code>,</code> → <code>.</code>, encodage UTF-8 avec BOM géré explicitement.
+          <div class="step-why"><b>Pourquoi</b>Les fichiers « chiffres-clés » de l'ADEME suivent la convention Excel française, différente du fichier principal ; sans harmonisation, les nombres sont lus comme du texte mal découpé.</div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">2</div>
+        <div>
+          <div class="step-title">Zero-padding des codes département</div>
+          <code>1</code> → <code>01</code> sur la clé <code>C_DEPT</code> avant jointure.
+          <div class="step-why"><b>Pourquoi</b>Nécessaire pour que la jointure entre <code>sinoe_dma.csv</code> et les fichiers « chiffres-clés » retrouve bien chaque département — sinon des lignes entières sont perdues silencieusement.</div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">3</div>
+        <div>
+          <div class="step-title">Profil de traitement en pourcentage</div>
+          Pivot du tonnage par département × type de traitement, puis normalisation en % (chaque ligne somme à 100).
+          <div class="step-why"><b>Pourquoi</b>Le tonnage brut dépend fortement de la taille du département ; ramener en pourcentage permet de comparer des départements de tailles très différentes pour le clustering.</div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">4</div>
+        <div>
+          <div class="step-title">Cible retenue : ratio par habitant, pas le tonnage brut</div>
+          Variable à prédire fixée à <code>RATIO_DMA</code> (kg/habitant), <code>TONNAGE_DMA</code> écarté comme cible.
+          <div class="step-why"><b>Pourquoi</b>corr(tonnage, population) = 0.966 : prédire le tonnage brut reviendrait à réapprendre une simple multiplication par la population — une fuite plutôt qu'un apprentissage.</div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">5</div>
+        <div>
+          <div class="step-title">Ajout de variables de décalage (lag)</div>
+          <code>RATIO_DMA_lag1</code> et <code>TONNAGE_DMA_lag1</code> : valeurs de l'enquête précédente, par département.
+          <div class="step-why"><b>Pourquoi</b>corr(ratio, année) = 0.02 quasi nul, alors que corr(ratio, lag) = 0.91 : la trajectoire propre à chaque département porte le vrai signal temporel, pas le numéro de l'année.</div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">6</div>
+        <div>
+          <div class="step-title">Suppression des lignes 2009</div>
+          101 lignes retirées (première année de chaque département, pas d'enquête antérieure disponible).
+          <div class="step-why"><b>Pourquoi</b>Sans lag disponible, ces lignes sont inexploitables pour un modèle qui s'appuie sur l'historique du département.</div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">7</div>
+        <div>
+          <div class="step-title">Split train / test temporel</div>
+          Entraînement sur 2011–2019 (501 lignes), test sur 2021 et 2023 (198 lignes) — pas de tirage aléatoire.
+          <div class="step-why"><b>Pourquoi</b>Un split aléatoire mélangerait futur et passé dans l'entraînement ; le split temporel simule une vraie prédiction du futur plutôt qu'une interpolation.</div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">8</div>
+        <div>
+          <div class="step-title">Mise à l'échelle Min-Max [0, 1]</div>
+          <code>MinMaxScaler</code> calibré (fit) uniquement sur le train, puis appliqué (transform) au train et au test.
+          <div class="step-why"><b>Pourquoi</b>Calibrer sur l'ensemble des données ferait fuiter les statistiques du test (min/max) vers l'entraînement. Conséquence attendue : sur le test, certaines valeurs dépassent légèrement [0, 1] (ex. 1.03) car 2021/2023 atteignent des valeurs jamais vues sur 2011–2019.</div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <section>
+    <div class="h2-row"><span class="h2-num">04</span><h2>Résultats de la régression</h2></div>
+    <p class="section-intro">Cible : <code>RATIO_DMA</code> (kg/habitant). Entraînement sur 2011–2019 (501 lignes), test sur 2021 et 2023 (198 lignes), jamais vus pendant l'entraînement. Trois approches comparées, y compris une <b>baseline naïve</b> qui ne fait aucun apprentissage — elle sert de repère minimal à battre.</p>
+
+    <div class="table-wrap">
+      <table>
+        <caption>Métriques sur le jeu de test</caption>
+        <thead>
+          <tr><th>Modèle</th><th class="num">MAE</th><th class="num">RMSE</th><th class="num">R²</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Baseline naïve <span class="tag">= valeur de l'enquête précédente</span></td>
+            <td class="num">36.49</td><td class="num">44.58</td><td class="num">0.702</td>
+          </tr>
+          <tr>
+            <td class="strong">Régression linéaire</td>
+            <td class="num">35.89</td><td class="num">43.64</td><td class="num">0.715</td>
+          </tr>
+          <tr>
+            <td>Random Forest</td>
+            <td class="num">36.05</td><td class="num">44.21</td><td class="num">0.707</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="table-wrap" style="margin-top:16px">
+      <table>
+        <caption>Importance des variables — Random Forest</caption>
+        <thead><tr><th>Variable</th><th class="num">Importance</th></tr></thead>
+        <tbody>
+          <tr><td class="strong">RATIO_DMA_lag1</td><td class="num">0.949</td></tr>
+          <tr><td>TONNAGE_DMA_lag1</td><td class="num">0.018</td></tr>
+          <tr><td>VA_POPANNEE</td><td class="num">0.017</td></tr>
+          <tr><td>cluster (typologie de traitement)</td><td class="num">0.015</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout" style="margin-top:20px">
+      <b>Lecture du résultat</b>
+      Les modèles battent à peine la baseline naïve — la régression linéaire gagne 0.6 point de R² (0.715 contre 0.702), le Random Forest reste dans le même ordre de grandeur. Le lag (<code>RATIO_DMA_lag1</code>) porte 94.9 % de l'importance du Random Forest : le ratio de déchets par habitant est très stable d'une enquête à l'autre, donc « prédire » revient surtout à recopier la valeur précédente. Ce n'est pas un échec de modélisation : c'est une conclusion sur les données — population et typologie de traitement, des caractéristiques stables du département, ajoutent peu face à l'inertie temporelle du ratio. Des variables qui varient réellement dans le temps (revenu, mise en place d'un nouveau tri sélectif, densité urbaine évolutive) seraient de meilleurs candidats pour dépasser cette baseline.
+    </div>
+
+    <p class="section-intro" style="margin-top:28px">Chaque point ci-dessous est une prédiction concrète : un département, une année de test (2021 ou 2023), la valeur que la régression linéaire est allée chercher. Plus un point est proche de la diagonale pointillée, plus la prédiction était juste.</p>
+
+    <div class="viz-scatter">
+      <div class="scatter-wrap">
+        <svg viewBox="0 0 574 550" role="img" aria-label="Nuage de points : ratio prédit par la régression linéaire en fonction du ratio réel, sur les 198 lignes du jeu de test (2021 et 2023)">
+<line x1="54.0" y1="16" x2="54.0" y2="516.0" stroke="var(--scatter-grid)" stroke-width="1"/>
+<text x="54.0" y="534.0" font-size="10" fill="var(--scatter-muted)" text-anchor="middle" font-family="IBM Plex Mono, monospace">300</text>
+<text x="46.0" y="519.0" font-size="10" fill="var(--scatter-muted)" text-anchor="end" font-family="IBM Plex Mono, monospace">300</text>
+<line x1="130.9" y1="16" x2="130.9" y2="516.0" stroke="var(--scatter-grid)" stroke-width="1"/>
+<text x="130.9" y="534.0" font-size="10" fill="var(--scatter-muted)" text-anchor="middle" font-family="IBM Plex Mono, monospace">400</text>
+<text x="46.0" y="442.1" font-size="10" fill="var(--scatter-muted)" text-anchor="end" font-family="IBM Plex Mono, monospace">400</text>
+<line x1="207.8" y1="16" x2="207.8" y2="516.0" stroke="var(--scatter-grid)" stroke-width="1"/>
+<text x="207.8" y="534.0" font-size="10" fill="var(--scatter-muted)" text-anchor="middle" font-family="IBM Plex Mono, monospace">500</text>
+<text x="46.0" y="365.2" font-size="10" fill="var(--scatter-muted)" text-anchor="end" font-family="IBM Plex Mono, monospace">500</text>
+<line x1="284.8" y1="16" x2="284.8" y2="516.0" stroke="var(--scatter-grid)" stroke-width="1"/>
+<text x="284.8" y="534.0" font-size="10" fill="var(--scatter-muted)" text-anchor="middle" font-family="IBM Plex Mono, monospace">600</text>
+<text x="46.0" y="288.2" font-size="10" fill="var(--scatter-muted)" text-anchor="end" font-family="IBM Plex Mono, monospace">600</text>
+<line x1="361.7" y1="16" x2="361.7" y2="516.0" stroke="var(--scatter-grid)" stroke-width="1"/>
+<text x="361.7" y="534.0" font-size="10" fill="var(--scatter-muted)" text-anchor="middle" font-family="IBM Plex Mono, monospace">700</text>
+<text x="46.0" y="211.3" font-size="10" fill="var(--scatter-muted)" text-anchor="end" font-family="IBM Plex Mono, monospace">700</text>
+<line x1="438.6" y1="16" x2="438.6" y2="516.0" stroke="var(--scatter-grid)" stroke-width="1"/>
+<text x="438.6" y="534.0" font-size="10" fill="var(--scatter-muted)" text-anchor="middle" font-family="IBM Plex Mono, monospace">800</text>
+<text x="46.0" y="134.4" font-size="10" fill="var(--scatter-muted)" text-anchor="end" font-family="IBM Plex Mono, monospace">800</text>
+<line x1="515.5" y1="16" x2="515.5" y2="516.0" stroke="var(--scatter-grid)" stroke-width="1"/>
+<text x="515.5" y="534.0" font-size="10" fill="var(--scatter-muted)" text-anchor="middle" font-family="IBM Plex Mono, monospace">900</text>
+<text x="46.0" y="57.5" font-size="10" fill="var(--scatter-muted)" text-anchor="end" font-family="IBM Plex Mono, monospace">900</text>
+<line x1="54.0" y1="516.0" x2="554.0" y2="16.0" stroke="var(--scatter-muted)" stroke-width="1.5" stroke-dasharray="4 4"/>
+<circle cx="210.7" cy="381.9" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Ain 2021 : réel 504 — prédit 474 kg/hab</title></circle>
+<circle cx="180.1" cy="358.1" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Ain 2023 : réel 464 — prédit 505 kg/hab</title></circle>
+<circle cx="252.9" cy="331.8" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Aisne 2021 : réel 559 — prédit 539 kg/hab</title></circle>
+<circle cx="208.1" cy="317.1" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Aisne 2023 : réel 500 — prédit 559 kg/hab</title></circle>
+<circle cx="259.9" cy="337.7" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Allier 2021 : réel 568 — prédit 532 kg/hab</title></circle>
+<circle cx="217.6" cy="309.5" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Allier 2023 : réel 513 — prédit 568 kg/hab</title></circle>
+<circle cx="350.9" cy="237.8" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Alpes-de-Haute-Provence 2021 : réel 686 — prédit 662 kg/hab</title></circle>
+<circle cx="345.3" cy="221.4" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Alpes-de-Haute-Provence 2023 : réel 679 — prédit 683 kg/hab</title></circle>
+<circle cx="298.7" cy="258.3" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Hautes-Alpes 2021 : réel 618 — prédit 635 kg/hab</title></circle>
+<circle cx="285.8" cy="271.4" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Hautes-Alpes 2023 : réel 601 — prédit 618 kg/hab</title></circle>
+<circle cx="351.6" cy="219.9" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Alpes-Maritimes 2021 : réel 687 — prédit 685 kg/hab</title></circle>
+<circle cx="320.9" cy="224.2" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Alpes-Maritimes 2023 : réel 647 — prédit 679 kg/hab</title></circle>
+<circle cx="260.5" cy="322.7" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Ardèche 2021 : réel 568 — prédit 551 kg/hab</title></circle>
+<circle cx="230.0" cy="308.9" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Ardèche 2023 : réel 529 — prédit 569 kg/hab</title></circle>
+<circle cx="249.9" cy="345.7" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Ardennes 2021 : réel 555 — prédit 521 kg/hab</title></circle>
+<circle cx="203.4" cy="318.7" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Ardennes 2023 : réel 494 — prédit 556 kg/hab</title></circle>
+<circle cx="326.7" cy="211.2" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Ariège 2021 : réel 654 — prédit 696 kg/hab</title></circle>
+<circle cx="304.5" cy="244.6" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Ariège 2023 : réel 626 — prédit 653 kg/hab</title></circle>
+<circle cx="217.5" cy="355.4" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Aube 2021 : réel 513 — prédit 509 kg/hab</title></circle>
+<circle cx="204.5" cy="350.0" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Aube 2023 : réel 496 — prédit 516 kg/hab</title></circle>
+<circle cx="312.2" cy="276.1" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Aude 2021 : réel 636 — prédit 612 kg/hab</title></circle>
+<circle cx="271.4" cy="259.4" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Aude 2023 : réel 583 — prédit 634 kg/hab</title></circle>
+<circle cx="243.6" cy="353.5" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Aveyron 2021 : réel 547 — prédit 511 kg/hab</title></circle>
+<circle cx="218.9" cy="324.8" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Aveyron 2023 : réel 514 — prédit 549 kg/hab</title></circle>
+<circle cx="254.2" cy="328.4" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Bouches-du-Rhône 2021 : réel 560 — prédit 544 kg/hab</title></circle>
+<circle cx="213.4" cy="323.9" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Bouches-du-Rhône 2023 : réel 507 — prédit 550 kg/hab</title></circle>
+<circle cx="334.2" cy="246.6" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Calvados 2021 : réel 664 — prédit 650 kg/hab</title></circle>
+<circle cx="295.4" cy="239.2" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Calvados 2023 : réel 614 — prédit 660 kg/hab</title></circle>
+<circle cx="251.7" cy="366.5" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Cantal 2021 : réel 557 — prédit 494 kg/hab</title></circle>
+<circle cx="222.2" cy="316.3" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Cantal 2023 : réel 519 — prédit 560 kg/hab</title></circle>
+<circle cx="239.1" cy="346.1" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Charente 2021 : réel 541 — prédit 521 kg/hab</title></circle>
+<circle cx="209.1" cy="327.8" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Charente 2023 : réel 502 — prédit 545 kg/hab</title></circle>
+<circle cx="339.3" cy="238.0" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Charente-Maritime 2021 : réel 671 — prédit 661 kg/hab</title></circle>
+<circle cx="304.7" cy="233.0" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Charente-Maritime 2023 : réel 626 — prédit 668 kg/hab</title></circle>
+<circle cx="230.7" cy="354.0" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Cher 2021 : réel 530 — prédit 511 kg/hab</title></circle>
+<circle cx="213.8" cy="337.3" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Cher 2023 : réel 508 — prédit 532 kg/hab</title></circle>
+<circle cx="265.8" cy="336.4" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Corrèze 2021 : réel 575 — prédit 533 kg/hab</title></circle>
+<circle cx="243.4" cy="302.8" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Corrèze 2023 : réel 546 — prédit 577 kg/hab</title></circle>
+<circle cx="223.1" cy="375.5" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Cote-d'Or 2021 : réel 520 — prédit 483 kg/hab</title></circle>
+<circle cx="168.9" cy="345.3" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Cote-d'Or 2023 : réel 449 — prédit 522 kg/hab</title></circle>
+<circle cx="391.5" cy="198.5" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Cotes-d'Armor 2021 : réel 739 — prédit 713 kg/hab</title></circle>
+<circle cx="350.9" cy="183.6" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Cotes-d'Armor 2023 : réel 686 — prédit 732 kg/hab</title></circle>
+<circle cx="227.6" cy="361.4" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Creuse 2021 : réel 526 — prédit 501 kg/hab</title></circle>
+<circle cx="199.5" cy="339.3" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Creuse 2023 : réel 489 — prédit 530 kg/hab</title></circle>
+<circle cx="267.3" cy="294.0" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Dordogne 2021 : réel 577 — prédit 589 kg/hab</title></circle>
+<circle cx="224.6" cy="302.8" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Dordogne 2023 : réel 522 — prédit 577 kg/hab</title></circle>
+<circle cx="183.4" cy="396.0" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Doubs 2021 : réel 468 — prédit 456 kg/hab</title></circle>
+<circle cx="137.7" cy="383.5" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Doubs 2023 : réel 409 — prédit 472 kg/hab</title></circle>
+<circle cx="257.1" cy="330.5" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Drôme 2021 : réel 564 — prédit 541 kg/hab</title></circle>
+<circle cx="222.1" cy="313.1" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Drôme 2023 : réel 519 — prédit 564 kg/hab</title></circle>
+<circle cx="327.6" cy="309.7" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Eure 2021 : réel 656 — prédit 568 kg/hab</title></circle>
+<circle cx="280.3" cy="245.0" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Eure 2023 : réel 594 — prédit 652 kg/hab</title></circle>
+<circle cx="291.8" cy="350.1" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Eure-et-Loir 2021 : réel 609 — prédit 516 kg/hab</title></circle>
+<circle cx="172.8" cy="278.7" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Eure-et-Loir 2023 : réel 454 — prédit 608 kg/hab</title></circle>
+<circle cx="365.5" cy="225.7" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Finistère 2021 : réel 705 — prédit 677 kg/hab</title></circle>
+<circle cx="325.3" cy="210.0" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Finistère 2023 : réel 653 — prédit 698 kg/hab</title></circle>
+<circle cx="415.9" cy="162.4" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Corse-du-Sud 2021 : réel 770 — prédit 760 kg/hab</title></circle>
+<circle cx="311.6" cy="159.2" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Corse-du-Sud 2023 : réel 635 — prédit 764 kg/hab</title></circle>
+<circle cx="346.0" cy="230.8" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Haute-Corse 2021 : réel 680 — prédit 671 kg/hab</title></circle>
+<circle cx="264.2" cy="226.2" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Haute-Corse 2023 : réel 573 — prédit 677 kg/hab</title></circle>
+<circle cx="290.6" cy="299.4" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Gard 2021 : réel 608 — prédit 582 kg/hab</title></circle>
+<circle cx="258.1" cy="281.5" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Gard 2023 : réel 565 — prédit 605 kg/hab</title></circle>
+<circle cx="187.8" cy="387.0" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Haute-Garonne 2021 : réel 474 — prédit 468 kg/hab</title></circle>
+<circle cx="157.3" cy="384.7" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Haute-Garonne 2023 : réel 434 — prédit 471 kg/hab</title></circle>
+<circle cx="225.9" cy="354.9" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Gers 2021 : réel 523 — prédit 509 kg/hab</title></circle>
+<circle cx="210.0" cy="341.4" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Gers 2023 : réel 503 — prédit 527 kg/hab</title></circle>
+<circle cx="247.4" cy="329.9" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Gironde 2021 : réel 551 — prédit 542 kg/hab</title></circle>
+<circle cx="222.8" cy="327.9" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Gironde 2023 : réel 519 — prédit 545 kg/hab</title></circle>
+<circle cx="277.1" cy="301.5" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Hérault 2021 : réel 590 — prédit 579 kg/hab</title></circle>
+<circle cx="248.4" cy="296.8" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Hérault 2023 : réel 553 — prédit 585 kg/hab</title></circle>
+<circle cx="196.4" cy="384.6" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Ille-et-Vilaine 2021 : réel 485 — prédit 471 kg/hab</title></circle>
+<circle cx="174.4" cy="374.4" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Ille-et-Vilaine 2023 : réel 457 — prédit 484 kg/hab</title></circle>
+<circle cx="229.1" cy="379.9" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Indre 2021 : réel 528 — prédit 477 kg/hab</title></circle>
+<circle cx="215.5" cy="338.4" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Indre 2023 : réel 510 — prédit 531 kg/hab</title></circle>
+<circle cx="224.4" cy="368.4" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Indre-et-Loire 2021 : réel 522 — prédit 492 kg/hab</title></circle>
+<circle cx="220.5" cy="345.1" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Indre-et-Loire 2023 : réel 516 — prédit 522 kg/hab</title></circle>
+<circle cx="220.4" cy="364.8" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Isère 2021 : réel 516 — prédit 497 kg/hab</title></circle>
+<circle cx="169.6" cy="352.1" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Isère 2023 : réel 450 — prédit 513 kg/hab</title></circle>
+<circle cx="222.9" cy="375.6" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Jura 2021 : réel 520 — prédit 482 kg/hab</title></circle>
+<circle cx="193.0" cy="343.9" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Jura 2023 : réel 481 — prédit 524 kg/hab</title></circle>
+<circle cx="509.1" cy="72.5" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Landes 2021 : réel 892 — prédit 877 kg/hab</title></circle>
+<circle cx="447.6" cy="68.8" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Landes 2023 : réel 812 — prédit 881 kg/hab</title></circle>
+<circle cx="266.4" cy="314.3" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Loir-et-Cher 2021 : réel 576 — prédit 562 kg/hab</title></circle>
+<circle cx="233.4" cy="302.7" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Loir-et-Cher 2023 : réel 533 — prédit 577 kg/hab</title></circle>
+<circle cx="215.4" cy="367.5" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Loire 2021 : réel 510 — prédit 493 kg/hab</title></circle>
+<circle cx="178.1" cy="354.6" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Loire 2023 : réel 461 — prédit 510 kg/hab</title></circle>
+<circle cx="217.9" cy="371.1" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Haute-Loire 2021 : réel 513 — prédit 488 kg/hab</title></circle>
+<circle cx="204.6" cy="349.2" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Haute-Loire 2023 : réel 496 — prédit 517 kg/hab</title></circle>
+<circle cx="224.3" cy="364.1" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Loire-Atlantique 2021 : réel 521 — prédit 498 kg/hab</title></circle>
+<circle cx="204.9" cy="349.4" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Loire-Atlantique 2023 : réel 496 — prédit 517 kg/hab</title></circle>
+<circle cx="241.3" cy="336.1" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Loiret 2021 : réel 543 — prédit 534 kg/hab</title></circle>
+<circle cx="191.7" cy="328.6" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Loiret 2023 : réel 479 — prédit 544 kg/hab</title></circle>
+<circle cx="295.5" cy="292.0" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Lot 2021 : réel 614 — prédit 591 kg/hab</title></circle>
+<circle cx="257.7" cy="274.6" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Lot 2023 : réel 565 — prédit 614 kg/hab</title></circle>
+<circle cx="285.2" cy="300.7" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Lot-et-Garonne 2021 : réel 601 — prédit 580 kg/hab</title></circle>
+<circle cx="245.3" cy="285.1" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Lot-et-Garonne 2023 : réel 549 — prédit 600 kg/hab</title></circle>
+<circle cx="269.6" cy="339.5" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Lozère 2021 : réel 580 — prédit 529 kg/hab</title></circle>
+<circle cx="235.9" cy="297.8" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Lozère 2023 : réel 536 — prédit 584 kg/hab</title></circle>
+<circle cx="172.2" cy="423.2" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Maine-et-Loire 2021 : réel 454 — prédit 421 kg/hab</title></circle>
+<circle cx="143.9" cy="396.0" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Maine-et-Loire 2023 : réel 417 — prédit 456 kg/hab</title></circle>
+<circle cx="349.4" cy="259.6" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Manche 2021 : réel 684 — prédit 633 kg/hab</title></circle>
+<circle cx="299.3" cy="224.2" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Manche 2023 : réel 619 — prédit 679 kg/hab</title></circle>
+<circle cx="203.4" cy="367.5" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Marne 2021 : réel 494 — prédit 493 kg/hab</title></circle>
+<circle cx="182.4" cy="364.4" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Marne 2023 : réel 467 — prédit 497 kg/hab</title></circle>
+<circle cx="221.7" cy="362.1" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Haute-Marne 2021 : réel 518 — prédit 500 kg/hab</title></circle>
+<circle cx="187.9" cy="344.6" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Haute-Marne 2023 : réel 474 — prédit 523 kg/hab</title></circle>
+<circle cx="258.6" cy="293.0" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Mayenne 2021 : réel 566 — prédit 590 kg/hab</title></circle>
+<circle cx="236.8" cy="310.0" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Mayenne 2023 : réel 538 — prédit 568 kg/hab</title></circle>
+<circle cx="209.4" cy="380.0" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Meurthe-et-Moselle 2021 : réel 502 — prédit 477 kg/hab</title></circle>
+<circle cx="142.2" cy="359.5" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Meurthe-et-Moselle 2023 : réel 415 — prédit 503 kg/hab</title></circle>
+<circle cx="184.4" cy="386.8" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Meuse 2021 : réel 469 — prédit 468 kg/hab</title></circle>
+<circle cx="165.6" cy="381.1" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Meuse 2023 : réel 445 — prédit 475 kg/hab</title></circle>
+<circle cx="298.1" cy="279.6" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Morbihan 2021 : réel 617 — prédit 607 kg/hab</title></circle>
+<circle cx="264.4" cy="273.2" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Morbihan 2023 : réel 573 — prédit 616 kg/hab</title></circle>
+<circle cx="231.0" cy="358.6" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Moselle 2021 : réel 530 — prédit 505 kg/hab</title></circle>
+<circle cx="204.6" cy="341.0" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Moselle 2023 : réel 496 — prédit 527 kg/hab</title></circle>
+<circle cx="239.9" cy="352.9" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Nièvre 2021 : réel 542 — prédit 512 kg/hab</title></circle>
+<circle cx="213.5" cy="327.3" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Nièvre 2023 : réel 507 — prédit 545 kg/hab</title></circle>
+<circle cx="264.8" cy="363.7" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Nord 2021 : réel 574 — prédit 498 kg/hab</title></circle>
+<circle cx="227.0" cy="315.5" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Nord 2023 : réel 525 — prédit 561 kg/hab</title></circle>
+<circle cx="290.2" cy="317.5" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Oise 2021 : réel 607 — prédit 558 kg/hab</title></circle>
+<circle cx="201.8" cy="282.1" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Oise 2023 : réel 492 — prédit 604 kg/hab</title></circle>
+<circle cx="279.0" cy="318.5" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Orne 2021 : réel 593 — prédit 557 kg/hab</title></circle>
+<circle cx="261.7" cy="290.8" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Orne 2023 : réel 570 — prédit 593 kg/hab</title></circle>
+<circle cx="324.9" cy="325.7" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Pas-de-Calais 2021 : réel 652 — prédit 547 kg/hab</title></circle>
+<circle cx="282.9" cy="251.3" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Pas-de-Calais 2023 : réel 598 — prédit 644 kg/hab</title></circle>
+<circle cx="188.9" cy="392.5" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Puy-de-Dôme 2021 : réel 475 — prédit 461 kg/hab</title></circle>
+<circle cx="166.4" cy="379.5" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Puy-de-Dôme 2023 : réel 446 — prédit 477 kg/hab</title></circle>
+<circle cx="255.7" cy="324.8" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Pyrénées-Atlantiques 2021 : réel 562 — prédit 549 kg/hab</title></circle>
+<circle cx="226.6" cy="314.8" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Pyrénées-Atlantiques 2023 : réel 524 — prédit 562 kg/hab</title></circle>
+<circle cx="251.5" cy="311.6" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Hautes-Pyrénées 2021 : réel 557 — prédit 566 kg/hab</title></circle>
+<circle cx="239.0" cy="317.0" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Hautes-Pyrénées 2023 : réel 541 — prédit 559 kg/hab</title></circle>
+<circle cx="340.2" cy="256.0" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Pyrénées-Orientales 2021 : réel 672 — prédit 638 kg/hab</title></circle>
+<circle cx="304.9" cy="232.5" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Pyrénées-Orientales 2023 : réel 626 — prédit 669 kg/hab</title></circle>
+<circle cx="171.6" cy="404.9" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Bas-Rhin 2021 : réel 453 — prédit 444 kg/hab</title></circle>
+<circle cx="135.8" cy="398.5" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Bas-Rhin 2023 : réel 406 — prédit 453 kg/hab</title></circle>
+<circle cx="200.9" cy="340.7" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Haut-Rhin 2021 : réel 491 — prédit 528 kg/hab</title></circle>
+<circle cx="181.0" cy="368.0" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Haut-Rhin 2023 : réel 465 — prédit 492 kg/hab</title></circle>
+<circle cx="139.0" cy="452.8" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Rhône 2021 : réel 410 — prédit 382 kg/hab</title></circle>
+<circle cx="108.2" cy="434.7" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Rhône 2023 : réel 370 — prédit 406 kg/hab</title></circle>
+<circle cx="240.1" cy="361.3" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Haute-Saône 2021 : réel 542 — prédit 501 kg/hab</title></circle>
+<circle cx="236.8" cy="327.3" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Haute-Saône 2023 : réel 538 — prédit 545 kg/hab</title></circle>
+<circle cx="239.1" cy="363.7" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Saône-et-Loire 2021 : réel 541 — prédit 498 kg/hab</title></circle>
+<circle cx="209.3" cy="330.6" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Saône-et-Loire 2023 : réel 502 — prédit 541 kg/hab</title></circle>
+<circle cx="217.4" cy="376.3" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Sarthe 2021 : réel 512 — prédit 482 kg/hab</title></circle>
+<circle cx="193.5" cy="350.9" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Sarthe 2023 : réel 481 — prédit 515 kg/hab</title></circle>
+<circle cx="269.4" cy="260.5" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Savoie 2021 : réel 580 — prédit 632 kg/hab</title></circle>
+<circle cx="279.1" cy="299.1" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Savoie 2023 : réel 593 — prédit 582 kg/hab</title></circle>
+<circle cx="266.4" cy="306.2" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Haute-Savoie 2021 : réel 576 — prédit 573 kg/hab</title></circle>
+<circle cx="254.7" cy="305.3" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Haute-Savoie 2023 : réel 561 — prédit 574 kg/hab</title></circle>
+<circle cx="153.7" cy="388.6" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Paris 2021 : réel 430 — prédit 466 kg/hab</title></circle>
+<circle cx="147.1" cy="421.4" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Paris 2023 : réel 421 — prédit 423 kg/hab</title></circle>
+<circle cx="292.1" cy="298.5" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Seine-Maritime 2021 : réel 609 — prédit 583 kg/hab</title></circle>
+<circle cx="267.4" cy="282.4" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Seine-Maritime 2023 : réel 577 — prédit 604 kg/hab</title></circle>
+<circle cx="218.1" cy="384.2" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Seine-et-Marne 2021 : réel 513 — prédit 471 kg/hab</title></circle>
+<circle cx="170.6" cy="355.3" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Seine-et-Marne 2023 : réel 452 — prédit 509 kg/hab</title></circle>
+<circle cx="182.6" cy="397.7" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Yvelines 2021 : réel 467 — prédit 454 kg/hab</title></circle>
+<circle cx="131.8" cy="389.7" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Yvelines 2023 : réel 401 — prédit 464 kg/hab</title></circle>
+<circle cx="238.1" cy="360.4" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Deux-Sèvres 2021 : réel 539 — prédit 502 kg/hab</title></circle>
+<circle cx="204.0" cy="330.6" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Deux-Sèvres 2023 : réel 495 — prédit 541 kg/hab</title></circle>
+<circle cx="308.1" cy="308.0" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Somme 2021 : réel 630 — prédit 570 kg/hab</title></circle>
+<circle cx="235.8" cy="264.3" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Somme 2023 : réel 536 — prédit 627 kg/hab</title></circle>
+<circle cx="244.5" cy="330.5" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Tarn 2021 : réel 548 — prédit 541 kg/hab</title></circle>
+<circle cx="196.2" cy="324.6" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Tarn 2023 : réel 485 — prédit 549 kg/hab</title></circle>
+<circle cx="258.5" cy="337.5" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Tarn-et-Garonne 2021 : réel 566 — prédit 532 kg/hab</title></circle>
+<circle cx="216.5" cy="310.5" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Tarn-et-Garonne 2023 : réel 511 — prédit 567 kg/hab</title></circle>
+<circle cx="391.8" cy="192.2" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Var 2021 : réel 739 — prédit 721 kg/hab</title></circle>
+<circle cx="338.0" cy="185.3" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Var 2023 : réel 669 — prédit 730 kg/hab</title></circle>
+<circle cx="302.6" cy="280.4" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Vaucluse 2021 : réel 623 — prédit 606 kg/hab</title></circle>
+<circle cx="277.2" cy="269.0" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Vaucluse 2023 : réel 590 — prédit 621 kg/hab</title></circle>
+<circle cx="272.5" cy="309.5" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Vendée 2021 : réel 584 — prédit 568 kg/hab</title></circle>
+<circle cx="249.0" cy="299.2" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Vendée 2023 : réel 553 — prédit 582 kg/hab</title></circle>
+<circle cx="214.1" cy="359.4" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Vienne 2021 : réel 508 — prédit 504 kg/hab</title></circle>
+<circle cx="192.5" cy="353.9" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Vienne 2023 : réel 480 — prédit 511 kg/hab</title></circle>
+<circle cx="200.2" cy="366.7" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Haute-Vienne 2021 : réel 490 — prédit 494 kg/hab</title></circle>
+<circle cx="165.0" cy="366.4" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Haute-Vienne 2023 : réel 444 — prédit 494 kg/hab</title></circle>
+<circle cx="248.3" cy="352.5" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Vosges 2021 : réel 553 — prédit 513 kg/hab</title></circle>
+<circle cx="233.4" cy="320.1" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Vosges 2023 : réel 533 — prédit 555 kg/hab</title></circle>
+<circle cx="270.9" cy="346.4" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Yonne 2021 : réel 582 — prédit 520 kg/hab</title></circle>
+<circle cx="232.1" cy="298.8" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Yonne 2023 : réel 532 — prédit 582 kg/hab</title></circle>
+<circle cx="287.3" cy="356.0" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Territoire-de-Belfort 2021 : réel 603 — prédit 508 kg/hab</title></circle>
+<circle cx="191.5" cy="281.7" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Territoire-de-Belfort 2023 : réel 479 — prédit 605 kg/hab</title></circle>
+<circle cx="216.2" cy="374.4" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Essonne 2021 : réel 511 — prédit 484 kg/hab</title></circle>
+<circle cx="155.2" cy="356.3" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Essonne 2023 : réel 432 — prédit 508 kg/hab</title></circle>
+<circle cx="125.0" cy="449.9" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Hauts-de-seine 2021 : réel 392 — prédit 386 kg/hab</title></circle>
+<circle cx="92.3" cy="446.7" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Hauts-de-seine 2023 : réel 350 — prédit 390 kg/hab</title></circle>
+<circle cx="159.7" cy="416.8" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Seine-Saint-Denis 2021 : réel 437 — prédit 429 kg/hab</title></circle>
+<circle cx="143.5" cy="413.3" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Seine-Saint-Denis 2023 : réel 416 — prédit 434 kg/hab</title></circle>
+<circle cx="121.9" cy="448.3" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Val-de-Marne 2021 : réel 388 — prédit 388 kg/hab</title></circle>
+<circle cx="107.5" cy="448.2" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Val-de-Marne 2023 : réel 370 — prédit 388 kg/hab</title></circle>
+<circle cx="215.1" cy="391.2" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Val-d'Oise 2021 : réel 509 — prédit 462 kg/hab</title></circle>
+<circle cx="162.0" cy="357.1" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Val-d'Oise 2023 : réel 440 — prédit 507 kg/hab</title></circle>
+<circle cx="294.4" cy="256.9" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Guadeloupe 2021 : réel 613 — prédit 637 kg/hab</title></circle>
+<circle cx="302.3" cy="276.5" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Guadeloupe 2023 : réel 623 — prédit 611 kg/hab</title></circle>
+<circle cx="193.5" cy="331.0" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Martinique 2021 : réel 481 — prédit 541 kg/hab</title></circle>
+<circle cx="217.0" cy="372.7" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>Martinique 2023 : réel 512 — prédit 486 kg/hab</title></circle>
+<circle cx="281.0" cy="312.7" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>La Réunion 2021 : réel 595 — prédit 564 kg/hab</title></circle>
+<circle cx="256.5" cy="292.0" r="4" fill="var(--scatter-point)" fill-opacity="0.55"><title>La Réunion 2023 : réel 563 — prédit 591 kg/hab</title></circle>
+        </svg>
+      </div>
+      <p class="scatter-caption">Régression linéaire, jeu de test (198 points, 2021 + 2023) — axe horizontal : ratio réel (kg/hab), axe vertical : ratio prédit (kg/hab). Survolez un point pour le détail.</p>
+    </div>
+
+    <p class="section-intro" style="margin-top:32px">Est-ce que plus de lignes d'entraînement améliorerait le score ? Le modèle a été réentraîné sur des portions croissantes du train (10 % à 100 %, mêmes 4 variables), en mesurant à chaque fois le R² sur le même jeu de test.</p>
+
+    <div class="viz-scatter">
+      <div class="scatter-wrap">
+        <svg viewBox="0 0 520 262" role="img" aria-label="Courbe d'apprentissage : R2 sur le test en fonction du nombre de lignes d'entrainement">
+<line x1="46" y1="234.0" x2="506" y2="234.0" stroke="var(--scatter-grid)" stroke-width="1"/>
+<text x="38" y="237.0" font-size="10" fill="var(--scatter-muted)" text-anchor="end" font-family="IBM Plex Mono, monospace">0.65</text>
+<line x1="46" y1="160.7" x2="506" y2="160.7" stroke="var(--scatter-grid)" stroke-width="1"/>
+<text x="38" y="163.7" font-size="10" fill="var(--scatter-muted)" text-anchor="end" font-family="IBM Plex Mono, monospace">0.70</text>
+<line x1="46" y1="87.3" x2="506" y2="87.3" stroke="var(--scatter-grid)" stroke-width="1"/>
+<text x="38" y="90.3" font-size="10" fill="var(--scatter-muted)" text-anchor="end" font-family="IBM Plex Mono, monospace">0.75</text>
+<line x1="46" y1="14.0" x2="506" y2="14.0" stroke="var(--scatter-grid)" stroke-width="1"/>
+<text x="38" y="17.0" font-size="10" fill="var(--scatter-muted)" text-anchor="end" font-family="IBM Plex Mono, monospace">0.80</text>
+<polyline points="90.2,126.2 134.5,133.8 178.7,155.5 222.9,161.7 267.2,162.2 311.4,146.5 355.6,147.1 399.8,148.5 444.1,136.7 489.2,138.7" fill="none" stroke="var(--scatter-point)" stroke-width="2"/>
+<circle cx="90.2" cy="126.2" r="4" fill="var(--scatter-point)"><title>50 lignes : R2=0.724</title></circle>
+<circle cx="134.5" cy="133.8" r="4" fill="var(--scatter-point)"><title>100 lignes : R2=0.718</title></circle>
+<circle cx="178.7" cy="155.5" r="4" fill="var(--scatter-point)"><title>150 lignes : R2=0.704</title></circle>
+<circle cx="222.9" cy="161.7" r="4" fill="var(--scatter-point)"><title>200 lignes : R2=0.699</title></circle>
+<circle cx="267.2" cy="162.2" r="4" fill="var(--scatter-point)"><title>250 lignes : R2=0.699</title></circle>
+<circle cx="311.4" cy="146.5" r="4" fill="var(--scatter-point)"><title>300 lignes : R2=0.710</title></circle>
+<circle cx="355.6" cy="147.1" r="4" fill="var(--scatter-point)"><title>350 lignes : R2=0.709</title></circle>
+<circle cx="399.8" cy="148.5" r="4" fill="var(--scatter-point)"><title>400 lignes : R2=0.708</title></circle>
+<circle cx="444.1" cy="136.7" r="4" fill="var(--scatter-point)"><title>450 lignes : R2=0.716</title></circle>
+<circle cx="489.2" cy="138.7" r="4" fill="var(--scatter-point)"><title>501 lignes : R2=0.715</title></circle>
+<text x="90.2" y="250.0" font-size="10" fill="var(--scatter-muted)" text-anchor="middle" font-family="IBM Plex Mono, monospace">50</text>
+<text x="178.7" y="250.0" font-size="10" fill="var(--scatter-muted)" text-anchor="middle" font-family="IBM Plex Mono, monospace">150</text>
+<text x="267.2" y="250.0" font-size="10" fill="var(--scatter-muted)" text-anchor="middle" font-family="IBM Plex Mono, monospace">250</text>
+<text x="355.6" y="250.0" font-size="10" fill="var(--scatter-muted)" text-anchor="middle" font-family="IBM Plex Mono, monospace">350</text>
+<text x="444.1" y="250.0" font-size="10" fill="var(--scatter-muted)" text-anchor="middle" font-family="IBM Plex Mono, monospace">450</text>
+<text x="276.0" y="258" font-size="11" fill="var(--scatter-muted)" text-anchor="middle">nombre de lignes d'entraînement</text>
+</svg>
+      </div>
+      <p class="scatter-caption">Courbe d'apprentissage — régression linéaire. Le score oscille entre 0,70 et 0,72 dès 50 lignes (10 % du train) et ne progresse pas jusqu'à 501 lignes (100 %).</p>
+    </div>
+
+    <div class="callout">
+      <b>Réponse à « à partir de combien de lignes ça serait intéressant ? »</b>
+      Il n'y a pas de seuil à atteindre avec ces 4 variables : la courbe est plate dès le départ, pas croissante. Si le manque de données était le facteur limitant, le score grimperait progressivement avec plus de lignes puis plafonnerait à un niveau plus haut. Ici il oscille au même niveau (~0,70–0,72) dès 50 lignes — signe que le plafond vient du contenu des 4 variables (surtout le lag), pas de leur nombre d'exemples. Multiplier les lignes de ce même jeu de données n'améliorerait vraisemblablement pas le score ; ajouter des variables réellement informatives (revenu, nouveaux dispositifs de tri...) le pourrait.
+    </div>
+  </section>
+
+  <section>
+    <div class="h2-row"><span class="h2-num">05</span><h2>Clustering des profils de traitement</h2></div>
+    <p class="section-intro">Pour chaque département, le tonnage de <code>sinoe_dma.csv</code> (2009–2021, gravats compris) est réparti en % entre les 7 types de traitement, puis regroupé par k-means. Le nombre de clusters (k=4) a été choisi par score de silhouette (0,276, meilleur score testé entre k=2 et k=7).</p>
+
+    <div class="viz-cluster">
+      <div class="cluster-row">
+        <div class="cluster-tag"><b>Cluster 0</b><span>42 départements</span></div>
+        <div class="cluster-track">
+          <div class="cluster-seg" style="flex-grow:6.3;background:var(--series-1)" title="Incinération avec récupération d'énergie : 6,3 %"></div>
+          <div class="cluster-seg" style="flex-grow:0.1;background:var(--series-2)" title="Incinération sans récupération d'énergie : 0,1 %"></div>
+          <div class="cluster-seg ink" style="flex-grow:27.3;background:var(--series-3)" title="Valorisation matière : 27,3 %">27,3%</div>
+          <div class="cluster-seg ink" style="flex-grow:14.6;background:var(--series-4)" title="Valorisation organique : 14,6 %">14,6%</div>
+          <div class="cluster-seg ink" style="flex-grow:44.3;background:var(--series-5)" title="Stockage : 44,3 %">44,3%</div>
+          <div class="cluster-seg" style="flex-grow:4.0;background:var(--series-6)" title="Stockage pour inertes : 4,0 %"></div>
+          <div class="cluster-seg" style="flex-grow:3.4;background:var(--series-7)" title="Non précisé : 3,4 %"></div>
+        </div>
+      </div>
+      <div class="cluster-row">
+        <div class="cluster-tag"><b>Cluster 1</b><span>52 départements</span></div>
+        <div class="cluster-track">
+          <div class="cluster-seg" style="flex-grow:39.5;background:var(--series-1)" title="Incinération avec récupération d'énergie : 39,5 %">39,5%</div>
+          <div class="cluster-seg" style="flex-grow:0.3;background:var(--series-2)" title="Incinération sans récupération d'énergie : 0,3 %"></div>
+          <div class="cluster-seg ink" style="flex-grow:26.5;background:var(--series-3)" title="Valorisation matière : 26,5 %">26,5%</div>
+          <div class="cluster-seg ink" style="flex-grow:14.9;background:var(--series-4)" title="Valorisation organique : 14,9 %">14,9%</div>
+          <div class="cluster-seg ink" style="flex-grow:12.5;background:var(--series-5)" title="Stockage : 12,5 %">12,5%</div>
+          <div class="cluster-seg" style="flex-grow:4.6;background:var(--series-6)" title="Stockage pour inertes : 4,6 %"></div>
+          <div class="cluster-seg" style="flex-grow:1.7;background:var(--series-7)" title="Non précisé : 1,7 %"></div>
+        </div>
+      </div>
+      <div class="cluster-row">
+        <div class="cluster-tag"><b>Cluster 2</b><span>2 départements</span></div>
+        <div class="cluster-track">
+          <div class="cluster-seg" style="flex-grow:0.6;background:var(--series-1)" title="Incinération avec récupération d'énergie : 0,6 %"></div>
+          <div class="cluster-seg ink" style="flex-grow:17.8;background:var(--series-3)" title="Valorisation matière : 17,8 %">17,8%</div>
+          <div class="cluster-seg ink" style="flex-grow:2.4;background:var(--series-4)" title="Valorisation organique : 2,4 %"></div>
+          <div class="cluster-seg ink" style="flex-grow:45.7;background:var(--series-5)" title="Stockage : 45,7 %">45,7%</div>
+          <div class="cluster-seg" style="flex-grow:0.8;background:var(--series-6)" title="Stockage pour inertes : 0,8 %"></div>
+          <div class="cluster-seg" style="flex-grow:32.7;background:var(--series-7)" title="Non précisé : 32,7 %">32,7%</div>
+        </div>
+      </div>
+      <div class="cluster-row">
+        <div class="cluster-tag"><b>Cluster 3</b><span>5 départements</span></div>
+        <div class="cluster-track">
+          <div class="cluster-seg" style="flex-grow:16.0;background:var(--series-1)" title="Incinération avec récupération d'énergie : 16,0 %">16,0%</div>
+          <div class="cluster-seg" style="flex-grow:8.2;background:var(--series-2)" title="Incinération sans récupération d'énergie : 8,2 %">8,2%</div>
+          <div class="cluster-seg ink" style="flex-grow:31.9;background:var(--series-3)" title="Valorisation matière : 31,9 %">31,9%</div>
+          <div class="cluster-seg ink" style="flex-grow:21.7;background:var(--series-4)" title="Valorisation organique : 21,7 %">21,7%</div>
+          <div class="cluster-seg ink" style="flex-grow:13.4;background:var(--series-5)" title="Stockage : 13,4 %">13,4%</div>
+          <div class="cluster-seg" style="flex-grow:6.7;background:var(--series-6)" title="Stockage pour inertes : 6,7 %"></div>
+          <div class="cluster-seg" style="flex-grow:2.3;background:var(--series-7)" title="Non précisé : 2,3 %"></div>
+        </div>
+      </div>
+
+      <div class="cluster-legend">
+        <div class="cluster-legend-item"><span class="cluster-swatch" style="background:var(--series-1)"></span>Incinération avec récup. d'énergie</div>
+        <div class="cluster-legend-item"><span class="cluster-swatch" style="background:var(--series-2)"></span>Incinération sans récup. d'énergie</div>
+        <div class="cluster-legend-item"><span class="cluster-swatch" style="background:var(--series-3)"></span>Valorisation matière</div>
+        <div class="cluster-legend-item"><span class="cluster-swatch" style="background:var(--series-4)"></span>Valorisation organique</div>
+        <div class="cluster-legend-item"><span class="cluster-swatch" style="background:var(--series-5)"></span>Stockage</div>
+        <div class="cluster-legend-item"><span class="cluster-swatch" style="background:var(--series-6)"></span>Stockage pour inertes</div>
+        <div class="cluster-legend-item"><span class="cluster-swatch" style="background:var(--series-7)"></span>Non précisé</div>
+      </div>
+    </div>
+
+    <div class="table-wrap" style="margin-top:22px">
+      <table>
+        <caption>Lecture des 4 clusters</caption>
+        <thead><tr><th>Cluster</th><th>Profil dominant</th><th>Exemples de départements</th></tr></thead>
+        <tbody>
+          <tr>
+            <td class="strong">0 — Stockage</td>
+            <td>44,3 % en stockage, le reste plutôt en valorisation matière (27,3 %)</td>
+            <td>Aisne, Allier, Alpes-de-Haute-Provence, Hautes-Alpes, Ardèche…</td>
+          </tr>
+          <tr>
+            <td class="strong">1 — Incinération</td>
+            <td>39,5 % en incinération avec récupération d'énergie — près de 6× plus que le cluster 0</td>
+            <td>Ain, Alpes-Maritimes, Calvados, Corrèze, Côte-d'Or, Finistère…</td>
+          </tr>
+          <tr>
+            <td class="strong">2 — Atypique</td>
+            <td>32,7 % « non précisé » + 45,7 % stockage — probablement un défaut de déclaration plutôt qu'une vraie politique de traitement</td>
+            <td>Lozère, Mayotte <span class="tag warn">à interpréter avec prudence</span></td>
+          </tr>
+          <tr>
+            <td class="strong">3 — Valorisation</td>
+            <td>53,6 % en valorisation (matière + organique) cumulées, la plus forte des 4 clusters ; seul cluster avec de l'incinération sans récupération notable (8,2 %)</td>
+            <td>Charente, Charente-Maritime, Landes, Morbihan, Savoie</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout">
+      <b>Limite à garder en tête</b>
+      Le cluster 2 (Lozère, Mayotte) n'a que 2 membres et un taux de « non précisé » très élevé (32,7 % contre 1,7–3,4 % ailleurs) — c'est probablement un signal de données incomplètes pour ces territoires plutôt qu'un vrai profil de traitement distinct. À traiter comme un cas à part, pas comme une 4ᵉ catégorie au même titre que les 3 autres.
+    </div>
+  </section>
+
+  <footer>
+    <span>ML-DMA — document vivant, mis à jour au fil du projet</span>
+    <span>Prochaine étape : à définir</span>
+  </footer>
+
+</div>

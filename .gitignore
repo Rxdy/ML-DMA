@@ -1,0 +1,8 @@
+.venv/
+.claude/
+__pycache__/
+*.pyc
+
+# Fichiers trop volumineux pour GitHub (> 50 Mo) — données publiques RPPS à retélécharger
+sante/data/raw/PS_LibreAcces_*.txt
+sante/data/processed/rpps_clean.csv
