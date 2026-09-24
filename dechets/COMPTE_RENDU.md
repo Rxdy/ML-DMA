@@ -45,8 +45,13 @@ Chaque étape est un script numéroté, exécuté dans l'ordre depuis le dossier
 | Modèles | [`06_train_model.py`](scripts/06_train_model.py) | Baseline, régression linéaire, Random Forest (version décomposée à la main) | `model_comparison.csv` |
 | Expérience | [`08_income_experiment.py`](scripts/08_income_experiment.py) | Test d'une variable supplémentaire : le revenu médian | affichage console |
 | **Pipeline** | [`09_pipeline.py`](scripts/09_pipeline.py) | **Chaîne complète preprocessor → modèle, validation croisée, évaluation** | `model_comparison_pipeline.csv` |
+| Détail des calculs | [`10_detail_metriques.py`](scripts/10_detail_metriques.py) | MAE, RMSE et R² pas à pas, pli par pli, année par année | `detail_*.csv` |
+| Analyse des erreurs | [`11_analyse_erreurs.py`](scripts/11_analyse_erreurs.py) | Où le modèle se trompe, et quelle information manque | `erreurs_test.csv` |
+| Prédiction 2025 | [`12_prediction_2025.py`](scripts/12_prediction_2025.py) | Modèle réentraîné sur 2011–2023, prédiction de l'enquête 2025 | `predictions_2025.csv` |
 
-Le script 07 se trouve dans [`../menages/`](../menages/) : il assemble les données de revenu INSEE utilisées par le script 08.
+Le script [`07_income_prep.py`](scripts/07_income_prep.py) assemble les données de revenu INSEE utilisées par le script 08. Il lit des fichiers téléchargés à la main et non conservés ; son résultat est inclus dans `data/raw/`.
+
+Chaque script se lance aussi par une commande `make` depuis la racine du dépôt (voir le [README](../README.md) : `make supervise`, `make tout`…).
 
 Les scripts 05 et 06 montrent chaque étape de façon explicite (scaler calibré, puis modèle entraîné). Le script 09 refait la même chose avec les outils scikit-learn prévus pour ça (`ColumnTransformer` et `Pipeline`). C'est la version de référence.
 
@@ -58,7 +63,7 @@ dechets/
 │   ├── raw/          fichiers téléchargés, jamais modifiés
 │   ├── processed/    fichiers générés par les scripts
 │   └── figures/      graphiques
-├── scripts/          01 → 09
+├── scripts/          01 → 12
 ├── rapport/          rapport HTML (graphiques)
 └── COMPTE_RENDU.md   ce document
 ```
@@ -238,16 +243,8 @@ Les années de test marquent une rupture : un pic en 2021 puis une baisse nette 
 ```bash
 git clone https://github.com/Rxdy/ML-DMA.git
 cd ML-DMA
-python -m venv .venv && source .venv/bin/activate
-pip install -r requirements.txt
-cd dechets
-python scripts/01_explore.py
-python scripts/02_clustering_profil_traitement.py
-python scripts/03_regression_prep.py
-python scripts/04_correlation.py
-python scripts/05_split_scale.py
-python scripts/06_train_model.py
-python scripts/09_pipeline.py
+make installer
+make tout
 ```
 
-Les fichiers de `data/raw/` sont inclus dans le dépôt : aucun téléchargement n'est nécessaire.
+Les fichiers de `data/raw/` sont inclus dans le dépôt : aucun téléchargement n'est nécessaire. Le rapport PDF complet ([`rapport/rapport_ML_dechets.pdf`](rapport/rapport_ML_dechets.pdf)) détaille en plus X et y, les calculs des métriques, l'analyse des erreurs, la prédiction 2025 et les pistes d'amélioration.

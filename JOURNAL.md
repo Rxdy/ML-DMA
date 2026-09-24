@@ -1,10 +1,6 @@
 # Journal de bord — ML-DMA
 
-**Structure du projet** (depuis la réorganisation du 16/09/2026) :
-- `dechets/` — exercice 1, complet : données SINOE, clustering + régression, rapport
-- `menages/` — exercice 2, en cours : données INSEE Filosofi (revenu médian par département)
-- `sante/` — exercice 3, en cours : annuaire RPPS (professionnels de santé), carte de densité faite, clustering à approfondir
-- `JOURNAL.md` (ce fichier, à la racine) — journal partagé des trois exercices
+**Structure du projet** : le dépôt ne contient que le projet déchets (`dechets/`). Ce journal, à la racine, retrace le raisonnement au fil de l'eau.
 
 Journal des étapes de réflexion du projet : prédiction/clustering des déchets ménagers et assimilés (DMA) à partir des données SINOE (ADEME).
 
@@ -256,6 +252,8 @@ Le score **n'augmente pas** avec plus de lignes — il oscille entre 0,70 et 0,7
 
 ## 2026-09-16 — Réorganisation en deux exercices séparés
 
+> Note du 2026-09-24 : le dossier `menages/` a depuis été retiré du dépôt ; le script 07 et le fichier de revenu ont été rapatriés dans `dechets/`.
+
 **Demande** : séparer le projet en deux dossiers — un pour les déchets, un pour les ménages — pour refaire l'exercice complet (exploration → nettoyage → ML) une seconde fois, sur les données de revenu cette fois, indépendamment du premier.
 
 **Action** : restructuration —
@@ -263,166 +261,6 @@ Le score **n'augmente pas** avec plus de lignes — il oscille entre 0,70 et 0,7
 - `menages/` reçoit `data/raw/insee_revenu_median_dep_2013_2021.csv` et `scripts/07_income_prep.py` (l'assemblage des 5 fichiers Filosofi) — c'est le point de départ du 2ᵉ exercice, exploration/nettoyage/ML restant à faire dessus en tant que sujet à part entière (pas juste une feature pour les déchets).
 
 Chemins des scripts mis à jour (chaque script tourne désormais depuis la racine de son propre dossier), pipeline complet des deux dossiers rejoué pour vérifier — tout fonctionne. `JOURNAL.md` reste unique à la racine, partagé entre les deux exercices.
-
----
-
-## 2026-09-16 — Exercice 3 : annuaire RPPS (professionnels de santé)
-
-**Demande** : un 3ᵉ exercice indépendant, sur l'annuaire santé RPPS de data.gouv.fr (Agence du Numérique en Santé).
-
-**Téléchargement** : fichier principal `PS_LibreAcces_Personne_activite.txt` (820 Mo, 2 287 724 lignes, 56 colonnes, séparateur `|`). Mémoire disponible limitée (5,5 Go) constatée avant chargement -> exploration d'abord sur un échantillon de 200 000 lignes plutôt que le fichier entier.
-
-**Découverte majeure** : la colonne dédiée `Code Département (structure)` est **vide à 100 %** dans le fichier. Contournement : département reconstruit depuis les 2 premiers chiffres du code postal de la structure (3 chiffres pour l'outre-mer : 971, 972... — sinon tous les DOM se seraient mélangés dans un faux code "97"). Cas particulier : la Corse a un code postal "20" qui ne distingue pas 2A/2B -> repli sur le code commune INSEE pour ces lignes.
-
-**Valeurs manquantes** : 24,9 % des lignes sans département reconstructible. Vérifié que ce n'est pas une erreur : ces lignes correspondent à des professionnels inscrits au RPPS **sans activité active déclarée** (leur "mode d'exercice" n'est renseigné que 34,5 % du temps contre 100 % pour le reste, "genre d'activité" seulement 6,5 %). Lignes retirées pour l'analyse territoriale — 1 718 220 lignes exploitables.
-
-**Colonnes retenues** : 10 sur 56 (identité, profession, localisation) — le reste (téléphone, SIRET, adresse détaillée, savoir-faire...) n'apporte rien à une analyse par département et alourdit inutilement la mémoire.
-
-**Dédoublonnage** : un praticien peut apparaître plusieurs fois (plusieurs structures) — dédoublonné par (praticien, département) avant tout comptage, sinon les effectifs auraient été gonflés artificiellement (1 718 220 → 1 477 031 lignes).
-
-**Question posée sur l'objectif ML** : l'utilisateur voulait à terme une carte des praticiens + une prédiction d'évolution temporelle. **Vérifié et confirmé** : ni le fichier principal ni le fichier "Diplômes et autorisations d'exercice" (264 Mo, téléchargé pour vérifier) ne contiennent de date (ni inscription, ni diplôme, ni début d'exercice) — impossible de faire de la prédiction temporelle avec les extractions RPPS en open data telles quelles. Seule option : re-télécharger ce même jeu à intervalles réguliers pour constituer un historique à partir de maintenant, pas de reconstitution possible du passé.
-
-**Décision** : carte de densité + clustering par profil de profession (miroir de l'exercice déchets), sans volet temporel.
-
-**Carte réalisée** : densité de praticiens pour 10 000 habitants par département (population 2023 reprise du dataset déchets), choroplèthe en 6 classes (quantiles, palette séquentielle bleue validée par le script du skill dataviz), France métropolitaine (96 départements — contours simplifiés depuis `gregoiredavid/france-geojson`, outre-mer exclu de la carte pour limiter la complexité d'un encart séparé, mais chiffré séparément). 1,47M praticiens comptés, densité médiane 211 pour 10 000 hab.
-
-**Lecture (hypothèses, pas de causalité démontrée)** : les plus fortes densités sont à Paris et dans les villes à CHU (Limoges/87, Lyon/69, Marseille/13) ; les plus faibles dans la grande couronne parisienne (Seine-Saint-Denis, Seine-et-Marne, Oise, Essonne) — cohérent avec le phénomène connu des "déserts médicaux" périurbains.
-
-**Sorties** : `sante/data/processed/rpps_clean.csv` (1,72M lignes), `rpps_par_departement.csv`, `rpps_densite_departement.csv`, `dept_svg_paths.json`. Rapport carte : `sante/rapport/carte_rpps.html`.
-
-**Prochaine étape envisagée** : clustering des départements par profil de profession (% médecins/infirmiers/kinés...), miroir du clustering profil de traitement des déchets.
-
----
-
-## 2026-09-16 — Carte par points (commune) : les zones vides
-
-**Remarque de l'utilisateur** : la moyenne par département masque les écarts internes — un département avec une grande ville bien dotée peut cacher des zones rurales vides. Demande de passer à un pointage plus fin pour voir les vraies zones sans praticien.
-
-**Source ajoutée** : `sante/data/raw/communes_coords.csv` (data.gouv.fr, "Données sur les communes de France Métropolitaine") — code INSEE, latitude, longitude, ~35 000 communes.
-
-**Choix d'échelle** : un point par praticien individuel (1,47M) aurait été trop lourd pour une carte statique. Agrégation au niveau **commune** à la place (rayon ∝ racine carrée de l'effectif, pour une aire proportionnelle) — assez fin pour révéler les vides, assez léger pour rester une carte statique (16 652 communes, ~1,3 Mo de SVG).
-
-**Bug rencontré et corrigé** : la première jointure avec `communes_coords.csv` faisait gonfler les effectifs (une commune avec plusieurs codes postaux apparaît plusieurs fois dans ce fichier) — corrigé par un dédoublonnage sur le code INSEE avant la jointure.
-
-**Résultat marquant** : seulement **16 652 communes sur ~34 900** ont au moins un professionnel de santé actif recensé — moins de la moitié. L'espace blanc entre les points sur la carte est directement lisible comme l'absence de praticien.
-
-**Script** : `sante/scripts/04_points_commune.py`. Sortie : `sante/data/processed/rpps_points_commune.csv`. Carte ajoutée en section "02bis" du rapport (même repère de projection que la carte département, pour rester comparable). Rapport mis à jour (v2).
-
----
-
-## 2026-09-16 — Bug de rayon + fusion des deux cartes en une seule
-
-**Problème signalé** : les points n'apparaissaient pas sur la carte publiée.
-
-**Diagnostic** : les points existaient bien et étaient bien positionnés, mais leur rayon (1 à 26 unités) était ridicule comparé à la taille du repère de la carte (~15 656 unités de large pour ~640px affichés à l'écran) — des fractions de pixel, invisibles. Corrigé : rayon recalculé pour être visible à l'écran (57 à 340 unités, soit environ 2 à 14px affichés).
-
-**Deuxième remarque** : les points devaient être superposés sur la carte de France (départements), pas dans une section séparée sur fond blanc, pour que ce soit "cohérent" géographiquement. Les deux cartes (choroplèthe département + points commune) fusionnées en une seule SVG (points en corail par-dessus le fond bleu des départements) — la section "02bis" séparée a été supprimée.
-
-Rapport mis à jour (v3).
-
----
-
-## 2026-09-16 — Carte filtrable par profession
-
-**Demande** : ajouter des filtres pour voir les points par type de profession (médecins seuls, pharmaciens seuls...) et repérer les trous propres à chaque profession, pas seulement au total.
-
-**Méthode** : effectifs recalculés par commune **et** par groupe de profession (mêmes 8 catégories + "Autres" que pour le clustering département), au lieu d'un seul total par commune. Données embarquées en JSON dans la page (625 Ko, 16 652 communes × 10 catégories) plutôt que rechargées côté serveur — chaque cercle SVG porte un `data-i` reliant à sa ligne de données, un script JS recalcule le rayon (et masque les communes à 0) au clic sur un filtre, sans recharger la page.
-
-**Filtres ajoutés** : Tous, Médecins, Infirmiers, Masseurs-kinés, Psychologues, Pharmaciens, Chirurgiens-dentistes, Sages-femmes, Orthophonistes, Autres professions — plus un compteur dynamique ("X communes avec au moins un·e [profession] actif·ve, sur ~34 900, soit Y %") qui se met à jour avec le filtre, pour chiffrer directement l'ampleur des trous par profession.
-
-**Vérification avant publication** : JSON réembarqué validé (parseable, 16 652 lignes, 10 catégories), comptage des balises équilibré, avant republication — pour éviter de répéter l'erreur du rayon invisible sans avoir vérifié.
-
-**Script** : `sante/scripts/05_carte_filtrable.py`. Sorties : `sante/data/processed/rpps_points_par_profession.csv`, `points_data.json`. Rapport mis à jour (v4).
-
-**Note "démographie par type"** : interprété comme la répartition géographique par profession (ce que les filtres montrent), pas une pyramide des âges — le fichier RPPS ne contient aucune date de naissance ni d'âge, donc une vraie démographie (âge/sexe) par profession n'est pas possible avec cette source. Le champ "civilité" (M./Mme) donnerait un proxy de genre si besoin, pas encore exploité.
-
----
-
-## 2026-09-16 — Points en pleine mer, toggle, et légende bleue réactive au filtre
-
-**Signalement** : des points apparaissaient dans l'océan Atlantique, surtout autour de la Bretagne.
-
-**Diagnostic** : coordonnées vérifiées une à une — toutes dans la zone plausible de la métropole, aucune erreur de donnée. La vraie cause : le fond de carte simplifié (pour rester léger) avait supprimé les petites îles lors de la simplification (Ouessant, Belle-Île, Groix, Île d'Yeu...), qui sont pourtant de vraies communes avec de vrais praticiens — leurs points, eux, gardaient les bonnes coordonnées et flottaient donc hors du contour terrestre simplifié.
-
-**Correction** : contours complets (non simplifiés) réintégrés pour les 6 départements concernés par des îles significatives (17 Charente-Maritime, 29 Finistère, 50 Manche, 56 Morbihan, 83 Var, 85 Vendée), le reste de la métropole restant en version simplifiée pour la légèreté.
-
-**Deux fonctionnalités ajoutées** :
-1. **Bouton bascule des points** ("● Points communes") — permet de voir la carte bleue seule, sans les points, ou l'inverse.
-2. **Légende bleue réactive au filtre** — jusque-là, filtrer sur "Médecins" changeait les points mais le fond bleu restait sur la densité totale. Densité par département calculée pour chaque profession séparément (pas seulement le total), avec ses propres seuils de quantiles (la distribution des sages-femmes par département n'a rien à voir avec celle des médecins) — le fond, la légende et les info-bulles des départements se recalculent maintenant avec le filtre actif.
-
-**Bug intercepté avant publication** : le bouton bascule partageait la classe CSS `filter-btn` avec les boutons de profession, ce qui aurait déclenché la logique de filtre (et cassé l'état actif) au clic sur bascule. Repéré et corrigé avant republication en relisant le script, pas après coup.
-
-**Sorties** : `sante/data/processed/dept_density_data.json` (densité par département × profession + seuils), `dept_paths_v2.json` (contours avec îles). Rapport mis à jour (v5).
-
----
-
-## 2026-09-16 — 29 professions filtrables (pas 8 + "Autres") et grammaire française correcte
-
-**Deux remarques de l'utilisateur** :
-1. Pourquoi seulement 10 filtres alors que 29 professions existent dans les données ?
-2. Bug d'accord grammatical : l'info-bulle affichait "2 touss" pour la catégorie "Tous" (pluriel naïf en ajoutant un "s", qui casse sur un mot déjà terminé par "s").
-
-**Réponse au point 1** : le regroupement initial (8 professions les plus fréquentes + "Autres") avait été fait pour garder une ligne de boutons lisible, mais ça cache de l'info pour les 21 professions restantes. Recalculé pour les 29 professions individuellement, par commune et par département. Interface changée : une ligne de 9 boutons ne passait plus à l'échelle pour 30 options (29 + Tous) -> remplacée par un menu déroulant unique, trié alphabétiquement.
-
-**Réponse au point 2** : construction d'une table de correspondance singulier/pluriel pour les 29 professions + "Tous" (`sante/data/processed/plurals.json`), avec les cas particuliers du français (accord des deux parties d'un nom composé : "chirurgien-dentiste" → "chirurgiens-dentistes", pas "chirurgien-dentistes" ; "Tous" traité à part avec "praticien"/"praticiens", pas de pluriel naïf). Appliqué aux 4 endroits du script qui construisaient du texte (info-bulle des points, info-bulle des départements, légende, compteur de communes couvertes).
-
-**Scripts mis à jour** : `sante/scripts/05_carte_filtrable.py` (v2, 29 professions). Sorties : `points_data.json`, `dept_density_data.json`, `plurals.json`. Rapport mis à jour (v6), vérifié avant publication (30 catégories cohérentes partout, JSON valide, plus aucune trace de l'ancienne UI par boutons).
-
----
-
-## 2026-09-16 — Pourquoi si peu de communes avec médecin, couverture RPPS, population vérifiée, zoom département
-
-**Quatre questions posées d'un coup.**
-
-**1. "Plus de la moitié des communes sans médecin, y a pas un problème ?"** Vérifié plus précisément : c'est même 72 % sans médecin (28 % en ont un, 9 784/34 900). Croisé avec la population des communes (via `communes_coords.csv`) : population médiane 629 hab. pour les communes sans médecin, contre 2170 pour celles qui en ont un. Sur ~34 900 communes françaises, 84,5 % ont moins de 2000 habitants — structure communale très morcelée, cohérent avec la réalité des déserts médicaux, pas un bug.
-
-**2. "C'est juste leur lieu de travail non ?"** Confirmé — RPPS recense le lieu d'exercice, pas le lieu de résidence.
-
-**3. "Quelles professions de santé n'ont pas de RPPS ?"** Recherché : depuis 2024 le RPPS a absorbé l'ancien registre ADELI et couvre quasi toutes les professions réglementées. Restent hors RPPS (pas d'obligation d'inscription) : aides-soignants, auxiliaires de puériculture, ambulanciers, assistants de régulation médicale. Les aides-soignants seuls représentent plusieurs centaines de milliers de personnes — leur absence fait sous-estimer largement l'effectif réel du système de santé.
-
-**4. "Prends une population plus récente, pas 2023 !"** Téléchargé le fichier officiel INSEE dédié (`sante/data/raw/population_ref_2023.xlsx`, populations de référence, validées par décret du 26/12/2025, en vigueur au 1er janvier 2026 — la donnée la plus à jour qui existe, la prochaine ne sort qu'en décembre 2026). Résultat inattendu : **0 écart** sur les 99 départements comparés avec la population qu'on empruntait déjà au projet déchets — même source in fine (ADEME utilise la même donnée INSEE). Les chiffres ne changent donc pas, mais la source est maintenant téléchargée et vérifiée directement pour ce projet plutôt qu'empruntée. Ancien fichier `population_2023.csv` (emprunté) supprimé, remplacé par `population_insee_2023ref.csv` (source propre). Nouveau script `sante/scripts/06_departement_densite.py`.
-
-**Fonctionnalité ajoutée : zoom par département.** Demande : "zoomer sur un département pour avoir les mêmes infos mais sur un truc précis". Bounding box calculée pour chacun des 96 départements (à partir des mêmes coordonnées géographiques que les contours), clic sur un département -> zoom animé (450ms, easing) sur son étendue avec un padding ; bouton "Vue France entière" pour revenir. Filtre par profession et couleurs restent actifs pendant le zoom (aucune donnée dupliquée, juste le `viewBox` du SVG qui change).
-
-**Sorties** : `sante/data/processed/dept_bbox.json`. Rapport mis à jour (v7).
-
----
-
-## 2026-09-16 — Taille des points recalculée localement au zoom
-
-**Remarque** : en zoomant sur un département, les points gardaient la même échelle de taille que sur la carte nationale — un petit département rural, écrasé par le maximum national (Toulouse/Paris), affichait des points quasi tous identiques, sans info utile.
-
-**Correctif** : ajout du département de chaque commune dans les données embarquées (`DATA.dept`, parallèle à `DATA.rows`). Au zoom sur un département, le maximum utilisé pour l'échelle des rayons (racine carrée) est recalculé **uniquement parmi les communes de ce département**, pour cette catégorie de profession filtrée — recalculé aussi si on change de filtre pendant qu'on est zoomé, et repli sur le maximum national si le zoom retourne à la vue France entière.
-
-**Script** : `sante/scripts/05_carte_filtrable.py` mis à jour pour inclure le département par commune. Rapport mis à jour (v8).
-
----
-
-## 2026-09-16 — Points énormes au zoom : rayon fixé en unités carte, pas en pixels écran
-
-**Signalement** : après le correctif précédent, des points énormes envahissaient l'écran une fois zoomé.
-
-**Diagnostic** : le vrai bug n'était pas l'échelle relative (corrigée avant) mais l'échelle absolue — le rayon (55 à 340) est exprimé en unités du repère SVG, pas en pixels. Ces unités restaient fixes alors que le cadre de vue (`viewBox`) rétrécit fortement au zoom (~15 656 unités de large pour la France entière, ~400 pour un petit département) — un rayon de 340 unités qui faisait ~14px à l'échelle France devient énorme rapporté à un cadre 40x plus petit, exactement comme les contours des départements grossissent au zoom (ce qui est voulu, pour eux), sauf que pour des points ce n'est pas le comportement souhaité.
-
-**Correctif** : rayon rendu proportionnel au niveau de zoom (rapport entre la largeur du cadre de vue ciblé et la largeur de base) — les points gardent une taille stable à l'écran quel que soit le niveau de zoom, comme les marqueurs sur une carte interactive classique (Google Maps, Leaflet), au lieu de suivre le grossissement du fond de carte.
-
-Rapport mis à jour (v9).
-
----
-
-## 2026-09-16 — Nom de commune dans l'info-bulle + carte de détail au clic
-
-**Demande 1** : afficher le nom de la commune sur les points, pas juste le nombre de praticiens.
-
-**Action** : nom de commune ajouté aux données embarquées (`DATA.nom`, depuis `communes_coords.csv`), info-bulle changée de "12 médecins" à "Saint-Étienne : 12 médecins".
-
-**Demande 2** : pour une grande ville avec plusieurs établissements, une carte de détail plutôt qu'un simple survol.
-
-**Limite précisée à l'utilisateur** : les données actuelles sont agrégées par commune et par profession, pas par établissement individuel (cabinet/clinique précis) — cette information existe dans le fichier source RPPS (colonnes "Raison sociale site", adresse) mais a été écartée lors du nettoyage initial pour rester léger en mémoire. La carte de détail montre donc la répartition par profession dans la commune, pas la liste des établissements physiques.
-
-**Réalisé** : carte qui s'ouvre au clic sur un point (pas juste au survol) — nom de la commune, effectif total, puis la répartition des 29 professions présentes dans cette commune, triée par effectif décroissant, avec une mini-barre proportionnelle par ligne. Bouton de fermeture. Utilise les données déjà embarquées (toutes les catégories par commune étaient déjà là pour le filtre), aucune nouvelle donnée à charger.
-
-Rapport mis à jour (v10).
 
 ---
 
@@ -496,3 +334,30 @@ Pipeline rejoué en entier : résultats identiques (R² 0,715 en régression lin
 **Réponse** : rien n'a changé sur le fond. La « différence notable » n'existe que face à la nouvelle baseline moyenne (`DummyRegressor`, R² ≈ 0), qui est un plancher, pas le vrai repère. Face à la baseline naïve, le constat du 16/09 tient toujours.
 
 **Corrigé** : script 09 (baseline naïve dans la validation croisée + bootstrap du gain), sections 9 et 10 du compte rendu. Ajout de `requirements.txt` (versions exactes) ; pipeline complet rejoué depuis une copie propre du dépôt.
+
+---
+
+## 2026-09-24 — Rapport chronologique en PDF
+
+**Demande** : un rapport PDF structuré dans l'ordre chronologique du projet, avec une page de garde (membres du groupe, nom du projet, établissement, module, date, lien GitHub) et un sommaire.
+
+**Réalisé** : `dechets/rapport/rapport_ML_dechets.pdf` (20 pages), généré par `dechets/rapport/generer_rapport_pdf.py` (reportlab). Les figures sont recalculées à partir des données et de la pipeline, pour rester cohérentes avec le code.
+
+**Plan** : introduction et chronologie → 1. choix du thème → 2. source principale SINOE → 3. consolidation → 4. choix de la cible → 5. nettoyage → 6. suppression des données inutiles → 7. mise en forme → 8. baseline → 9. premiers modèles → 10. preprocessor et pipeline → 11. évaluation → 12. problèmes rencontrés et conclusion → annexes (clustering, dépôt).
+
+---
+
+## 2026-09-24 — Tri du dépôt, Makefile, analyse des erreurs et prédiction 2025
+
+**Tri du dépôt** : seul le projet déchets reste publié. `sante/` et `menages/` sont retirés du dépôt (conservés en local, ignorés par git). Le script 07 et le fichier de revenu INSEE sont rapatriés dans `dechets/`. Les entrées du journal sur l'exercice santé sont déplacées dans un journal local séparé.
+
+**Nouveaux scripts** :
+- `10_detail_metriques.py` : MAE, RMSE et R² calculés pas à pas (sommes des erreurs, SS_res, SS_tot), pli par pli, année par année, coefficients de la régression.
+- `11_analyse_erreurs.py` : l'erreur est surtout **commune à tous les départements** (sous-estimation de 22 kg/hab en 2021, surestimation de 43 kg/hab en 2023, quand 97 % des départements baissent). Si l'on connaissait l'évolution nationale, la MAE passerait de 36,5 à 19,9 et le R² de 0,70 à 0,88. Piste prioritaire : une information qui varie dans le temps, d'abord nationale. Allers-retours suspects à vérifier (Eure-et-Loir, Territoire-de-Belfort) ; biais fort en Corse (hypothèse : population touristique non comptée).
+- `12_prediction_2025.py` : modèle réentraîné sur 2011–2023, prédiction de l'enquête 2025 (moyenne 518,0 kg/hab), à ± 50,4 kg/hab (80 % des erreurs observées sur le test).
+
+**Question des données simulées (mocks)** : utiles pour tester le code, pas pour évaluer le modèle (score circulaire). La vérification « terrain » est le test sur 2021 et 2023, des années réelles jamais vues.
+
+**Makefile** à la racine : une commande par étape (`make supervise`, `make tout`…), guide dans le README et en annexe C du rapport.
+
+**Rapport PDF** : 31 pages. Ajouts : chapitre X et y, formules et calculs détaillés (annexe B), chapitre 13 (tester le modèle et prédire 2025), chapitre 14 (comment améliorer le modèle), guide d'utilisation (annexe C).
