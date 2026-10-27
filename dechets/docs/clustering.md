@@ -1,6 +1,6 @@
 # Clustering — Des profils de départements selon ce que leurs habitants jettent
 
-Apprentissage non supervisé sur les mêmes données que la partie supervisée (ADEME / SINOE, INSEE). Scripts : [`12_clustering_production.py`](scripts/12_clustering_production.py), [`13_clustering_analyses.py`](scripts/13_clustering_analyses.py) et [`14_clustering_hierarchique_dbscan.py`](scripts/14_clustering_hierarchique_dbscan.py) (`make non-supervise`). Rapport détaillé, avec les corrélations, la PCA (PC1, PC2, PC3), le dendrogramme, DBSCAN et la robustesse : [`rapport/rapport_ML_dechets_clustering.pdf`](rapport/rapport_ML_dechets_clustering.pdf).
+Apprentissage non supervisé sur les mêmes données que la partie supervisée (ADEME / SINOE, INSEE). Scripts : [`12_clustering_production.py`](../scripts/12_clustering_production.py), [`13_clustering_analyses.py`](../scripts/13_clustering_analyses.py) et [`14_clustering_hierarchique_dbscan.py`](../scripts/14_clustering_hierarchique_dbscan.py) (`make non-supervise`). Rapport détaillé, avec les corrélations, la PCA (PC1, PC2, PC3), le dendrogramme, DBSCAN et la robustesse : [`rapports/rapport_clustering.pdf`](../rapports/rapport_clustering.pdf).
 
 ## Sommaire
 
@@ -67,7 +67,7 @@ Le k-means a besoin qu'on lui donne le nombre de groupes **k**. On l'a lancé po
 - **La méthode du coude.** L'inertie mesure à quel point les départements sont éloignés du centre de leur groupe. Elle baisse toujours quand on ajoute des groupes. On cherche le « coude » : le point où ajouter un groupe ne fait plus beaucoup baisser l'inertie.
 - **Le score de silhouette.** Pour chaque département, il compare la distance aux membres de son groupe et la distance au groupe voisin. Il va de −1 à 1 : proche de 1, le département est bien dans son groupe ; proche de 0, il est à la frontière ; négatif, il serait mieux dans un autre groupe.
 
-![Méthode du coude et score de silhouette](data/figures/clustering_coude_silhouette.png)
+![Méthode du coude et score de silhouette](../data/figures/clustering_coude_silhouette.png)
 
 | k | Inertie | Baisse de l'inertie | Silhouette | Plus petit groupe |
 |---|---|---|---|---|
@@ -95,7 +95,7 @@ Le k-means dépend de son point de départ, tiré au hasard : lancé une seule f
 
 ## 4. Étape 3 — Les 4 groupes
 
-![Profils des 4 groupes](data/figures/clustering_profils.png)
+![Profils des 4 groupes](../data/figures/clustering_profils.png)
 
 *Indice 100 = moyenne des 100 départements.*
 
@@ -118,7 +118,7 @@ Pour interpréter les groupes, nous regardons des variables qui **n'ont pas serv
 | Grandes agglomérations | **1 407 000** | **23 000 €** | **49 %** | 16 % | 9 % |
 | Ordures ménagères élevées | 500 000 | **20 700 €** | 20 % | **37 %** | 11 % |
 
-![Carte des 4 groupes](data/figures/clustering_carte.png)
+![Carte des 4 groupes](../data/figures/clustering_carte.png)
 
 ### Profil intermédiaire — 59 départements
 
@@ -158,7 +158,7 @@ La PCA (analyse en composantes principales, ACP en français) transforme les 5 v
 | PC4 | 0,47 | 9,2 % | 93,7 % |
 | PC5 | 0,32 | 6,3 % | 100 % |
 
-![Éboulis des valeurs propres](data/figures/clustering_acp_variance.png)
+![Éboulis des valeurs propres](../data/figures/clustering_acp_variance.png)
 
 **Choix du nombre de composantes :** l'éboulis fait un coude après PC3, et la règle des 80–90 % demande **3 composantes** (84 %). Le plan PC1-PC2 (71 %) sert aux dessins, complété par le plan PC1-PC3.
 
@@ -176,11 +176,11 @@ La PCA (analyse en composantes principales, ACP en français) transforme les 5 v
 - **PC2 (26 %) : le volume d'ordures ménagères et d'encombrants.**
 - **PC3 (13 %) : les déchets verts plutôt que le tri** des emballages et des déchets dangereux.
 
-![Projection PC1-PC2 avec les centroïdes](data/figures/clustering_acp_projection.png)
+![Projection PC1-PC2 avec les centroïdes](../data/figures/clustering_acp_projection.png)
 
 Les croix sont les centroïdes des groupes. Chaque groupe occupe sa zone du plan : agglomérations à gauche (peu de tri), Ouest à droite, Méditerranée en haut. Le plan PC1-PC3 sépare en plus l'Ouest (haut) de la Méditerranée (bas).
 
-![Projection PC1-PC3](data/figures/clustering_acp_projection_pc3.png)
+![Projection PC1-PC3](../data/figures/clustering_acp_projection_pc3.png)
 
 ## 6. Deux autres méthodes : clustering hiérarchique et DBSCAN
 
@@ -188,7 +188,7 @@ Les croix sont les centroïdes des groupes. Chaque groupe occupe sa zone du plan
 
 Chaque département part seul ; à chaque étape, les deux groupes les plus proches fusionnent. Le dendrogramme montre ces fusions.
 
-![Dendrogramme](data/figures/clustering_dendrogramme.png)
+![Dendrogramme](../data/figures/clustering_dendrogramme.png)
 
 | Couper en | 2 | 3 | **4** | 5 | 6 |
 |---|---|---|---|---|---|
@@ -200,7 +200,7 @@ Les sauts sont grands jusqu'à 4 groupes puis s'effondrent : **4 est la coupe la
 
 Réglages : **MinPts = 10** (deux fois le nombre de variables), **ε = 2,53** choisi au coude de la courbe des k-distances.
 
-![DBSCAN](data/figures/clustering_dbscan.png)
+![DBSCAN](../data/figures/clustering_dbscan.png)
 
 Résultat : **un seul groupe dense** (90 points de cœur, 8 de bordure) et **2 points de bruit : les Landes et la Guadeloupe**. Aucun réglage testé (ε de 1 à 2, MinPts 5 ou 10) ne donne plus d'un groupe. Les départements forment donc un **continuum**, pas des îlots séparés : les 4 profils sont des découpages utiles d'un même nuage. DBSCAN sert ici à la détection d'anomalies.
 

@@ -6,7 +6,7 @@ une édition séparée par année, avec un nom de colonne qui change (MED13,
 MED15, MED17...) ou un format "long" pour l'édition la plus récente (2021).
 Ce script normalise tout ça en un seul format : C_DEPT, ANNEE, MEDIANE_REVENU.
 
-Sources téléchargées manuellement dans /tmp/filosofi/ (voir JOURNAL.md pour
+Sources téléchargées manuellement dans /tmp/filosofi/ (voir docs/JOURNAL.md pour
 les URLs) :
   - 2013, 2015 : fichiers .xls, feuille "DEP", colonne MEDxx
   - 2017, 2019 : fichiers cc_filosofi_YYYY_DEP.csv, colonne MEDxx

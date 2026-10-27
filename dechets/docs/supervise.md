@@ -2,7 +2,7 @@
 
 **Dépôt GitHub : [github.com/Rxdy/ML-DMA](https://github.com/Rxdy/ML-DMA)** (dossier [`dechets/`](https://github.com/Rxdy/ML-DMA/tree/main/dechets))
 
-Ce document présente l'objectif du projet, son découpage et la logique suivie de bout en bout : récupération des données, préparation, choix de la cible, modèles, évaluation et interprétation. Le raisonnement détaillé, étape par étape et avec les hésitations, est tracé au fil de l'eau dans le [journal de bord](../JOURNAL.md). Le [rapport HTML](rapport/rapport_dma.html) reprend les mêmes résultats avec des graphiques.
+Ce document présente l'objectif du projet, son découpage et la logique suivie de bout en bout : récupération des données, préparation, choix de la cible, modèles, évaluation et interprétation. Le raisonnement détaillé, étape par étape et avec les hésitations, est tracé au fil de l'eau dans le [journal de bord](../../docs/JOURNAL.md). La [synthèse en PDF](../rapports/synthese_projet.pdf) reprend les deux volets (supervisé et clustering) avec les graphiques.
 
 ---
 
@@ -37,20 +37,20 @@ Chaque étape est un script numéroté, exécuté dans l'ordre depuis le dossier
 
 | Étape | Script | Rôle | Sortie |
 |---|---|---|---|
-| Exploration | [`01_explore.py`](scripts/01_explore.py) | Dimensions, types, valeurs manquantes, doublons, valeurs aberrantes | affichage console |
-| Clustering | [`02_clustering_profil_traitement.py`](scripts/02_clustering_profil_traitement.py) | Profil de traitement de chaque département → 4 clusters (KMeans) | `processed_clusters_traitement.csv` |
-| Préparation | [`03_regression_prep.py`](scripts/03_regression_prep.py) | Jointure avec le cluster, variables d'historique (lag) | `processed_regression_dataset.csv` |
-| Corrélations | [`04_correlation.py`](scripts/04_correlation.py) | Matrice de corrélation, choix des variables | `correlation_matrix.png` |
-| Split + scaling | [`05_split_scale.py`](scripts/05_split_scale.py) | Découpage train/test temporel, Min-Max (version décomposée à la main) | `train_scaled.csv`, `test_scaled.csv` |
-| Modèles | [`06_train_model.py`](scripts/06_train_model.py) | Baseline, régression linéaire, Random Forest (version décomposée à la main) | `model_comparison.csv` |
-| Expérience | [`08_income_experiment.py`](scripts/08_income_experiment.py) | Test d'une variable supplémentaire : le revenu médian | affichage console |
-| **Pipeline** | [`09_pipeline.py`](scripts/09_pipeline.py) | **Chaîne complète preprocessor → modèle, validation croisée, évaluation** | `model_comparison_pipeline.csv` |
-| Détail des calculs | [`10_detail_metriques.py`](scripts/10_detail_metriques.py) | MAE, RMSE et R² pas à pas, pli par pli, année par année | `detail_*.csv` |
-| Analyse des erreurs | [`11_analyse_erreurs.py`](scripts/11_analyse_erreurs.py) | Où le modèle se trompe, et quelle information manque | `erreurs_test.csv` |
+| Exploration | [`01_explore.py`](../scripts/01_explore.py) | Dimensions, types, valeurs manquantes, doublons, valeurs aberrantes | affichage console |
+| Clustering | [`02_clustering_profil_traitement.py`](../scripts/02_clustering_profil_traitement.py) | Profil de traitement de chaque département → 4 clusters (KMeans) | `processed_clusters_traitement.csv` |
+| Préparation | [`03_regression_prep.py`](../scripts/03_regression_prep.py) | Jointure avec le cluster, variables d'historique (lag) | `processed_regression_dataset.csv` |
+| Corrélations | [`04_correlation.py`](../scripts/04_correlation.py) | Matrice de corrélation, choix des variables | `correlation_matrix.png` |
+| Split + scaling | [`05_split_scale.py`](../scripts/05_split_scale.py) | Découpage train/test temporel, Min-Max (version décomposée à la main) | `train_scaled.csv`, `test_scaled.csv` |
+| Modèles | [`06_train_model.py`](../scripts/06_train_model.py) | Baseline, régression linéaire, Random Forest (version décomposée à la main) | `model_comparison.csv` |
+| Expérience | [`08_income_experiment.py`](../scripts/08_income_experiment.py) | Test d'une variable supplémentaire : le revenu médian | affichage console |
+| **Pipeline** | [`09_pipeline.py`](../scripts/09_pipeline.py) | **Chaîne complète preprocessor → modèle, validation croisée, évaluation** | `model_comparison_pipeline.csv` |
+| Détail des calculs | [`10_detail_metriques.py`](../scripts/10_detail_metriques.py) | MAE, RMSE et R² pas à pas, pli par pli, année par année | `detail_*.csv` |
+| Analyse des erreurs | [`11_analyse_erreurs.py`](../scripts/11_analyse_erreurs.py) | Où le modèle se trompe, et quelle information manque | `erreurs_test.csv`, `erreurs_carte.png` |
 
-Le script [`07_income_prep.py`](scripts/07_income_prep.py) assemble les données de revenu INSEE utilisées par le script 08. Il lit des fichiers téléchargés à la main et non conservés ; son résultat est inclus dans `data/raw/`.
+Le script [`07_income_prep.py`](../scripts/07_income_prep.py) assemble les données de revenu INSEE utilisées par le script 08. Il lit des fichiers téléchargés à la main et non conservés ; son résultat est inclus dans `data/raw/`.
 
-Chaque script se lance aussi par une commande `make` depuis la racine du dépôt (voir le [README](../README.md) : `make supervise`, `make all`…).
+Chaque script se lance aussi par une commande `make` depuis la racine du dépôt (voir le [README](../../README.md) : `make supervise`, `make all`…).
 
 Les scripts 05 et 06 montrent chaque étape de façon explicite (scaler calibré, puis modèle entraîné). Le script 09 refait la même chose avec les outils scikit-learn prévus pour ça (`ColumnTransformer` et `Pipeline`). C'est la version de référence.
 
@@ -62,9 +62,10 @@ dechets/
 │   ├── raw/          fichiers téléchargés, jamais modifiés
 │   ├── processed/    fichiers générés par les scripts
 │   └── figures/      graphiques
-├── scripts/          01 → 11
-├── rapport/          rapport HTML (graphiques)
-└── COMPTE_RENDU.md   ce document
+├── scripts/          01 → 14
+├── notebooks/        notebook Colab / Jupyter
+├── docs/             ce document et la synthèse du clustering
+└── rapports/         rapports PDF
 ```
 
 ## 3. Récupération des données
@@ -252,6 +253,6 @@ make installer
 make all
 ```
 
-Sans rien installer : le notebook [`notebooks/projet_dechets.ipynb`](notebooks/projet_dechets.ipynb) s'ouvre dans Google Colab (lien dans le [README](../README.md)).
+Sans rien installer : le notebook [`notebooks/projet_dechets.ipynb`](../notebooks/projet_dechets.ipynb) s'ouvre dans Google Colab (lien dans le [README](../../README.md)).
 
-Les fichiers de `data/raw/` sont inclus dans le dépôt : aucun téléchargement n'est nécessaire. Le rapport PDF complet ([`rapport/rapport_ML_dechets.pdf`](rapport/rapport_ML_dechets.pdf)) détaille en plus X et y, les calculs des métriques, l'analyse des erreurs et les pistes d'amélioration.
+Les fichiers de `data/raw/` sont inclus dans le dépôt : aucun téléchargement n'est nécessaire. Le rapport PDF complet ([`rapports/rapport_supervise.pdf`](../rapports/rapport_supervise.pdf)) détaille en plus X et y, les calculs des métriques, l'analyse des erreurs et les pistes d'amélioration.

@@ -6,7 +6,7 @@ Question clé : l'erreur est-elle propre à chaque département, ou commune à t
   - si elle est commune, il manque une information NATIONALE qui varie dans le temps ;
   - si elle est propre au département, il manque une information LOCALE.
 
-Sortie : data/processed/erreurs_test.csv
+Sorties : data/processed/erreurs_test.csv, data/figures/erreurs_carte.png
 """
 import pandas as pd
 from sklearn.base import clone
@@ -49,3 +49,38 @@ print(test.groupby("L_REGION")["erreur"].mean().round(1).sort_values().to_string
 test[["C_DEPT", "N_DEPT", "L_REGION", "ANNEE", "RATIO_DMA_lag1", "RATIO_DMA", "prediction", "erreur"]] \
     .to_csv("data/processed/erreurs_test.csv", index=False)
 print("\nSauvegardé -> data/processed/erreurs_test.csv")
+
+# --- Carte : erreur absolue moyenne par département (outre-mer non représenté)
+import json
+
+import matplotlib
+matplotlib.use("Agg")
+import matplotlib.pyplot as plt
+import numpy as np
+from matplotlib.colors import Normalize
+from matplotlib.patches import Polygon
+
+mae_dep = test.assign(abs_err=test["erreur"].abs()).groupby("C_DEPT")["abs_err"].mean()
+geo = json.load(open("data/raw/contours-departements.geojson", encoding="utf-8"))
+cmap, norm = plt.get_cmap("YlGnBu"), Normalize(0, 80)
+fig, ax = plt.subplots(figsize=(6.4, 6.4))
+for f in geo["features"]:
+    code, geom = f["properties"]["code"], f["geometry"]
+    polys = geom["coordinates"] if geom["type"] == "MultiPolygon" else [geom["coordinates"]]
+    teinte = cmap(norm(min(mae_dep[code], 80))) if code in mae_dep.index else "#DDDDDD"
+    for poly in polys:
+        pts = np.array(poly[0])
+        if pts[:, 0].min() < -6 or pts[:, 1].min() < 41:  # outre-mer : hors de la carte métropolitaine
+            continue
+        ax.add_patch(Polygon(pts, closed=True, facecolor=teinte, edgecolor="white", linewidth=0.4))
+ax.set_xlim(-5.3, 9.8); ax.set_ylim(41.2, 51.2); ax.set_aspect(1.45); ax.axis("off")
+cb = fig.colorbar(plt.cm.ScalarMappable(norm=norm, cmap=cmap), ax=ax, shrink=0.55, pad=0.0)
+cb.set_label("erreur absolue moyenne (kg/hab), plafonnée à 80", fontsize=8)
+for nom, pos, texte in [("Corse-du-Sud", (9.0, 41.9), (4.6, 41.5)),
+                        ("Eure-et-Loir", (1.35, 48.4), (-4.8, 49.8)),
+                        ("Territoire-de-Belfort", (6.9, 47.6), (5.2, 50.2))]:
+    ax.annotate(nom, pos, texte, fontsize=8, arrowprops=dict(arrowstyle="-", lw=0.7))
+ax.set_title("Où se trompe la régression linéaire (test 2021 et 2023)", fontsize=10)
+fig.savefig("data/figures/erreurs_carte.png", dpi=170, bbox_inches="tight", facecolor="white")
+plt.close(fig)
+print("Sauvegardé -> data/figures/erreurs_carte.png")
