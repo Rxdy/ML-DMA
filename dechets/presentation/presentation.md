@@ -153,9 +153,40 @@ Chaque département produit des déchets ménagers et assimilés (DMA) : ordures
 <div class="box"><b>R²</b> (coefficient de détermination)<br>Part de la variation entre départements expliquée par le modèle : 1 = parfait, 0 = pas mieux que la moyenne.</div>
 </div>
 
-Gain sur la règle naïve : **0,74 kg/hab, soit 2 % de l'erreur**. La valeur précédente porte **94,9 %** de l'importance des variables.
-
+Gain sur la règle naïve : **0,74 kg/hab, soit 2 % de l'erreur**.
 <!-- Ce n'est pas un échec : la production par habitant change très peu d'une enquête à l'autre. Les variables comme la population ne varient pas dans le temps, elles ne peuvent pas expliquer un changement. -->
+
+---
+
+<!-- _class: num -->
+
+# Le Random Forest : ce qu'il utilise vraiment
+
+<div class="cols">
+<div>
+
+**Le principe**
+
+- 300 arbres de décision, de profondeur 6 au plus
+- Chaque arbre prédit un ratio, le modèle fait la **moyenne** des 300 prédictions
+- L'**importance** d'une variable : sa part dans la baisse d'erreur obtenue par les arbres (le total fait 100 %)
+
+</div>
+<div>
+
+| Variable donnée au modèle | Importance |
+|---|---|
+| **Ratio de l'enquête précédente** | **94,9 %** |
+| Tonnage de l'enquête précédente | 1,9 % |
+| Population | 1,7 % |
+| Profil de traitement (4 clusters) | 1,6 % |
+
+</div>
+</div>
+
+Les arbres découpent presque toujours selon la valeur précédente : le modèle **recopie** ce que le département produisait déjà, avec de petits ajustements. C'est pour cela qu'il fait presque comme la règle naïve (R² de 0,705 contre 0,702).
+
+<!-- Importance : part de la baisse d'erreur due à chaque variable, mesurée sur l'entraînement (script 09). Les 4 clusters sont codés en 4 colonnes 0/1 (OneHotEncoder) : 0,9 + 0,4 + 0,2 + 0,1 = 1,6 %. Ne pas dire que population ou profil "ne servent à rien" : ils servent peu ici parce que la valeur précédente les contient déjà. -->
 
 ---
 
