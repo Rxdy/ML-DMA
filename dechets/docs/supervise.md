@@ -240,6 +240,12 @@ Les années de test marquent une rupture : un pic en 2021 puis une baisse nette 
 - **Peu de points dans le temps** : 8 enquêtes seulement, une tous les 2 ans. On n'a aucune donnée pour les années paires.
 - **Variables trop stables** : pour dépasser la baseline, il faudrait des variables qui changent dans le temps et au niveau du département. Par exemple la mise en place de la tarification incitative, l'extension des consignes de tri, ou l'évolution de la part de population urbaine.
 - **Périmètres légèrement différents** : le clustering inclut les gravats (`sinoe_dma.csv`), la cible de régression les exclut. Cet écart est documenté et assumé.
+- **Des données plus fines, dans le temps et dans l'espace** :
+  - *mensuelles* plutôt qu'une enquête tous les 2 ans : 12 points par an au lieu d'un demi-point, pour voir les ruptures (2021, 2023) et la saisonnalité, notamment touristique ;
+  - *par ville* plutôt que par département : on pourrait relier la production à la taille de la ville et repérer des écarts à l'intérieur d'un département ;
+  - *avec la zone et le département de rattachement* : en regroupant les villes, on retrouve le compte rendu départemental et on mesure d'où viennent ses écarts.
+
+  Ces données ne sont pas dans les bases publiques utilisées ici. Les obtenir demande davantage de moyens (recueil mensuel auprès de chaque collectivité qui collecte, avec un format commun). Le bénéfice attendu est une meilleure gestion des déchets et une vue sur les écarts entre territoires, que les moyennes départementales cachent.
 
 ## 12. Reproduire les résultats
 
