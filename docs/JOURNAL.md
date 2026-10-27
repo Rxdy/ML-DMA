@@ -422,3 +422,9 @@ Pipeline rejoué en entier : résultats identiques (R² 0,715 en régression lin
 - Script 13 : PCA en 5 étapes (standardisation, matrice de covariance = matrice de corrélation sur données standardisées, valeurs et vecteurs propres, sélection, projection). Valeurs propres 2,27 / 1,33 / 0,67 / 0,47 / 0,32. Règle des 80–90 % : **3 composantes** (84 %). PC3 = déchets verts plutôt que tri. Centroïdes sur la projection, plan PC1-PC3.
 - Script 14 : clustering hiérarchique agglomératif (Ward) et son dendrogramme (grands sauts de hauteur jusqu'à 4 groupes, puis quasi nuls : confirme k = 4 ; ARI 0,83 avec le k-means) ; DBSCAN (MinPts = 10, ε = 2,53 au coude des k-distances) : un seul groupe dense et 2 points de bruit (Landes, Guadeloupe), quel que soit le réglage. Les départements forment un continuum.
 - Rapport de clustering restructuré (35 pages) : chapitre PCA, k-means (distance, inertie/WCSS, étapes, avantages et limites), clustering hiérarchique, DBSCAN, synthèse des méthodes ; glossaire complété. `CLUSTERING.md`, notebook Colab et `make autres-methodes` mis à jour.
+
+---
+
+## 2026-10-27 — Eure-et-Loir et Territoire-de-Belfort : reformulation
+
+Le mot « suspect » employé pour ces deux départements était trop fort. Ce que montrent les données : ratio de 609 et 603 kg/hab en 2021, puis 454 et 479 en 2023, à population stable, donc les plus grosses erreurs du modèle (123 et 110 kg/hab). Le même mouvement existe presque partout (97 % des départements baissent en 2023, l'Oise : 607 puis 492). Conclusion limitée aux données : ces deux séries s'écartent plus que les autres, sans preuve d'erreur. Cause réelle ou administrative à vérifier auprès de la source. Texte mis à jour dans la synthèse PDF et `dechets/docs/supervise.md`.
