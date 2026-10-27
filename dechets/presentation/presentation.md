@@ -11,12 +11,14 @@ style: |
   h2 { color: var(--accent); font-size: 1.1em; }
   strong { color: var(--accent); }
   footer, section::after { color: var(--muted); font-size: 14px; }
+  section::after { content: attr(data-marpit-pagination) ' / ' attr(data-marpit-pagination-total); }
   table { font-size: .78em; border-collapse: collapse; width: 100%; }
   th { background: var(--accent); color: #fff; padding: 6px 10px; text-align: left; }
   td { padding: 5px 10px; border-bottom: 1px solid var(--line); }
   section.num td:not(:first-child), section.num th:not(:first-child) { text-align: right; }
   section.part { background: var(--accent); color: #fff; justify-content: center; }
   section.part h1 { color: #fff; font-size: 2em; }
+  section.part h2 { color: #fff; font-size: 1.5em; margin: .2em 0 .6em; }
   section.part strong, section.part p { color: #fff; }
   section.part footer, section.part::after { color: #cfe8e1; }
   section.title { justify-content: center; }
@@ -48,16 +50,18 @@ Prédire la production par habitant (supervisé), puis identifier des profils de
 
 ---
 
-# Déroulé : 30 minutes
+<!-- _class: bigbox -->
 
-| Partie | Contenu | Durée |
-|---|---|---|
-| 1. Explorer | Les données, le thème, ce qu'on peut en faire | 4 min |
-| 2. Prédire et évaluer | Rappel : X et Y, modèles, performance, géolocalisation des erreurs | 5 min |
-| 3. Segmenter | K-means, choix des variables, interprétation des clusters | 16 min |
-| 4. Conclusions | Prise de recul, limites, pistes d'amélioration | 5 min |
+# Sommaire
 
-<!-- La partie 2 a déjà été présentée avec son rapport PDF : on la reprend en rappel. Insister sur le fait que la partie 3 est le cœur de cette présentation. -->
+<div class="cols">
+<div class="box"><b>Partie 1</b><br><span style="font-size:1.25em">Explorer : les données et leur thème</span><br>Le thème, ce qu'on peut en faire, les sources et leur qualité</div>
+<div class="box"><b>Partie 2</b><br><span style="font-size:1.25em">Prédire et évaluer</span><br>Rappel : X et Y, modèles, performance, géolocalisation des erreurs</div>
+<div class="box"><b>Partie 3</b><br><span style="font-size:1.25em">Segmenter : les profils de départements</span><br>K-means, choix des variables, interprétation des clusters, PCA, robustesse</div>
+<div class="box"><b>Partie 4</b><br><span style="font-size:1.25em">Prise de recul : conclusions, limites, pistes</span><br>Ce qui manque au modèle, limites, pistes d'amélioration</div>
+</div>
+
+<!-- Durées prévues : partie 1 = 4 min, partie 2 = 5 min (rappel, déjà présentée avec son rapport PDF), partie 3 = 16 min (cœur de la présentation), partie 4 = 5 min. Total 30 minutes. -->
 
 ---
 
@@ -65,7 +69,7 @@ Prédire la production par habitant (supervisé), puis identifier des profils de
 
 # Partie 1
 ## Explorer : les données et leur thème
-4 minutes
+<!-- 4 minutes -->
 
 ---
 
@@ -111,7 +115,8 @@ Chaque département produit des déchets ménagers et assimilés (DMA) : ordures
 
 # Partie 2
 ## Rappel : prédire et évaluer
-5 minutes — déjà présentée, détail dans le rapport supervisé
+Rappel de la partie déjà présentée (détail dans le rapport supervisé)
+<!-- 5 minutes -->
 
 ---
 
@@ -162,7 +167,7 @@ Gain sur la règle naïve : **0,74 kg/hab, soit 2 % de l'erreur**. La valeur pr�
 
 # Partie 3
 ## Segmenter : les profils de départements
-16 minutes
+<!-- 16 minutes -->
 
 ---
 
@@ -407,7 +412,7 @@ Grands sauts de hauteur jusqu'à 4 groupes (4,07 → 2,50 → 2,19), puis effond
 
 # Partie 4
 ## Prise de recul : conclusions, limites, pistes
-5 minutes
+<!-- 5 minutes -->
 
 ---
 
