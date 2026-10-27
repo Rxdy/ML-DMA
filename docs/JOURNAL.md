@@ -428,3 +428,11 @@ Pipeline rejoué en entier : résultats identiques (R² 0,715 en régression lin
 ## 2026-10-27 — Eure-et-Loir et Territoire-de-Belfort : reformulation
 
 Le mot « suspect » employé pour ces deux départements était trop fort. Ce que montrent les données : ratio de 609 et 603 kg/hab en 2021, puis 454 et 479 en 2023, à population stable, donc les plus grosses erreurs du modèle (123 et 110 kg/hab). Le même mouvement existe presque partout (97 % des départements baissent en 2023, l'Oise : 607 puis 492). Conclusion limitée aux données : ces deux séries s'écartent plus que les autres, sans preuve d'erreur. Cause réelle ou administrative à vérifier auprès de la source. Texte mis à jour dans la synthèse PDF et `dechets/docs/supervise.md`.
+
+---
+
+## 2026-10-27 — Information nationale qui varie dans le temps, hypothèse du pouvoir d'achat
+
+Passage détaillé en paragraphes (synthèse PDF et `dechets/docs/supervise.md`). Constat : en 2021 les départements produisent en moyenne 21,5 kg/hab de plus (11 % en baisse), en 2023 43,8 de moins (97 % en baisse) ; le modèle, qui suppose « comme la dernière fois », se trompe dans le même sens partout (−22 puis +43 kg/hab). L'erreur est donc commune, pas locale : il manque une valeur nationale annuelle. Plafond : avec l'évolution nationale connue, MAE de 36,5 à 19,9 et R² de 0,70 à 0,88 (non réaliste, car inconnue à l'avance).
+
+Hypothèse ajoutée : baisse du pouvoir d'achat en 2022-2023. Non testable avec nos données (revenu médian INSEE jusqu'en 2021 seulement, qui ignore les prix ; le script 08 testait le niveau entre départements, pas l'évolution). À tester avec une série nationale (inflation, pouvoir d'achat, consommation des ménages).
