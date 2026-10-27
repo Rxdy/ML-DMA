@@ -15,7 +15,8 @@ Projet iRUP Alternance : ALVES Rudy, ANTHONY Josselin, BENASSIE Noé, TAVERNIER 
 
 | Je veux… | Je lis |
 |---|---|
-| Comprendre le projet en 15 pages | [`dechets/rapports/synthese_projet.pdf`](dechets/rapports/synthese_projet.pdf) |
+| Présenter le projet à l'oral (30 min) | [`dechets/presentation/presentation.pptx`](dechets/presentation/presentation.pptx), avec une version PDF ; les notes de l'orateur sont dans le fichier source `presentation.md` |
+| Comprendre le projet en 16 pages | [`dechets/rapports/synthese_projet.pdf`](dechets/rapports/synthese_projet.pdf) |
 | Rejouer le projet sans rien installer | [le notebook dans Google Colab](https://colab.research.google.com/github/Rxdy/ML-DMA/blob/main/dechets/notebooks/projet_dechets.ipynb) |
 | Le détail du volet supervisé | [`dechets/rapports/rapport_supervise.pdf`](dechets/rapports/rapport_supervise.pdf) et sa [synthèse](dechets/docs/supervise.md) |
 | Le détail du clustering | [`dechets/rapports/rapport_clustering.pdf`](dechets/rapports/rapport_clustering.pdf) et sa [synthèse](dechets/docs/clustering.md) |
@@ -38,6 +39,7 @@ Projet iRUP Alternance : ALVES Rudy, ANTHONY Josselin, BENASSIE Noé, TAVERNIER 
     ├── scripts/              01 à 14, à exécuter dans l'ordre
     ├── notebooks/            notebook Colab / Jupyter qui rejoue tout
     ├── docs/                 synthèses écrites (supervisé, clustering)
+    ├── presentation/         diaporama de 30 minutes (source Marp, PowerPoint, PDF)
     └── rapports/             rapports PDF (synthèse, supervisé, clustering)
 ```
 
@@ -88,6 +90,16 @@ Python 3.10 ou plus récent est requis. `make` seul affiche la liste des command
 | `make autres-methodes` | 14 | Clustering hiérarchique (dendrogramme) et DBSCAN |
 | `make non-supervise` | 12 à 14 | Volet clustering complet |
 | `make all` | 01 à 14 | Rejoue tout le projet |
+
+## Modifier la présentation
+
+Le diaporama est écrit en [Marp](https://marp.app) (Markdown) dans [`dechets/presentation/presentation.md`](dechets/presentation/presentation.md) ; les figures viennent de `dechets/data/figures/`. Pour régénérer les fichiers après une modification :
+
+```bash
+cd dechets/presentation
+npx @marp-team/marp-cli presentation.md --allow-local-files --pptx-editable -o presentation.pptx   # PowerPoint (nécessite LibreOffice)
+npx @marp-team/marp-cli presentation.md --allow-local-files -o presentation.pdf                    # PDF
+```
 
 ## Données
 
