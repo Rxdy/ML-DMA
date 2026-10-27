@@ -6,12 +6,12 @@ title: Les déchets des départements français
 footer: ALVES · ANTHONY · BENASSIE · TAVERNIER — iRUP Alternance
 style: |
   :root { --fg:#16211c; --muted:#566359; --line:#d9e0da; --accent:#0e6b5b; --soft:#dcefe9; --warn:#b5700f; --warn-soft:#f6e8cf; }
-  section { font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif; color: var(--fg); background: #fff; font-size: 26px; padding: 48px 64px 56px; }
+  section { justify-content: flex-start; font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif; color: var(--fg); background: #fff; font-size: 26px; padding: 48px 64px 56px; }
   h1 { color: var(--accent); font-size: 1.5em; margin: 0 0 .5em; }
   h2 { color: var(--accent); font-size: 1.1em; }
   strong { color: var(--accent); }
   footer, section::after { color: var(--muted); font-size: 14px; }
-  table { font-size: .68em; border-collapse: collapse; width: 100%; }
+  table { font-size: .78em; border-collapse: collapse; width: 100%; }
   th { background: var(--accent); color: #fff; padding: 6px 10px; text-align: left; }
   td { padding: 5px 10px; border-bottom: 1px solid var(--line); }
   section.num td:not(:first-child), section.num th:not(:first-child) { text-align: right; }
@@ -21,6 +21,8 @@ style: |
   section.part footer, section.part::after { color: #cfe8e1; }
   section.title { justify-content: center; }
   section.title h1 { font-size: 1.7em; }
+  section.bigbox .box { font-size: .95em; }
+  section.bigbox .box p { margin: .3em 0; }
   .small { font-size: .7em; color: var(--muted); }
   .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; }
   .cols3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; }
@@ -201,7 +203,7 @@ Le clustering regroupe sur les variables qu'on lui donne : **choisir les variabl
 - **Une ligne par département** : moyenne des enquêtes 2019 et 2021 → **100 départements** (Mayotte sans détail)
 - **Standardisation** (moyenne 0, écart-type 1) : sans elle, les OMR (~240 kg) pèseraient **24 fois** plus que les déchets dangereux (~10 kg) dans les distances
 
-![w:470](../data/figures/clustering_correlations.png)
+![h:290](../data/figures/clustering_correlations.png)
 
 <!-- Les variables ne se répètent pas : aucune corrélation ne dépasse 0,6. Recyclables/dangereux 0,59 ; OMR/recyclables -0,36 : ce qui n'est pas trié finit dans la poubelle ordinaire. -->
 
@@ -290,6 +292,8 @@ Les groupes dessinent pourtant :
 
 ---
 
+<!-- _class: bigbox -->
+
 # Interpréter les groupes
 
 <div class="cols">
@@ -374,18 +378,16 @@ Chaque groupe occupe sa zone : agglomérations à gauche (peu de tri), Ouest à 
 **Clustering hiérarchique (Ward)**
 Grands sauts de hauteur jusqu'à 4 groupes (4,07 → 2,50 → 2,19), puis effondrement (0,58 → 0,02) : **4 est la coupe la plus fine qui ait un sens.**
 
-![w:520](../data/figures/clustering_dendrogramme.png)
-
 </div>
 <div>
 
 **DBSCAN** (MinPts = 10, ε = 2,53)
-**Un seul groupe dense** et 2 points de bruit : **Landes** et **Guadeloupe**. Aucun réglage ne donne plus d'un groupe.
-
-→ Les départements forment un **continuum**, pas des îlots. Les 4 profils sont des découpages utiles d'un même nuage.
+**Un seul groupe dense** et 2 points de bruit : **Landes** et **Guadeloupe**. Les départements forment un **continuum**, pas des îlots.
 
 </div>
 </div>
+
+![h:330](../data/figures/clustering_dendrogramme.png)
 
 ---
 
@@ -437,7 +439,7 @@ Si on connaissait l'évolution nationale : **MAE 36,5 → 19,9, R² 0,70 → 0,8
 
 # Hypothèse et cas à vérifier
 
-<div class="warn"><b>Hypothèse : le pouvoir d'achat.</b> Les prix ont fortement augmenté en 2022–2023 : moins d'achats, moins de déchets, partout. Non vérifiable avec nos données : le revenu médian INSEE s'arrête en 2021 et ignore les prix.</div>
+**Hypothèse : le pouvoir d'achat.** Les prix ont fortement augmenté en 2022–2023 : moins d'achats, moins de déchets, partout. Non vérifiable avec nos données : le revenu médian INSEE s'arrête en 2021 et ignore les prix.
 
 **Eure-et-Loir et Territoire-de-Belfort** : les plus grosses erreurs (123 et 110 kg/hab).
 
@@ -454,8 +456,27 @@ Ces deux séries s'écartent plus que les autres, **sans preuve d'erreur** : à 
 # Limites
 
 <div class="cols">
-<div class="box"><b>Supervisé</b><br>8 enquêtes seulement, une tous les 2 ans. Variables trop stables. Rupture 2021–2023 de cause inconnue (Covid, consignes de tri, pouvoir d'achat : hypothèses).</div>
-<div class="box"><b>Non supervisé</b><br>Structure modérée (silhouette 0,315), un seul nuage pour DBSCAN. 2 groupes fragiles. Sensible aux valeurs extrêmes et à l'outre-mer. Une photo 2019–2021, explications = hypothèses.</div>
+<div>
+
+**Supervisé**
+
+- 8 enquêtes seulement, une tous les 2 ans
+- Variables trop stables pour expliquer un changement
+- Rupture 2021–2023 de cause inconnue : Covid, consignes de tri, pouvoir d'achat sont des **hypothèses**
+- Périmètres légèrement différents : gravats inclus dans le clustering de traitement, exclus de la cible
+
+</div>
+<div>
+
+**Non supervisé**
+
+- Structure modérée (silhouette 0,315) : un seul nuage pour DBSCAN
+- 2 groupes fragiles, 4 départements frontières
+- Sensible aux valeurs extrêmes et à l'outre-mer (ARI 0,65 sans)
+- Une photo 2019–2021, pas un film
+- Explications (habitat, tourisme) = **hypothèses**
+
+</div>
 </div>
 
 ---
@@ -468,9 +489,13 @@ Ces deux séries s'écartent plus que les autres, **sans preuve d'erreur** : à 
 <div class="box"><b>Par zone</b><br>Chaque ville rattachée à sa zone et son département : on retrouve le compte rendu départemental.</div>
 </div>
 
-<div class="warn"><b>Le prix à payer :</b> ces données n'existent pas dans les bases publiques. Il faut davantage de moyens (recueil mensuel auprès de chaque collectivité, format commun). Bénéfice : meilleure gestion des déchets et vue sur les écarts entre territoires.</div>
+&nbsp;
 
-**Piste prioritaire** : ajouter une série nationale (inflation, pouvoir d'achat). **Puis** : variables INSEE logement et tourisme, tarification incitative.
+**Le prix à payer :** ces données n'existent pas dans les bases publiques. Il faut davantage de moyens (recueil mensuel auprès de chaque collectivité, format commun). Bénéfice : meilleure gestion des déchets et vue sur les écarts entre territoires.
+
+&nbsp;
+
+**Piste prioritaire :** ajouter une série nationale (inflation, pouvoir d'achat). **Ensuite :** variables INSEE logement et tourisme, tarification incitative.
 
 ---
 

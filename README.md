@@ -93,11 +93,11 @@ Python 3.10 ou plus récent est requis. `make` seul affiche la liste des command
 
 ## Modifier la présentation
 
-Le diaporama est écrit en [Marp](https://marp.app) (Markdown) dans [`dechets/presentation/presentation.md`](dechets/presentation/presentation.md) ; les figures viennent de `dechets/data/figures/`. Pour régénérer les fichiers après une modification :
+Le diaporama est écrit en [Marp](https://marp.app) (Markdown) dans [`dechets/presentation/presentation.md`](dechets/presentation/presentation.md) ; les figures viennent de `dechets/data/figures/`. Le PowerPoint généré contient une image par slide (rendu identique au PDF) : pour modifier un texte, on change `presentation.md` puis on régénère. Commandes :
 
 ```bash
 cd dechets/presentation
-npx @marp-team/marp-cli presentation.md --allow-local-files --pptx-editable -o presentation.pptx   # PowerPoint (nécessite LibreOffice)
+npx @marp-team/marp-cli presentation.md --allow-local-files --pptx -o presentation.pptx            # PowerPoint (une image par slide)
 npx @marp-team/marp-cli presentation.md --allow-local-files -o presentation.pdf                    # PDF
 ```
 
