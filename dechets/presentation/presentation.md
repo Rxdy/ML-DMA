@@ -56,7 +56,7 @@ Prédire la production par habitant (supervisé), puis identifier des profils de
 
 <div class="cols">
 <div class="box"><b>Partie 1</b><br><span style="font-size:1.25em">Explorer : les données et leur thème</span><br>Le thème, ce qu'on peut en faire, les sources et leur qualité</div>
-<div class="box"><b>Partie 2</b><br><span style="font-size:1.25em">Prédire et évaluer</span><br>Rappel : X et Y, modèles, performance, géolocalisation des erreurs</div>
+<div class="box"><b>Partie 2</b><br><span style="font-size:1.25em">Prédire et évaluer</span><br>X et Y, modèles, performance, géolocalisation des erreurs</div>
 <div class="box"><b>Partie 3</b><br><span style="font-size:1.25em">Segmenter : les profils de départements</span><br>K-means, choix des variables, interprétation des clusters, PCA, robustesse</div>
 <div class="box"><b>Partie 4</b><br><span style="font-size:1.25em">Prise de recul : conclusions, limites, pistes</span><br>Ce qui manque au modèle, limites, pistes d'amélioration</div>
 </div>
@@ -114,8 +114,7 @@ Chaque département produit des déchets ménagers et assimilés (DMA) : ordures
 <!-- _class: part -->
 
 # Partie 2
-## Rappel : prédire et évaluer
-Rappel de la partie déjà présentée (détail dans le rapport supervisé)
+## Prédire et évaluer
 <!-- 5 minutes -->
 
 ---
