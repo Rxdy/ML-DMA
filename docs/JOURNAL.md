@@ -408,7 +408,7 @@ Pipeline rejoué en entier : résultats identiques (R² 0,715 en régression lin
 
 **Les 4 groupes** : profil intermédiaire (59), déchets verts et déchèteries (19, Grand Ouest), grandes agglomérations (13, toute l'Île-de-France, Lyon, Marseille, Toulouse, plus Martinique et Guyane), ordures ménagères élevées (9, Méditerranée et Corse, plus Guadeloupe). Hypothèses d'interprétation : type d'habitat et tourisme.
 
-**Analyses** (script 13) : ACP, 2 axes = 71 % de l'information (axe 1 : tri et apports en déchèterie ; axe 2 : volume d'ordures ménagères et d'encombrants). Robustesse : ARI de 0,81 à 1 selon la graine, 0,83 avec la classification de Ward, 0,65 sans l'outre-mer (frontières déplacées, cœurs stables). ARI de 0,006 avec le clustering du traitement : production et traitement sont indépendants.
+**Analyses** (script 13) : ACP, 2 axes = 71 % de l'information (axe 1 : tri et apports en déchèterie ; axe 2 : volume d'ordures ménagères et d'encombrants). Robustesse : ARI de 0,81 à 1 selon la graine, 0,82 avec la classification de Ward, 0,65 sans l'outre-mer (frontières déplacées, cœurs stables). ARI de 0,006 avec le clustering du traitement : production et traitement sont indépendants.
 
 **Livrables** : `CLUSTERING.md`, rapport PDF `rapport_ML_dechets_clustering.pdf` (même mise en page que le premier), partie 2 du notebook Colab, commandes `make profils`, `make analyses-profils`, `make non-supervise`.
 
@@ -420,7 +420,7 @@ Pipeline rejoué en entier : résultats identiques (R² 0,715 en régression lin
 
 **Ajouté** :
 - Script 13 : PCA en 5 étapes (standardisation, matrice de covariance = matrice de corrélation sur données standardisées, valeurs et vecteurs propres, sélection, projection). Valeurs propres 2,27 / 1,33 / 0,67 / 0,47 / 0,32. Règle des 80–90 % : **3 composantes** (84 %). PC3 = déchets verts plutôt que tri. Centroïdes sur la projection, plan PC1-PC3.
-- Script 14 : clustering hiérarchique agglomératif (Ward) et son dendrogramme (grands sauts de hauteur jusqu'à 4 groupes, puis quasi nuls : confirme k = 4 ; ARI 0,83 avec le k-means) ; DBSCAN (MinPts = 10, ε = 2,53 au coude des k-distances) : un seul groupe dense et 2 points de bruit (Landes, Guadeloupe), quel que soit le réglage. Les départements forment un continuum.
+- Script 14 : clustering hiérarchique agglomératif (Ward) et son dendrogramme (grands sauts de hauteur jusqu'à 4 groupes, puis quasi nuls : confirme k = 4 ; ARI 0,82 avec le k-means) ; DBSCAN (MinPts = 10, ε = 2,53 au coude des k-distances) : un seul groupe dense et 2 points de bruit (Landes, Guadeloupe), quel que soit le réglage. Les départements forment un continuum.
 - Rapport de clustering restructuré (35 pages) : chapitre PCA, k-means (distance, inertie/WCSS, étapes, avantages et limites), clustering hiérarchique, DBSCAN, synthèse des méthodes ; glossaire complété. `CLUSTERING.md`, notebook Colab et `make autres-methodes` mis à jour.
 
 ---
@@ -436,3 +436,11 @@ Le mot « suspect » employé pour ces deux départements était trop fort. Ce q
 Passage détaillé en paragraphes (synthèse PDF et `dechets/docs/supervise.md`). Constat : en 2021 les départements produisent en moyenne 21,5 kg/hab de plus (11 % en baisse), en 2023 43,8 de moins (97 % en baisse) ; le modèle, qui suppose « comme la dernière fois », se trompe dans le même sens partout (−22 puis +43 kg/hab). L'erreur est donc commune, pas locale : il manque une valeur nationale annuelle. Plafond : avec l'évolution nationale connue, MAE de 36,5 à 19,9 et R² de 0,70 à 0,88 (non réaliste, car inconnue à l'avance).
 
 Hypothèse ajoutée : baisse du pouvoir d'achat en 2022-2023. Non testable avec nos données (revenu médian INSEE jusqu'en 2021 seulement, qui ignore les prix ; le script 08 testait le niveau entre départements, pas l'évolution). À tester avec une série nationale (inflation, pouvoir d'achat, consommation des ménages).
+
+---
+
+## 2026-10-27 — Présentation finale : répartition du temps
+
+Présentation de 30 minutes : partie 1 (données, 4 min), partie 2 (rappel du supervisé déjà présenté, 5 min), partie 3 (clustering, 16 min), partie 4 (conclusions, 5 min). Synthèse PDF rééquilibrée : le supervisé est condensé en rappel, le clustering est développé en six chapitres chronométrés (variables, k-means, choix de k, lecture des groupes, PCA, robustesse et autres méthodes), et le détail sur l'erreur commune, le pouvoir d'achat et les deux départements atypiques passe en partie 4.
+
+Correction : l'ARI entre le k-means et le clustering hiérarchique vaut 0,8247, soit 0,82 (et non 0,83 comme écrit à plusieurs endroits).

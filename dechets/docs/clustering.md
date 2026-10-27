@@ -194,7 +194,7 @@ Chaque département part seul ; à chaque étape, les deux groupes les plus proc
 |---|---|---|---|---|---|
 | Saut de hauteur | 4,07 | 2,50 | **2,19** | 0,58 | 0,02 |
 
-Les sauts sont grands jusqu'à 4 groupes puis s'effondrent : **4 est la coupe la plus fine qui ait encore un sens**, ce qui confirme le k-means. Les deux méthodes s'accordent à 0,83 (ARI) : mêmes agglomérations, même Méditerranée.
+Les sauts sont grands jusqu'à 4 groupes puis s'effondrent : **4 est la coupe la plus fine qui ait encore un sens**, ce qui confirme le k-means. Les deux méthodes s'accordent à 0,82 (ARI) : mêmes agglomérations, même Méditerranée.
 
 ### DBSCAN (densité)
 
