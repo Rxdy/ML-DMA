@@ -522,5 +522,3 @@ Ces deux séries s'écartent plus que les autres, **sans preuve d'erreur** : à 
 # Merci de votre attention
 
 Avez-vous des questions ?
-
-<p class="small">ALVES Rudy · ANTHONY Josselin · BENASSIE Noé · TAVERNIER Florian</p>
