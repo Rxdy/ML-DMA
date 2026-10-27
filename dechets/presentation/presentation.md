@@ -23,6 +23,8 @@ style: |
   section.part footer, section.part::after { color: #cfe8e1; }
   section.title { justify-content: center; }
   section.title h1 { font-size: 1.7em; }
+  section.dense table { font-size: .66em; }
+  section.dense td, section.dense th { padding: 3px 8px; }
   section.bigbox .box { font-size: .95em; }
   section.bigbox .box p { margin: .3em 0; }
   .small { font-size: .7em; color: var(--muted); }
@@ -133,7 +135,7 @@ Chaque département produit des déchets ménagers et assimilés (DMA) : ordures
 
 ---
 
-<!-- _class: num -->
+<!-- _class: num dense -->
 
 # Résultat : aucun modèle ne bat la règle naïve
 
@@ -144,6 +146,12 @@ Chaque département produit des déchets ménagers et assimilés (DMA) : ordures
 | **Régression linéaire** | **35,75** | **43,53** | **0,716** |
 | Arbre de décision | 37,04 | 45,58 | 0,689 |
 | Random Forest | 36,08 | 44,36 | 0,705 |
+
+<div class="cols3">
+<div class="box"><b>MAE</b> (erreur absolue moyenne)<br>Moyenne des écarts, en valeur absolue, entre la prédiction et la réalité, en kg/hab. Plus c'est bas, mieux c'est.</div>
+<div class="box"><b>RMSE</b> (racine de l'erreur quadratique moyenne)<br>Même unité que la MAE, mais les grosses erreurs pèsent plus. Plus c'est bas, mieux c'est.</div>
+<div class="box"><b>R²</b> (coefficient de détermination)<br>Part de la variation entre départements expliquée par le modèle : 1 = parfait, 0 = pas mieux que la moyenne.</div>
+</div>
 
 Gain sur la règle naïve : **0,74 kg/hab, soit 2 % de l'erreur**. La valeur précédente porte **94,9 %** de l'importance des variables.
 
@@ -267,18 +275,20 @@ Le clustering regroupe sur les variables qu'on lui donne : **choisir les variabl
 
 ---
 
-<!-- _class: num -->
+<!-- _class: num dense -->
 
 # Les 4 profils
 
-![w:620](../data/figures/clustering_profils.png)
+![h:200](../data/figures/clustering_profils.png)
 
-| Groupe | Dép. | OMR | Recycl. | Verts | Encomb. | Dang. | Total |
+| Groupe | Dép. | OMR | Recyclables | Déchets verts | Encombrants | Dangereux | Total |
 |---|---|---|---|---|---|---|---|
 | Profil intermédiaire | 59 | 217 | 144 | 80 | 74 | 11 | 528 |
 | Déchets verts et déchèteries | 19 | 226 | 145 | 151 | 93 | 12 | 629 |
 | Grandes agglomérations | 13 | 275 | 67 | 42 | 64 | 3 | 456 |
 | Ordures ménagères élevées | 9 | 361 | 120 | 82 | 95 | 12 | 674 |
+
+<p class="small">kg par habitant. <b>OMR</b> : ordures ménagères résiduelles, la poubelle « classique » (déchets non triés). <b>Déchets verts</b> : déchets verts et biodéchets. <b>Dangereux</b> : déchets dangereux. Total hors gravats.</p>
 
 ---
 
@@ -370,7 +380,10 @@ Chaque groupe occupe sa zone : agglomérations à gauche (peu de tri), Ouest à 
 - Sans l'outre-mer : les **cœurs** restent, les **frontières** se déplacent
 - ARI 0,006 : production et traitement sont **indépendants**, ils ne devaient pas être mélangés
 
-<p class="small">ARI : 1 = mêmes groupes, 0 = pas mieux que le hasard.</p>
+<div class="cols">
+<div class="box"><b>ARI</b> (indice de Rand ajusté)<br>Compare deux découpages en groupes : 1 = exactement les mêmes groupes, environ 0 = pas plus de points communs qu'un découpage fait au hasard.</div>
+<div class="box"><b>Silhouette</b><br>Mesure si chaque département est bien placé dans son groupe : proche de 1, bien placé ; proche de 0, à la frontière ; négatif, mieux dans un autre groupe.</div>
+</div>
 
 ---
 
@@ -508,8 +521,6 @@ Ces deux séries s'écartent plus que les autres, **sans preuve d'erreur** : à 
 
 # Merci de votre attention
 
-Aucun profil n'est exemplaire : chaque territoire appelle une stratégie adaptée à son habitat et à sa démographie.
+Avez-vous des questions ?
 
-`git clone https://github.com/Rxdy/ML-DMA.git && make installer && make all`
-
-<p class="small">Questions et discussion · ALVES Rudy · ANTHONY Josselin · BENASSIE Noé · TAVERNIER Florian</p>
+<p class="small">ALVES Rudy · ANTHONY Josselin · BENASSIE Noé · TAVERNIER Florian</p>
